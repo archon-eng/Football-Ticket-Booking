@@ -1,0 +1,28 @@
+# ==============================================================================
+# DOCKER IGNORE CONFIGURATION
+# ==============================================================================
+
+# --- Host Dependency Isolation ---
+# Exclude host machine node_modules so Docker does not copy host binaries into the container.
+# The container runs `pnpm install` internally to generate clean, Linux-native binaries.
+node_modules
+backend/node_modules
+frontend/node_modules
+.pnpm-store
+
+# --- Host Build Artifacts ---
+# Ignore host build output folders to prevent stale host code from contaminating image builds.
+dist
+build
+.vite
+
+# --- Version Control Metadata ---
+# Exclude Git repository history and Git files to reduce Docker build context size and save time.
+.git
+.gitignore
+.dockerignore
+
+# --- Documentation ---
+# Exclude repository markdown files and non-runtime assets from the Docker build context.
+README.md
+LICENSE

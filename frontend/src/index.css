@@ -1,0 +1,143 @@
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap");
+@import "tailwindcss";
+
+@font-face {
+  font-family: "SF Pro";
+  src: url("/fonts/SF-Pro.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@theme {
+  --font-flex: "Google Sans Flex", sans-serif;
+  --font-sf:
+    "SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* ==========================================================================
+     Backgrounds & Surface Hierarchy (Dark Navy)
+     ========================================================================== */
+  --color-foot-bg: #070c18;
+  --color-foot-surface: #0f172a;
+  --color-foot-surface-elevated: #1a243a;
+  --color-foot-surface-hover: #24314d;
+  --color-foot-border: #1e293b;
+
+  /* ==========================================================================
+     Brand & Racing Accents (Racing Red)
+     ========================================================================== */
+  --color-foot-red: #e11d48;
+  --color-foot-red-hover: #f43f5e;
+  --color-foot-rose: #fb7185;
+  --color-foot-rose-hover: #fda4af;
+  --color-foot-carbon: #030712;
+
+  /* ==========================================================================
+     Seat Map Interactive States
+     ========================================================================== */
+  --color-seat-available: #e11d48;
+  --color-seat-available-hover: #f43f5e;
+  --color-seat-selected: #ff2a4b;
+  --color-seat-selected-glow: rgba(255, 42, 75, 0.35);
+  --color-seat-occupied: #1e293b;
+  --color-seat-reserved: #881337;
+  --color-seat-vip: #ff003c;
+
+  /* ==========================================================================
+     Grandstand Sector Zones
+     ========================================================================== */
+  --color-zone-pit-straight: #ff1e42;
+  --color-zone-paddock-club: #e11d48;
+  --color-zone-hairpin: #f43f5e;
+  --color-zone-chicane: #fb7185;
+  --color-zone-general: #475569;
+
+  /* ==========================================================================
+     Typography & Text Hierarchy
+     ========================================================================== */
+  --color-foot-text-primary: #f8fafc;
+  --color-foot-text-secondary: #cbd5e1;
+  --color-foot-text-muted: #94a3b8;
+  --color-foot-text-disabled: #475569;
+}
+
+@keyframes fade-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0rem);
+  }
+}
+
+.animation-fade-up {
+  opacity: 0;
+  animation: fade-slide-up 0.8s ease-in-out forwards;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(225, 29, 72, 0.15),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(15, 23, 42, 0.6),
+      transparent 30%
+    ),
+    linear-gradient(180deg, #070c18 0%, #0b1224 50%, #050811 100%);
+  color: var(--color-foot-text-primary);
+  font-family: var(--font-sf);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-flex);
+  letter-spacing: -0.03em;
+  color: var(--color-foot-text-primary);
+}
+
+html,
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-sf);
+  letter-spacing: -0.0125rem;
+}
+
+strong,
+b,
+.font-semibold,
+.font-bold,
+.font-extrabold,
+.font-black {
+  font-family: var(--font-flex);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(225, 29, 72, 0.35);
+  color: #ffffff;
+}

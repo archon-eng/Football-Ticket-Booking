@@ -1,0 +1,6 @@
+packages:
+  - "backend"
+  - "frontend"
+  - "shared/*" # Optional: if you intend to share Zod schemas or types between FE and BE later
+allowBuilds:
+  esbuild: true

@@ -1,0 +1,51 @@
+services:
+  # 1. Database Service (MongoDB)
+  mongo:
+    image: mongo:7.0
+    container_name: grand_prix_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  # 2. Backend Service (Node.js Express + Mongoose API)
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.dev
+    container_name: grand_prix_backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/grand_prix
+    volumes:
+      - ./backend:/app/backend
+      - /app/node_modules
+      - /app/backend/node_modules
+    depends_on:
+      - mongo
+
+  # 3. Frontend Service (React + Vite Web App)
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile.dev
+    container_name: grand_prix_frontend
+    ports:
+      - "5173:5173" # Updated host and container ports to match Vite standard
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/node_modules
+      - /app/frontend/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    # Command updated to explicitly serve on port 5173
+    command: pnpm -F frontend dev --host 0.0.0.0 --port 5173
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:

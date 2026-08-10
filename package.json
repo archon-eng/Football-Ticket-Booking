@@ -1,0 +1,14 @@
+{
+  "name": "venue_seat_booking",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.20.0+...",
+  "scripts": {
+    "dev": "pnpm --parallel -r dev",
+    "build": "pnpm -r build",
+    "dev:backend": "pnpm --filter backend dev",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "build:backend": "pnpm --filter backend build",
+    "build:frontend": "pnpm --filter frontend build"
+  }
+}

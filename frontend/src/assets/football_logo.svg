@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <style type="text/css">
+      .cls-1{fill:#ff6c00;}
+      .cls-2{fill:#a0a0a0;}
+      .cls-3{fill:#ffffff;}
+      .cls-4{fill:#cccccc;}
+      .cls-5{fill:#808080;}
+      .cls-6{fill:#ffffff;font-family:Arial, sans-serif;font-weight:bold;font-size:3px;}
+    </style>
+  </defs>
+  <g transform="translate(50, 50) scale(1.08) translate(-50, -50)">
+    <path class="cls-1" d="M81.5,23.5 L50,5 L18.5,23.5 L18.5,76.5 L50,95 L81.5,76.5 Z M78.5,25 L50,8 L21.5,25 L21.5,75 L50,92 L78.5,75 Z" />
+    <g>
+      <path class="cls-2" d="M50,15 L36,45 L36,85 L50,85 Z" />
+      <path class="cls-3" d="M50,15 L64,45 L64,85 L50,85 Z" />
+      <path class="cls-4" d="M36,45 L36,85 L43,85 Z" />
+      <path class="cls-5" d="M64,45 L64,85 L57,85 Z" />
+      <path class="cls-2" d="M50,15 L50,85 L57,85 Z" />
+      <path class="cls-3" d="M50,15 L50,85 L43,85 Z" />
+    </g>
+    <text x="63" y="80" class="cls-6">TM</text>
+  </g>
+</svg>
