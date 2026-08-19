@@ -2,7 +2,7 @@
   "name": "venue_seat_booking",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@11.20.0+...",
+  "packageManager": "pnpm@11.22.0",
   "scripts": {
     "dev": "pnpm --parallel -r dev",
     "build": "pnpm -r build",
