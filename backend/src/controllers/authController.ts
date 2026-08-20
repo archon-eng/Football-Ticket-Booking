@@ -5,6 +5,7 @@ import { z } from "zod"
 import { User } from "../models/User.js"
 
 const signUpSchema = z.object({
+  name: z.string().trim().optional(),
   email: z.string().email({ message: "Invalid email address" }),
   password: z
     .string()
@@ -25,7 +26,7 @@ export const signUp = async (req: Request, res: Response) => {
         .json({ errors: result.error.flatten().fieldErrors }) // a method to display error in simple language
     }
 
-    const { email, password } = result.data // making a new object for validation
+    const { name, email, password } = result.data // making a new object for validation
 
     const existingUser = await User.findOne({ email })
     if (existingUser) {
@@ -34,14 +35,15 @@ export const signUp = async (req: Request, res: Response) => {
         .json({ message: "User already exists with this email" })
     }
 
-    // Extract user ID/username from email before @ symbol
-    const username = email.split("@")[0] // split function makes an array, [0] means first index
+    // ID is generated from the email; username comes from the optional name.
+    const ID = email.split("@")[0] // split function makes an array, [0] means first index
 
     const salt = await bcrypt.genSalt(10)
     const passwordHash = await bcrypt.hash(password, salt)
 
     const user = await User.create({
-      username,
+      username: name || undefined,
+      ID,
       email,
       passwordHash,
     })
@@ -64,6 +66,7 @@ export const signUp = async (req: Request, res: Response) => {
       user: {
         id: user._id,
         username: user.username,
+        ID: user.ID,
         email: user.email,
         role: user.role,
       },
@@ -113,6 +116,7 @@ export const logIn = async (req: Request, res: Response) => {
       user: {
         id: user._id,
         username: user.username,
+        ID: user.ID,
         email: user.email,
         role: user.role,
       },

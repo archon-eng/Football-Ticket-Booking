@@ -9,7 +9,8 @@ import {
 // User type definition
 export interface User {
   _id: string
-  name: string
+  ID: string
+  username?: string
   email: string
   role?: string
 }

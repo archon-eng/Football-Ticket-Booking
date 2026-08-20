@@ -11,8 +11,7 @@
 
 @theme {
   --font-flex: "Google Sans Flex", sans-serif;
-  --font-sf:
-    "SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sf: "SF Pro", -apple-system, "Google Sans Flex", sans-serif;
 
   /* ==========================================================================
      Backgrounds & Surface Hierarchy (Dark Navy)

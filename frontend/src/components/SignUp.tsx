@@ -5,14 +5,47 @@ import { useAuth } from "../context/AuthContext.tsx"
 export default function SignUp() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [errors, setErrors] = useState<Record<string, string[]>>({})
   const [serverErrors, setServerErrors] = useState("")
-  const [submitting, setSubmitting] = useState("")
+  const [submitting, setSubmitting] = useState<boolean>(false)
 
   const { setUser } = useAuth()
   const navigate = useNavigate()
   const handleSumbit = async (e: SubmitEvent) => {
-    e.preventDefault
+    e.preventDefault()
+    setErrors({})
+    setServerErrors("")
+    setSubmitting(true)
+
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name, email, password }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        if (data.errors) {
+          setErrors(data.errors)
+        } else {
+          setServerErrors(data.message || "Registration Failed!")
+        }
+        return
+      }
+
+      if (data.user) {
+        setUser(data.user)
+      }
+      navigate("/")
+    } catch (error) {
+      setServerErrors(`Server error: ${error}`)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -38,8 +71,23 @@ export default function SignUp() {
                 Registration form
               </div>
 
-              <form onSubmit={(e) => e.preventDefault()}>
+              <form onSubmit={handleSumbit}>
                 <div className="mt-6 space-y-4">
+                  <div>
+                    <label className="sr-only" htmlFor="signup-name">
+                      Name
+                    </label>
+                    <input
+                      id="signup-name"
+                      type="text"
+                      placeholder="Name (optional)"
+                      autoComplete="no_username"
+                      value={name}
+                      onChange={(event) => setName(event.target.value)}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-blue-400"
+                    />
+                  </div>
+
                   <div>
                     <label className="sr-only" htmlFor="signup-email">
                       Email
@@ -50,6 +98,8 @@ export default function SignUp() {
                       placeholder="Email"
                       autoComplete="username"
                       required
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
                       className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-blue-400"
                     />
                   </div>
@@ -64,18 +114,38 @@ export default function SignUp() {
                       placeholder="Password"
                       autoComplete="new-password"
                       required
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
                       className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-blue-400"
                     />
                   </div>
 
                   <button
                     type="submit"
+                    disabled={submitting}
                     className="w-full rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0"
                   >
-                    Sign Up
+                    {submitting ? "Signing Up..." : "Sign Up"}
                   </button>
                 </div>
               </form>
+
+              {Object.values(errors)
+                .flat()
+                .map((error) => (
+                  <div
+                    key={error}
+                    className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-center text-xs font-medium text-red-500"
+                  >
+                    {error}
+                  </div>
+                ))}
+
+              {serverErrors && (
+                <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-center text-xs font-medium text-red-500">
+                  {serverErrors}
+                </div>
+              )}
 
               <div className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
                 Already registered?{" "}
@@ -93,3 +163,8 @@ export default function SignUp() {
     </div>
   )
 }
+
+// name is what user decides, whatever he chooses, or can leave it empty
+// email is required
+// ID will be generated by using email
+// password is required and must be unique
