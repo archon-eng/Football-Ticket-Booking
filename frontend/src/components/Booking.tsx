@@ -1,4 +1,12 @@
+import { Link, Outlet, useLocation } from "react-router-dom"
+
 export default function Booking() {
+  const { pathname } = useLocation()
+
+  if (pathname.endsWith("/form")) {
+    return <Outlet />
+  }
+
   return (
     <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center px-5 py-12 lg:px-8">
       <section className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900">
@@ -15,6 +23,16 @@ export default function Booking() {
               scan. This layout keeps everything bright, structured, and clearly
               separated.
             </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                to="/booking/form"
+                className="rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0"
+              >
+                Continue to booking
+              </Link>
+            </div>
+
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {[
                 ["Blue-first palette", "Clarity over visual noise"],

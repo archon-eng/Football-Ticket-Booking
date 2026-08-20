@@ -1,6 +1,7 @@
 import { useState, type SubmitEvent } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
-import { useAuth } from "../context/AuthContext.tsx"
+import { useAuth } from "../context/AuthContext"
+import { catchError } from "../context/catchError"
 
 export default function SignUp() {
   const [name, setName] = useState("")
@@ -12,8 +13,9 @@ export default function SignUp() {
 
   const { setUser } = useAuth()
   const navigate = useNavigate()
-  const handleSumbit = async (e: SubmitEvent) => {
-    e.preventDefault()
+
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault()
     setErrors({})
     setServerErrors("")
     setSubmitting(true)
@@ -38,9 +40,10 @@ export default function SignUp() {
       }
 
       if (data.user) {
-        setUser(data.user)
+        setUser(catchError(data.user))
       }
-      navigate("/")
+
+      navigate("/dashboard")
     } catch (error) {
       setServerErrors(`Server error: ${error}`)
     } finally {
@@ -71,59 +74,71 @@ export default function SignUp() {
                 Registration form
               </div>
 
-              <form onSubmit={handleSumbit}>
+              <form onSubmit={handleSubmit}>
                 <div className="mt-6 space-y-4">
                   <div>
-                    <label className="sr-only" htmlFor="signup-name">
-                      Name
+                    <label
+                      htmlFor="signup-name"
+                      className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-slate-300"
+                    >
+                      Name{" "}
+                      <span className="text-slate-400 font-normal">
+                        (optional)
+                      </span>
                     </label>
                     <input
                       id="signup-name"
                       type="text"
-                      placeholder="Name (optional)"
-                      autoComplete="no_username"
+                      placeholder="e.g. Alex Johnson"
+                      autoComplete="name"
                       value={name}
-                      onChange={(event) => setName(event.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-blue-400"
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-blue-400"
                     />
                   </div>
 
                   <div>
-                    <label className="sr-only" htmlFor="signup-email">
-                      Email
+                    <label
+                      htmlFor="signup-email"
+                      className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-slate-300"
+                    >
+                      Email <span className="text-red-500">*</span>
                     </label>
                     <input
                       id="signup-email"
                       type="email"
-                      placeholder="Email"
+                      placeholder="name@example.com"
                       autoComplete="username"
                       required
                       value={email}
-                      onChange={(event) => setEmail(event.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-blue-400"
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-blue-400"
                     />
                   </div>
 
                   <div>
-                    <label className="sr-only" htmlFor="signup-password">
-                      Password
+                    <label
+                      htmlFor="signup-password"
+                      className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-slate-300"
+                    >
+                      Password <span className="text-red-500">*</span>
                     </label>
                     <input
                       id="signup-password"
                       type="password"
-                      placeholder="Password"
+                      placeholder="••••••••"
                       autoComplete="new-password"
                       required
                       value={password}
-                      onChange={(event) => setPassword(event.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-blue-400"
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-blue-400"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0"
+                    className="w-full rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50"
                   >
                     {submitting ? "Signing Up..." : "Sign Up"}
                   </button>

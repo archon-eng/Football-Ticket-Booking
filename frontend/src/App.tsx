@@ -1,13 +1,13 @@
 import { Navigate, Outlet, Route, Routes } from "react-router-dom"
 import Booking from "./components/Booking.tsx"
-import BookingRecipt from "./components/BookingForm.tsx"
-import Dashboard from "./components/Dashboard.tsx"
-import FAQ from "./components/FAQ.tsx"
-import Fixtures from "./components/Fixtures.tsx"
-import Guidline from "./components/Guidline.tsx"
-import LogIn from "./components/LogIn.tsx"
-import NavBar from "./components/NavBar.tsx"
-import SignUp from "./components/SignUp.tsx"
+import BookingRecipt from "./components/BookingForm"
+import Dashboard from "./components/Dashboard"
+import FAQ from "./components/FAQ"
+import Fixtures from "./components/Fixtures"
+import Guidline from "./components/Guidline"
+import LogIn from "./components/LogIn"
+import NavBar from "./components/NavBar"
+import SignUp from "./components/SignUp"
 
 function Layout() {
   return (

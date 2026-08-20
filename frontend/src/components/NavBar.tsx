@@ -1,8 +1,11 @@
 import { NavLink } from "react-router-dom"
 import account_logo from "../assets/account_symbol.svg"
 import logo from "../assets/football_logo.svg"
+import { useAuth } from "../context/AuthContext"
 
 export default function NavBar() {
+  const { user, loading, logout } = useAuth()
+
   const getNavClass = ({ isActive }: { isActive: boolean }) =>
     `relative rounded-full px-3 py-2 text-sm font-medium transition-colors hover:text-blue-600 dark:hover:text-blue-400 after:absolute after:bottom-1 after:left-3 after:h-0.5 after:w-[calc(100%-1.5rem)] after:origin-center after:scale-x-0 after:rounded-full after:bg-foot-red dark:after:bg-foot-red after:transition-transform after:duration-300 hover:after:scale-x-100 ${
       isActive
@@ -40,17 +43,34 @@ export default function NavBar() {
       </div>
 
       <div className="flex items-center justify-center">
-        <NavLink
-          to="/login"
-          className="flex items-center justify-center gap-2 rounded-full border border-red-500/30 bg-linear-to-br from-red-600 to-rose-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-red-500/20 transition-all hover:-translate-y-0.5 hover:from-red-500 hover:to-rose-400 hover:shadow-lg hover:shadow-red-500/30 active:translate-y-0"
-        >
-          <span className="tracking-wide">Log In</span>
-          <img
-            src={account_logo}
-            alt="Account"
-            className="h-4 w-4 brightness-0 invert"
-          />
-        </NavLink>
+        {loading ? (
+          <span className="h-9 w-24 animate-pulse rounded-full bg-slate-200 dark:bg-slate-800" />
+        ) : user ? (
+          <button
+            type="button"
+            onClick={logout}
+            className="flex items-center justify-center gap-2 rounded-full border border-red-500/30 bg-linear-to-br from-red-600 to-rose-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-red-500/20 transition-all hover:-translate-y-0.5 hover:from-red-500 hover:to-rose-400 hover:shadow-lg hover:shadow-red-500/30 active:translate-y-0"
+          >
+            <span className="tracking-wide">Log Out</span>
+            <img
+              src={account_logo}
+              alt="Account"
+              className="h-4 w-4 brightness-0 invert"
+            />
+          </button>
+        ) : (
+          <NavLink
+            to="/login"
+            className="flex items-center justify-center gap-2 rounded-full border border-red-500/30 bg-linear-to-br from-red-600 to-rose-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-red-500/20 transition-all hover:-translate-y-0.5 hover:from-red-500 hover:to-rose-400 hover:shadow-lg hover:shadow-red-500/30 active:translate-y-0"
+          >
+            <span className="tracking-wide">Log In</span>
+            <img
+              src={account_logo}
+              alt="Account"
+              className="h-4 w-4 brightness-0 invert"
+            />
+          </NavLink>
+        )}
       </div>
     </div>
   )

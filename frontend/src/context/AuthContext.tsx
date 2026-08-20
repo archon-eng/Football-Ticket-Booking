@@ -5,14 +5,15 @@ import {
   useState,
   type ReactNode,
 } from "react"
+import { catchError } from "./catchError"
 
 // User type definition
 export interface User {
   _id: string
-  ID: string
-  username?: string
+  username: string
   email: string
-  role?: string
+  ID: string
+  role: string
 }
 
 // Interface defining all values and functions provided by this context
@@ -42,7 +43,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (res.ok) {
           const data = await res.json()
-          setUser(data.user)
+          setUser(catchError(data.user))
         } else {
           setUser(null)
         }
