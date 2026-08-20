@@ -6,12 +6,15 @@ import {
   type ReactNode,
 } from "react"
 
-interface User {
+// User type definition
+export interface User {
   _id: string
   name: string
   email: string
+  role?: string
 }
 
+// Interface defining all values and functions provided by this context
 interface AuthContextType {
   user: User | null
   setUser: (user: User | null) => void
@@ -19,18 +22,21 @@ interface AuthContextType {
   logout: () => Promise<void>
 }
 
+// 1. Create Context with an undefined default value for safety
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+// 2. AuthProvider Component
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
 
+  // Fetch current user session on app start / page refresh
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const res = await fetch("auth/api/me", {
+        const res = await fetch("/api/auth/me", {
           method: "GET",
-          credentials: "include",
+          credentials: "include", // Sends the httpOnly JWT cookie automatically
         })
 
         if (res.ok) {
@@ -40,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(null)
         }
       } catch (error) {
-        console.error("Failed to verify authentication session:", error)
+        console.error("Failed to verify session:", error)
         setUser(null)
       } finally {
         setLoading(false)
@@ -50,14 +56,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     fetchMe()
   }, [])
 
+  // Centralized logout handler
   const logout = async () => {
     try {
-      await fetch("auth/api/logout", {
+      await fetch("/api/auth/logout", {
         method: "POST",
         credentials: "include",
       })
     } catch (error) {
-      console.error("Error logging out:", error)
+      console.error("Logout request failed:", error)
     } finally {
       setUser(null)
     }
@@ -70,11 +77,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 }
 
-const useAuth = (): AuthContextType => {
+// 3. Custom Hook to easily consume AuthContext anywhere in the app
+// This hook is intentionally exported with the provider from this context module.
+// eslint-disable-next-line react-refresh/only-export-components
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext)
   if (!context) {
-    throw new Error("useAuth must be used within an auth provider!")
+    throw new Error("useAuth must be used within an AuthProvider")
   }
-
   return context
 }

@@ -1,6 +1,20 @@
-import { NavLink } from "react-router-dom"
+import { useState, type SubmitEvent } from "react"
+import { NavLink, useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext.tsx"
 
 export default function SignUp() {
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [errors, setErrors] = useState<Record<string, string[]>>({})
+  const [serverErrors, setServerErrors] = useState("")
+  const [submitting, setSubmitting] = useState("")
+
+  const { setUser } = useAuth()
+  const navigate = useNavigate()
+  const handleSumbit = async (e: SubmitEvent) => {
+    e.preventDefault
+  }
+
   return (
     <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-4xl items-center px-5 py-12 lg:px-8">
       <section className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900">
