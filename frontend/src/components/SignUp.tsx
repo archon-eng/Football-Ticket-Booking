@@ -60,7 +60,7 @@ export default function SignUp() {
 
             <NavLink
               to="admin_signup"
-              className="group flex items-center justify-between rounded-2xl border p-5 text-left transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:hover:shadow-lg border-slate-800 hover:border-blue-900 hover:bg-blue-950/30"
+              className="group flex items-center justify-between rounded-2xl border p-5 text-left transition-all hover:-translate-y-0.5 hover:hover:shadow-lg border-slate-800 hover:border-blue-900 hover:bg-blue-950/30"
             >
               <span>
                 <span className="block text-base font-bold text-white">

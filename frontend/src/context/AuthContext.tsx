@@ -5,7 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react"
-import { catchError } from "./catchError"
+import { validateUserCredentials } from "./validateUserCredentials"
 
 // User type definition
 export interface User {
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (res.ok) {
           const data = await res.json()
-          setUser(catchError(data.user))
+          setUser(validateUserCredentials(data.user))
         } else {
           setUser(null)
         }

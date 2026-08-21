@@ -82,15 +82,15 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <div className="relative mx-auto w-full max-w-7xl px-5 py-10 lg:px-8">
-        <section className="relative overflow-hidden rounded-3xl border shadow-2xl border-slate-800 bg-slate-900/90">
-          <div className="absolute -right-24 -top-20 h-56 w-56 rounded-full 0/20 blur-3xl" />
-          <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-sky-400/20 blur-3xl" />
+    <div className="min-h-screen text-foot-text-primary">
+      <div className="relative mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <section className="relative overflow-hidden rounded-2xl border border-foot-border bg-foot-surface/95 shadow-2xl shadow-black/20">
+          <div className="absolute -right-24 -top-20 h-56 w-56 rounded-full bg-foot-red/10 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-foot-rose/10 blur-3xl" />
 
-          <div className="grid gap-8 px-6 py-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-10 lg:py-12">
+          <div className="grid gap-8 px-5 py-7 sm:px-7 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-10 lg:py-10">
             <div>
-              <span className="inline-flex rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-widest border-blue-800 text-blue-400">
+              <span className="inline-flex rounded-full border border-foot-red/40 bg-foot-red/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-foot-rose">
                 UEFA-inspired matchday booking
               </span>
               <h1 className="mt-6 max-w-2xl text-4xl font-extrabold tracking-tight sm:text-5xl text-white">
@@ -105,13 +105,13 @@ export default function Dashboard() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
                   href="/booking"
-                  className="rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-700 hover:shadow-blue-500/50 hover:-translate-y-0.5 active:translate-y-0"
+                  className="rounded-full bg-foot-red px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-foot-red/25 transition-all hover:bg-foot-red-hover hover:-translate-y-0.5 active:translate-y-0"
                 >
                   Book seats
                 </a>
                 <a
                   href="/fixtures"
-                  className="rounded-full border px-6 py-3 text-sm font-semibold transition-colors border-slate-700 text-slate-200 hover:bg-slate-700"
+                  className="rounded-full border border-foot-border px-5 py-2.5 text-sm font-semibold text-foot-text-secondary transition-colors hover:bg-foot-surface-hover"
                 >
                   View fixtures
                 </a>
@@ -125,29 +125,25 @@ export default function Dashboard() {
                 ].map(([value, label]) => (
                   <div
                     key={value}
-                    className="rounded-2xl border px-4 border-slate-800 bg-slate-800/40"
+                    className="rounded-xl border border-foot-border bg-foot-surface-elevated/60 px-4 py-3"
                   >
-                    <div className="text-2xl font-bold text-white">
-                      {value}
-                    </div>
-                    <div className="mt-1 text-sm text-slate-400">
-                      {label}
-                    </div>
+                    <div className="text-2xl font-bold text-white">{value}</div>
+                    <div className="mt-1 text-sm text-slate-400">{label}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             <div className="relative">
-              <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
+              <div className="overflow-hidden rounded-2xl border border-foot-border bg-foot-surface">
                 <img
                   src={footballPitchImage}
                   alt="Football on the pitch"
                   className="h-104 w-full object-cover sm:h-120"
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-slate-950/60 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-white/20 p-4 shadow-lg border-slate-700/50 bg-slate-900/80">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-blue-400">
+                <div className="absolute inset-0 bg-linear-to-t from-foot-bg/70 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-foot-border/70 bg-foot-surface/85 p-4 shadow-lg">
+                  <div className="text-xs font-semibold uppercase tracking-wider text-foot-rose">
                     Live atmosphere
                   </div>
                   <div className="mt-1 text-base font-semibold text-white">
@@ -161,7 +157,7 @@ export default function Dashboard() {
         </section>
       </div>
 
-      <section className="mx-auto w-full max-w-7xl px-5 pb-16 pt-4 lg:px-8">
+      <section className="mx-auto w-full max-w-7xl px-4 pb-12 pt-2 sm:px-6 lg:px-8 lg:pb-16">
         <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-white">
           Featured Matchday Moments
         </h2>
@@ -171,7 +167,7 @@ export default function Dashboard() {
             <article
               key={image.src}
               data-card-index={index}
-              className={`overflow-hidden rounded-2xl border shadow-md transition-all duration-700 ease-out border-slate-800 bg-slate-900 ${
+              className={`overflow-hidden rounded-xl border border-foot-border bg-foot-surface shadow-md transition-all duration-700 ease-out ${
                 visibleCards[index]
                   ? "translate-y-0 opacity-100"
                   : "translate-y-8 opacity-0"
@@ -185,7 +181,7 @@ export default function Dashboard() {
                   decoding="async"
                   className="h-64 w-full object-cover"
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-slate-950/40 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-foot-bg/50 via-transparent to-transparent" />
               </div>
               {(image.title || image.description) && (
                 <div className="p-6">

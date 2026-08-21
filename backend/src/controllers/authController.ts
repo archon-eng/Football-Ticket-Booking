@@ -1,20 +1,23 @@
 import bcrypt from "bcryptjs"
 import { Request, Response } from "express"
 import jwt from "jsonwebtoken"
+import type { HydratedDocument } from "mongoose"
 import { z } from "zod"
-import { User } from "../models/User.js"
+import { User, type IUser } from "../models/User.js"
 
 const signUpSchema = z.object({
   name: z.string().trim().optional(),
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z.email({ message: "Invalid email address" }),
   password: z
     .string()
     .min(6, { message: "Password must be at least 6 characters" }),
+  role: z.enum(["user", "admin"]),
 })
 
 const logInSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z.email({ message: "Invalid email address" }),
   password: z.string().min(1, { message: "Password is required" }),
+  role: z.enum(["user", "admin"]),
 })
 
 export const signUp = async (req: Request, res: Response) => {
@@ -23,10 +26,10 @@ export const signUp = async (req: Request, res: Response) => {
     if (!result.success) {
       return res
         .status(400)
-        .json({ errors: result.error.flatten().fieldErrors }) // a method to display error in simple language
+        .json({ errors: z.flattenError(result.error).fieldErrors }) // a method to display error in simple language
     }
 
-    const { name, email, password } = result.data // making a new object for validation
+    const { name, email, password, role } = result.data // making a new object for validation
 
     const existingUser = await User.findOne({ email })
     if (existingUser) {
@@ -41,30 +44,46 @@ export const signUp = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10)
     const passwordHash = await bcrypt.hash(password, salt)
 
-    const user = await User.create({
-      username: name || undefined,
-      ID,
-      email,
-      passwordHash,
-    })
+    let user: HydratedDocument<IUser> | null = null
+    if (role === "user") {
+      user = await User.create({
+        username: name,
+        email,
+        ID,
+        passwordHash,
+        role,
+      })
+    } else if (role === "admin") {
+      user = await User.create({
+        username: name,
+        email,
+        ID,
+        passwordHash,
+        role,
+      })
+    }
+
+    if (!user) {
+      return res.status(400).json({ message: "User is required!" })
+    }
 
     const jwtSecret =
       process.env.JWT_SECRET ||
       "8f4a1c5d9e3b7a0f6c2d8e1b5f0a3c7d9e2b8f4a4a8f9c2d7e1b5f0a3c6d9e2b"
     const token = jwt.sign({ userId: user._id, role: user.role }, jwtSecret, {
-      expiresIn: "7d",
+      expiresIn: "14d",
     }) // jwt.sign(payload, signature, options), here, the options are also included in the paylod; the header isn't defined, alg is declared HS256 and the type is declared jwt by default
 
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 14 * 24 * 60 * 60 * 1000,
     })
 
     return res.status(201).json({
       user: {
-        id: user._id,
+        _id: user._id.toString(),
         username: user.username,
         ID: user.ID,
         email: user.email,
@@ -86,7 +105,7 @@ export const logIn = async (req: Request, res: Response) => {
         .json({ errors: result.error.flatten().fieldErrors })
     }
 
-    const { email, password } = result.data
+    const { email, password, role } = result.data
 
     const user = await User.findOne({ email })
     if (!user) {
@@ -101,9 +120,17 @@ export const logIn = async (req: Request, res: Response) => {
     const jwtSecret =
       process.env.JWT_SECRET ||
       "8f4a1c5d9e3b7a0f6c2d8e1b5f0a3c7d9e2b8f4a4a8f9c2d7e1b5f0a3c6d9e2b"
-    const token = jwt.sign({ userId: user._id, role: user.role }, jwtSecret, {
-      expiresIn: "7d",
-    })
+
+    let token: any = null
+    if (role === "user") {
+      token = jwt.sign({ userId: user._id, role: user.role }, jwtSecret, {
+        expiresIn: "14d",
+      })
+    } else if (role === "admin") {
+      token = jwt.sign({ userId: user._id, role: user.role }, jwtSecret, {
+        expiresIn: "14d",
+      })
+    }
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -114,7 +141,7 @@ export const logIn = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       user: {
-        id: user._id,
+        _id: user._id.toString(),
         username: user.username,
         ID: user.ID,
         email: user.email,

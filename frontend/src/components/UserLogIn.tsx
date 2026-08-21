@@ -1,7 +1,7 @@
 import { useState, type SubmitEvent } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
-import { catchError } from "../context/catchError"
+import { validateUserCredentials } from "../context/validateUserCredentials"
 
 export default function UserLogIn() {
   const [email, setEmail] = useState("")
@@ -33,7 +33,7 @@ export default function UserLogIn() {
       }
 
       if (data.user) {
-        setUser(catchError(data.user))
+        setUser(validateUserCredentials(data.user))
       }
 
       navigate("/dashboard")
@@ -97,11 +97,10 @@ export default function UserLogIn() {
                     id="login-email"
                     type="email"
                     placeholder="Email"
-                    autoComplete="username"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 border-slate-800 text-white focus:border-blue-400"
+                    className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:ring-4 border-slate-800 text-white focus:border-blue-400"
                   />
                 </div>
 
@@ -113,11 +112,10 @@ export default function UserLogIn() {
                     id="login-password"
                     type="password"
                     placeholder="Password"
-                    autoComplete="current-password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 border-slate-800 text-white focus:border-blue-400"
+                    className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:ring-4 border-slate-800 text-white focus:border-blue-400"
                   />
                 </div>
 

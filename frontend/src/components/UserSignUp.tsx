@@ -1,7 +1,7 @@
 import { useState, type SubmitEvent } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
-import { catchError } from "../context/catchError"
+import { validateUserCredentials } from "../context/validateUserCredentials"
 
 export default function UserSignUp() {
   const [name, setName] = useState("")
@@ -19,13 +19,14 @@ export default function UserSignUp() {
     setErrors({})
     setServerErrors("")
     setSubmitting(true)
+    const role = "user"
 
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, role }),
       })
 
       const data = await res.json()
@@ -40,7 +41,7 @@ export default function UserSignUp() {
       }
 
       if (data.user) {
-        setUser(catchError(data.user))
+        setUser(validateUserCredentials(data.user))
       }
 
       navigate("/dashboard")
@@ -111,10 +112,10 @@ export default function UserSignUp() {
                       id="signup-name"
                       type="text"
                       placeholder="e.g. Alex Johnson"
-                      autoComplete="name"
+                      autoComplete="no_username"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-red-500 focus:ring-4 border-slate-800 text-white focus:border-red-400"
+                      className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:ring-4 border-slate-800 text-white focus:border-red-400"
                     />
                   </div>
 
@@ -129,11 +130,10 @@ export default function UserSignUp() {
                       id="signup-email"
                       type="email"
                       placeholder="name@example.com"
-                      autoComplete="username"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-red-500 focus:ring-4 border-slate-800 text-white focus:border-red-400"
+                      className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:ring-4 border-slate-800 text-white focus:border-red-400"
                     />
                   </div>
 
@@ -148,11 +148,10 @@ export default function UserSignUp() {
                       id="signup-password"
                       type="password"
                       placeholder="••••••••"
-                      autoComplete="new-password"
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-red-500 focus:ring-4 border-slate-800 text-white focus:border-red-400"
+                      className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:ring-4 border-slate-800 text-white focus:border-red-400"
                     />
                   </div>
 

@@ -1,11 +1,12 @@
 import { Document, Schema, model } from "mongoose"
 
 export interface IUser extends Document {
-  username?: string
+  username: string
   email: string
   ID: string
   passwordHash: string
-  role: "user" | "admin"
+  role: String
+  isVerified: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -22,7 +23,8 @@ const userSchema = new Schema<IUser>(
       trim: true,
     },
     passwordHash: { type: String, required: true },
-    role: { type: String, enum: ["user", "admin"], default: "user" },
+    role: { type: String, enum: ["user", "admin"] },
+    isVerified: { type: Boolean, default: (doc: IUser) => doc.role === "user" },
   },
   { timestamps: true },
 )

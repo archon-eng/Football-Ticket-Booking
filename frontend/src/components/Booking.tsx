@@ -8,26 +8,25 @@ export default function Booking() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center px-5 py-12 lg:px-8">
-      <section className="w-full overflow-hidden rounded-3xl border border-slate-800 bg-slate-900">
+    <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+      <section className="w-full overflow-hidden rounded-2xl border border-foot-border bg-foot-surface shadow-2xl shadow-black/20">
         <div className="grid gap-0 lg:grid-cols-[1fr_0.9fr]">
-          <div className="p-8 lg:p-10">
-            <span className="inline-flex rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-widest border-blue-900/60 text-blue-400">
+          <div className="p-6 sm:p-8 lg:p-10">
+            <span className="inline-flex rounded-full border border-foot-red/40 bg-foot-red/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-foot-rose">
               Booking
             </span>
-            <h1 className="mt-5 text-3xl font-bold tracking-tight text-white">
-              Choose your seats with a calm, premium interface.
+            <h1 className="mt-5 max-w-2xl text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+              Your matchday seat starts here.
             </h1>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-300">
-              Seat selection, pricing, and matchday details should feel easy to
-              scan. This layout keeps everything bright, structured, and clearly
-              separated.
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-foot-text-secondary">
+              Choose a fixture, select your section, and secure your place in
+              the stands before the whistle blows.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/booking/form"
-                className="rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0"
+                className="rounded-full bg-foot-red px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-foot-red/25 transition-all hover:-translate-y-0.5 hover:bg-foot-red-hover hover:shadow-foot-red/40 active:translate-y-0"
               >
                 Continue to booking
               </Link>
@@ -35,19 +34,17 @@ export default function Booking() {
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {[
-                ["Blue-first palette", "Clarity over visual noise"],
-                ["Soft surfaces", "Cards with gentle depth"],
-                ["Bold hierarchy", "Typography that guides the eye"],
-                ["Fast decisions", "Designed for seat selection"],
+                ["Live availability", "See open sections at a glance"],
+                ["Clear pricing", "Know the total before checkout"],
+                ["Flexible sections", "From general admission to VIP"],
+                ["Fast checkout", "A focused path to your tickets"],
               ].map(([title, description]) => (
                 <div
                   key={title}
-                  className="rounded-2xl border border-slate-800 bg-slate-800/40"
+                  className="rounded-xl border border-foot-border bg-foot-surface-elevated/60 p-4"
                 >
-                  <div className="font-semibold text-white">
-                    {title}
-                  </div>
-                  <div className="mt-1 text-sm leading-relaxed text-slate-400">
+                  <div className="font-semibold text-white">{title}</div>
+                  <div className="mt-1 text-sm leading-relaxed text-foot-text-muted">
                     {description}
                   </div>
                 </div>
@@ -55,20 +52,20 @@ export default function Booking() {
             </div>
           </div>
 
-          <div className="border-t border-slate-800 bg-slate-900/50 lg:border-l lg:border-t-0 lg:p-10">
-            <div className="rounded-2xl border p-6 border-slate-800 bg-slate-950">
-              <div className="text-xs font-semibold uppercase tracking-wider text-blue-400">
-                Match details
+          <div className="border-t border-foot-border bg-foot-bg/35 p-6 sm:p-8 lg:border-l lg:border-t-0 lg:p-10">
+            <div className="rounded-xl border border-foot-border bg-foot-carbon p-6">
+              <div className="text-xs font-semibold uppercase tracking-wider text-foot-rose">
+                Booking at a glance
               </div>
-              <div className="mt-4 space-y-3 text-sm text-slate-300">
-                <div className="rounded-xl border px-4 border-slate-800 bg-slate-900">
-                  Seat availability updates live in this panel.
+              <div className="mt-5 space-y-3 text-sm text-foot-text-secondary">
+                <div className="rounded-lg border border-foot-border bg-foot-surface p-4">
+                  Availability updates as sections fill.
                 </div>
-                <div className="rounded-xl border px-4 border-slate-800 bg-slate-900">
-                  A cleaner step-by-step booking flow can live here.
+                <div className="rounded-lg border border-foot-border bg-foot-surface p-4">
+                  Compare seating tiers without leaving the flow.
                 </div>
-                <div className="rounded-xl border px-4 border-slate-800 bg-slate-900">
-                  Keep the action focused with strong contrast and spacing.
+                <div className="rounded-lg border border-foot-border bg-foot-surface p-4">
+                  Review your order before confirming payment.
                 </div>
               </div>
             </div>
