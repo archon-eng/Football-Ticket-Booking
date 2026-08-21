@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: "SF Pro";
-  src: url("./fonts/SF-Pro.ttf") format("truetype");
+  src: url("../public/fonts/SF-Pro.ttf") format("truetype");
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
@@ -10,7 +10,7 @@
 
 @font-face {
   font-family: "Google Sans Flex";
-  src: url("./fonts/Google_Sans_Flex.ttf") format("truetype");
+  src: url("../public/fonts/Google_Sans_Flex.ttf") format("truetype");
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;

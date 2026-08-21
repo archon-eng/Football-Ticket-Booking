@@ -31,7 +31,7 @@ export const sendAdminApprovalEmail = async (
       <style>
         @font-face {
           font-family: "Google Sans Flex";
-          src: url("./fonts/Google_Sans_Flex.ttf") format("truetype");
+          src: url("../../public/fonts/Google_Sans_Flex.ttf") format("truetype");
           font-style: normal;
           font-weight: 100 900;
           font-display: swap;
