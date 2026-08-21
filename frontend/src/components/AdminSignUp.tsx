@@ -40,6 +40,11 @@ export default function AdminSignUp() {
         return
       }
 
+      if (res.status === 202) {
+        setServerErrors(data.message)
+        return
+      }
+
       if (data.user) {
         setUser(validateUserCredentials(data.user))
       }

@@ -33,6 +33,11 @@ export default function AdminLogIn() {
         return
       }
 
+      if (res.status === 202) {
+        setServerError(data.message)
+        return
+      }
+
       if (data.user) {
         setUser(validateUserCredentials(data.user))
       }

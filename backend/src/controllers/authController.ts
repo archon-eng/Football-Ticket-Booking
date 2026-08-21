@@ -1,9 +1,10 @@
 import bcrypt from "bcryptjs"
 import { Request, Response } from "express"
 import jwt from "jsonwebtoken"
-import type { HydratedDocument } from "mongoose"
+import { isValidObjectId, type HydratedDocument } from "mongoose"
 import { z } from "zod"
 import { User, type IUser } from "../models/User.js"
+import { sendAdminApprovalEmail } from "../utils/sendMail.js"
 
 const signUpSchema = z.object({
   name: z.string().trim().optional(),
@@ -17,7 +18,7 @@ const signUpSchema = z.object({
 const logInSchema = z.object({
   email: z.email({ message: "Invalid email address" }),
   password: z.string().min(1, { message: "Password is required" }),
-  role: z.enum(["user", "admin"]),
+  role: z.enum(["user", "admin"]).optional(),
 })
 
 export const signUp = async (req: Request, res: Response) => {
@@ -67,6 +68,13 @@ export const signUp = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "User is required!" })
     }
 
+    if (role === "admin") {
+      await sendAdminApprovalEmail(user._id.toString(), email, "signup")
+      return res.status(202).json({
+        message: "Admin signup submitted. Awaiting approval by email.",
+      })
+    }
+
     const jwtSecret =
       process.env.JWT_SECRET ||
       "8f4a1c5d9e3b7a0f6c2d8e1b5f0a3c7d9e2b8f4a4a8f9c2d7e1b5f0a3c6d9e2b"
@@ -105,7 +113,7 @@ export const logIn = async (req: Request, res: Response) => {
         .json({ errors: result.error.flatten().fieldErrors })
     }
 
-    const { email, password, role } = result.data
+    const { email, password } = result.data
 
     const user = await User.findOne({ email })
     if (!user) {
@@ -117,19 +125,34 @@ export const logIn = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid Email or Password" })
     }
 
+    if (user.role === "user") {
+      // Regular users can log in immediately.
+    } else if (user.role === "admin") {
+      if (!user.isVerified) {
+        await sendAdminApprovalEmail(user._id.toString(), email, "login")
+        return res.status(202).json({
+          message: "Admin login submitted. Awaiting approval by email.",
+        })
+      }
+    }
+
     const jwtSecret =
       process.env.JWT_SECRET ||
       "8f4a1c5d9e3b7a0f6c2d8e1b5f0a3c7d9e2b8f4a4a8f9c2d7e1b5f0a3c6d9e2b"
 
-    let token: any = null
-    if (role === "user") {
+    let token: string | null = null
+    if (user.role === "user") {
       token = jwt.sign({ userId: user._id, role: user.role }, jwtSecret, {
         expiresIn: "14d",
       })
-    } else if (role === "admin") {
+    } else if (user.role === "admin") {
       token = jwt.sign({ userId: user._id, role: user.role }, jwtSecret, {
         expiresIn: "14d",
       })
+    }
+
+    if (!token) {
+      return res.status(403).json({ message: "Invalid user role" })
     }
 
     res.cookie("token", token, {
@@ -151,6 +174,39 @@ export const logIn = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("LogIn Error:", error)
     return res.status(500).json({ message: "Internal server error" })
+  }
+}
+
+export const verifyAdmin = async (req: Request, res: Response) => {
+  const { userId } = req.params
+  const action = req.query.action
+
+  if (
+    !isValidObjectId(userId) ||
+    (action !== "verify" && action !== "reject")
+  ) {
+    return res.status(400).send("Invalid admin approval link.")
+  }
+
+  try {
+    const user = await User.findById(userId)
+    if (!user || user.role !== "admin") {
+      return res.status(404).send("Admin account not found.")
+    }
+
+    user.isVerified = action === "verify"
+    await user.save()
+
+    return res
+      .status(200)
+      .send(
+        action === "verify"
+          ? "Admin access approved. The admin can now log in."
+          : "Admin access rejected.",
+      )
+  } catch (error) {
+    console.error("Admin Approval Error:", error)
+    return res.status(500).send("Unable to process admin approval.")
   }
 }
 
