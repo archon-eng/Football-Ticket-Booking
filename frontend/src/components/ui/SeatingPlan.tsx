@@ -1,6 +1,6 @@
 export default function SeatingPlan() {
   return (
-    <div className="rounded-[1.75rem] border border-blue-100 bg-white p-6 shadow-[0_16px_40px_rgba(30,77,255,0.1)]">
+    <div className="rounded-[1.75rem] border p-6 shadow-[0_16px_40px_rgba(30,77,255,0.1)]">
       <div className="text-sm font-semibold uppercase tracking-[0.22em] text-blue-700">
         Seating plan
       </div>
@@ -13,7 +13,7 @@ export default function SeatingPlan() {
                 ? "border-blue-300 bg-blue-200"
                 : index % 5 === 0
                   ? "border-sky-300 bg-sky-100"
-                  : "border-blue-100 bg-blue-50"
+                  : ""
             }`}
           />
         ))}

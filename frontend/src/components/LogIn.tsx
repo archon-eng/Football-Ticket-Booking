@@ -1,142 +1,86 @@
-import { useState, type SubmitEvent } from "react"
-import { NavLink, useNavigate } from "react-router-dom"
-import { useAuth } from "../context/AuthContext"
+import { NavLink, Outlet, useLocation } from "react-router-dom"
 
 export default function LogIn() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [serverError, setServerError] = useState("")
-  const [submitting, setSubmitting] = useState(false)
+  const location = useLocation()
 
-  const { setUser } = useAuth()
-  const navigate = useNavigate()
-
-  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setServerError("")
-    setSubmitting(true)
-
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email, password }),
-      })
-
-      const data = await res.json()
-
-      if (!res.ok) {
-        setServerError(data.message || "Login failed")
-        return
-      }
-
-      if (data.user) {
-        setUser({
-          _id: data.user._id ?? "",
-          ID:
-            data.user.ID ??
-            data.user._id ??
-            data.user.email?.split("@")[0] ??
-            "",
-          username: data.user.username ?? null,
-          email: data.user.email ?? "",
-          role: data.user.role ?? "user",
-        })
-      }
-
-      navigate("/dashboard")
-    } catch (error) {
-      setServerError(error instanceof Error ? error.message : "Login failed")
-    } finally {
-      setSubmitting(false)
-    }
+  if (location.pathname !== "/login") {
+    return <Outlet />
   }
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-4xl items-center px-5 py-12 lg:px-8">
-      <section className="grid w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900 lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="bg-linear-to-br from-blue-600 to-sky-500 p-8 text-white lg:p-10">
-          <span className="inline-flex rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest backdrop-blur-md">
-            Welcome back
-          </span>
-          <h1 className="mt-5 text-3xl font-bold tracking-tight sm:text-4xl">
-            Sign in with a cleaner UEFA-inspired visual rhythm.
-          </h1>
-          <p className="mt-4 text-base leading-relaxed text-blue-50">
-            Keep authentication calm, bright, and trustworthy with blue-white
-            contrast and strong hierarchy.
-          </p>
-        </div>
-
-        <div className="flex flex-col justify-between p-8 lg:p-10">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-6 dark:border-slate-800 dark:bg-slate-950/60">
-            <div className="text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-              Login form
-            </div>
-
-            <form onSubmit={handleSubmit}>
-              <div className="mt-6 space-y-4">
-                <div>
-                  <label className="sr-only" htmlFor="login-email">
-                    Email
-                  </label>
-                  <input
-                    id="login-email"
-                    type="email"
-                    placeholder="Email"
-                    autoComplete="username"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-blue-400"
-                  />
-                </div>
-
-                <div>
-                  <label className="sr-only" htmlFor="login-password">
-                    Password
-                  </label>
-                  <input
-                    id="login-password"
-                    type="password"
-                    placeholder="Password"
-                    autoComplete="current-password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-blue-400"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50"
-                >
-                  {submitting ? "Logging in..." : "Log In"}
-                </button>
-              </div>
-            </form>
-
-            {serverError && (
-              <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-center text-xs font-medium text-red-500">
-                {serverError}
-              </div>
-            )}
-          </div>
-
-          <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
-            <p className="flex items-center justify-center gap-1.5">
-              <span>Not registered?</span>
-              <NavLink
-                to="/signup"
-                className="font-semibold text-blue-600 hover:underline! dark:text-blue-400"
-              >
-                Create account
-              </NavLink>
+    <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center px-5 py-10 lg:px-8">
+      <section className="grid w-full overflow-hidden rounded-4xl border shadow-2xl border-slate-800 bg-slate-900 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="relative overflow-hidden bg-linear-to-br from-blue-700 via-blue-600 to-sky-500 p-8 text-white lg:p-12">
+          <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full border border-white/20" />
+          <div className="absolute -bottom-24 -left-20 h-64 w-64 rounded-full border border-white/15" />
+          <div className="relative">
+            <span className="inline-flex rounded-full border border-white/30 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] backdrop-blur-md">
+              Welcome back
+            </span>
+            <h1 className="mt-6 max-w-md text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+              Your seat is waiting.
+            </h1>
+            <p className="mt-5 max-w-sm text-base leading-relaxed text-blue-50">
+              Choose the account type that matches your place in the stadium.
             </p>
           </div>
+        </div>
+
+        <div className="flex flex-col justify-center p-8 lg:p-12">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
+              Sign in as
+            </p>
+            <h2 className="mt-3 text-2xl font-bold text-white">
+              Select your account
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-slate-400">
+              Continue to the secure login for your role.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-3">
+            <NavLink
+              to="user_login"
+              className="group flex items-center justify-between rounded-2xl border p-5 text-left transition-all hover:-translate-y-0.5 hover:border-blue-400 hover:shadow-lg border-blue-900/70 hover:border-blue-700 hover:bg-blue-950/60"
+            >
+              <span>
+                <span className="block text-base font-bold text-white">
+                  User Log In
+                </span>
+                <span className="mt-1 block text-sm text-slate-400">
+                  Book seats and manage your tickets
+                </span>
+              </span>
+              <span className="text-xl transition-transform text-blue-400">
+                →
+              </span>
+            </NavLink>
+
+            <NavLink
+              to="admin_login"
+              className="group flex items-center justify-between rounded-2xl border p-5 text-left transition-all hover:-translate-y-0.5 hover:border-red-300 hover:hover:shadow-lg border-slate-800 hover:border-red-900 hover:bg-red-950/30"
+            >
+              <span>
+                <span className="block text-base font-bold text-white">
+                  Admin Log In
+                </span>
+                <span className="mt-1 block text-sm text-slate-400">
+                  Manage fixtures, venues, and bookings
+                </span>
+              </span>
+              <span className="text-xl transition-transform text-red-400">
+                →
+              </span>
+            </NavLink>
+          </div>
+
+          <p className="mt-8 text-center text-sm text-slate-400">
+            Not registered?{" "}
+            <NavLink to="/signup" className="font-semibold hover:underline!">
+              Create account
+            </NavLink>
+          </p>
         </div>
       </section>
     </div>

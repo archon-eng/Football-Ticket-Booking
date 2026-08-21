@@ -1,185 +1,89 @@
-import { useState, type SubmitEvent } from "react"
-import { NavLink, useNavigate } from "react-router-dom"
-import { useAuth } from "../context/AuthContext"
-import { catchError } from "../context/catchError"
+import { NavLink, Outlet, useLocation } from "react-router-dom"
 
 export default function SignUp() {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [errors, setErrors] = useState<Record<string, string[]>>({})
-  const [serverErrors, setServerErrors] = useState("")
-  const [submitting, setSubmitting] = useState<boolean>(false)
+  const location = useLocation()
 
-  const { setUser } = useAuth()
-  const navigate = useNavigate()
-
-  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setErrors({})
-    setServerErrors("")
-    setSubmitting(true)
-
-    try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ name, email, password }),
-      })
-
-      const data = await res.json()
-
-      if (!res.ok) {
-        if (data.errors) {
-          setErrors(data.errors)
-        } else {
-          setServerErrors(data.message || "Registration Failed!")
-        }
-        return
-      }
-
-      if (data.user) {
-        setUser(catchError(data.user))
-      }
-
-      navigate("/dashboard")
-    } catch (error) {
-      setServerErrors(`Server error: ${error}`)
-    } finally {
-      setSubmitting(false)
-    }
+  if (location.pathname !== "/signup") {
+    return <Outlet />
   }
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-4xl items-center px-5 py-12 lg:px-8">
-      <section className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900">
-        <div className="grid gap-0 lg:grid-cols-[1fr_0.95fr]">
-          <div className="p-8 lg:p-10">
-            <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-blue-600 dark:border-blue-900/60 dark:bg-blue-950/50 dark:text-blue-400">
-              Create account
+    <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center px-5 py-10 lg:px-8">
+      <section className="grid w-full overflow-hidden rounded-4xl border shadow-2xl border-slate-800 bg-slate-900 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="relative order-2 overflow-hidden bg-linear-to-br from-rose-600 via-red-600 to-orange-500 p-8 text-white lg:order-1 lg:p-12">
+          <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full border border-white/20" />
+          <div className="absolute -bottom-24 -left-20 h-64 w-64 rounded-full border border-white/15" />
+          <div className="relative">
+            <span className="inline-flex rounded-full border border-white/30 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] backdrop-blur-md">
+              Join the crowd
             </span>
-            <h1 className="mt-5 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
-              Join with a clean, modern registration screen.
+            <h1 className="mt-6 max-w-md text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+              Make match day yours.
             </h1>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600 dark:text-slate-300">
-              The sign-up view matches the same bright blue-white system so the
-              app feels cohesive from first visit to checkout.
+            <p className="mt-5 max-w-sm text-base leading-relaxed text-rose-50">
+              Create an account to discover fixtures, choose your seats, and
+              keep every booking close.
+            </p>
+          </div>
+        </div>
+
+        <div className="order-1 flex flex-col justify-center p-8 lg:order-2 lg:p-12">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-400">
+              Create account as
+            </p>
+            <h2 className="mt-3 text-2xl font-bold text-white">
+              Choose your starting point
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-slate-400">
+              Pick the account type that fits how you use the venue.
             </p>
           </div>
 
-          <div className="border-t border-slate-200 bg-slate-50/80 p-8 dark:border-slate-800 dark:bg-slate-900/50 lg:border-l lg:border-t-0 lg:p-10">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md dark:border-slate-800 dark:bg-slate-950">
-              <div className="text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                Registration form
-              </div>
+          <div className="mt-8 grid gap-3">
+            <NavLink
+              to="user_signup"
+              className="group flex items-center justify-between rounded-2xl border p-5 text-left transition-all hover:-translate-y-0.5 hover:shadow-lg border-red-900/70 hover:border-red-700 hover:bg-red-950/60"
+            >
+              <span>
+                <span className="block text-base font-bold text-white">
+                  User Sign Up
+                </span>
+                <span className="mt-1 block text-sm text-slate-400">
+                  Save seats and follow your bookings
+                </span>
+              </span>
+              <span className="text-xl transition-transform group-hover:translate-x-1">
+                →
+              </span>
+            </NavLink>
 
-              <form onSubmit={handleSubmit}>
-                <div className="mt-6 space-y-4">
-                  <div>
-                    <label
-                      htmlFor="signup-name"
-                      className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-slate-300"
-                    >
-                      Name{" "}
-                      <span className="text-slate-400 font-normal">
-                        (optional)
-                      </span>
-                    </label>
-                    <input
-                      id="signup-name"
-                      type="text"
-                      placeholder="e.g. Alex Johnson"
-                      autoComplete="name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-blue-400"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="signup-email"
-                      className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-slate-300"
-                    >
-                      Email <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      id="signup-email"
-                      type="email"
-                      placeholder="name@example.com"
-                      autoComplete="username"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-blue-400"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="signup-password"
-                      className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-slate-300"
-                    >
-                      Password <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      id="signup-password"
-                      type="password"
-                      placeholder="••••••••"
-                      autoComplete="new-password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-blue-400"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="w-full rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50"
-                  >
-                    {submitting ? "Signing Up..." : "Sign Up"}
-                  </button>
-                </div>
-              </form>
-
-              {Object.values(errors)
-                .flat()
-                .map((error) => (
-                  <div
-                    key={error}
-                    className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-center text-xs font-medium text-red-500"
-                  >
-                    {error}
-                  </div>
-                ))}
-
-              {serverErrors && (
-                <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-center text-xs font-medium text-red-500">
-                  {serverErrors}
-                </div>
-              )}
-
-              <div className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
-                Already registered?{" "}
-                <NavLink
-                  to="/login"
-                  className="font-semibold text-blue-600 hover:underline dark:text-blue-400"
-                >
-                  Log In
-                </NavLink>
-              </div>
-            </div>
+            <NavLink
+              to="admin_signup"
+              className="group flex items-center justify-between rounded-2xl border p-5 text-left transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:hover:shadow-lg border-slate-800 hover:border-blue-900 hover:bg-blue-950/30"
+            >
+              <span>
+                <span className="block text-base font-bold text-white">
+                  Admin Sign Up
+                </span>
+                <span className="mt-1 block text-sm text-slate-400">
+                  Set up venue and fixture management
+                </span>
+              </span>
+              <span className="text-xl transition-transform text-blue-400">
+                →
+              </span>
+            </NavLink>
           </div>
+
+          <p className="mt-8 text-center text-sm text-slate-400">
+            Already registered?{" "}
+            <NavLink to="/login" className="font-semibold hover:underline!">
+              Log in
+            </NavLink>
+          </p>
         </div>
       </section>
     </div>
   )
 }
-
-// name is what user decides, whatever he chooses, or can leave it empty
-// email is required
-// ID will be generated by using email
-// password is required and must be unique

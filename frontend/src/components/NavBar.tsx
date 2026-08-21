@@ -7,14 +7,12 @@ export default function NavBar() {
   const { user, loading, logout } = useAuth()
 
   const getNavClass = ({ isActive }: { isActive: boolean }) =>
-    `relative rounded-full px-3 py-2 text-sm font-medium transition-colors hover:text-blue-600 dark:hover:text-blue-400 after:absolute after:bottom-1 after:left-3 after:h-0.5 after:w-[calc(100%-1.5rem)] after:origin-center after:scale-x-0 after:rounded-full after:bg-foot-red dark:after:bg-foot-red after:transition-transform after:duration-300 hover:after:scale-x-100 ${
-      isActive
-        ? "text-slate-900 dark:text-white after:scale-x-100"
-        : "text-slate-600 dark:text-slate-300"
+    `relative rounded-full px-3 py-2 text-sm font-medium transition-colors hover:text-blue-400 after:absolute after:bottom-1 after:left-3 after:h-0.5 after:w-[calc(100%-1.5rem)] after:origin-center after:scale-x-0 after:rounded-full after:bg-foot-red after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+      isActive ? "text-white after:scale-x-100" : "text-slate-300"
     }`
 
   return (
-    <div className="sticky top-0 z-30 grid grid-cols-[auto_1fr_auto] items-center gap-6 border-b border-slate-200/80 bg-white/80 px-4 py-2.5 backdrop-blur-xl lg:px-8 dark:border-slate-800/80 dark:bg-slate-950/80">
+    <div className="sticky top-0 z-30 grid grid-cols-[auto_1fr_auto] items-center gap-6 border-b px-4 py-2.5 backdrop-blur-xl border-slate-800/80 bg-slate-950/80">
       <div className="flex items-center justify-center">
         <NavLink
           to="/dashboard"
@@ -44,7 +42,7 @@ export default function NavBar() {
 
       <div className="flex items-center justify-center">
         {loading ? (
-          <span className="h-9 w-24 animate-pulse rounded-full bg-slate-200 dark:bg-slate-800" />
+          <span className="h-9 w-24 animate-pulse rounded-full bg-slate-800" />
         ) : user ? (
           <button
             type="button"
