@@ -2,7 +2,7 @@ services:
   # 1. Database Service (MongoDB)
   mongo:
     image: mongo:7.0
-    container_name: grand_prix_db
+    container_name: venue_seat_booking_db
     ports:
       - "27017:27017"
     volumes:
@@ -14,7 +14,7 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile.dev
-    container_name: grand_prix_backend
+    container_name: venue_seat_booking_backend
     ports:
       - "5000:5000"
     env_file:
@@ -33,7 +33,7 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile.dev
-    container_name: grand_prix_frontend
+    container_name: venue_seat_booking_frontend
     ports:
       - "5173:5173" # Updated host and container ports to match Vite standard
     volumes:
