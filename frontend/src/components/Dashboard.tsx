@@ -183,20 +183,14 @@ export default function Dashboard() {
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-foot-bg/50 via-transparent to-transparent" />
               </div>
-              {(image.title || image.description) && (
-                <div className="p-6">
-                  {image.title && (
-                    <h3 className="text-xl font-semibold text-white">
-                      {image.title}
-                    </h3>
-                  )}
-                  {image.description && (
-                    <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                      {image.description}
-                    </p>
-                  )}
-                </div>
-              )}
+              <div className="p-6">
+                <h3 className="text-xl font-semibold text-white">
+                  {image.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                  {image.description}
+                </p>
+              </div>
             </article>
           ))}
         </div>
