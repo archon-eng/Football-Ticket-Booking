@@ -3,7 +3,7 @@ import education_city_stadium from "../assets/book/education_city_stadium.jpeg"
 import san_sario from "../assets/book/san_sairo.webp"
 import santiago from "../assets/book/santiago.jpeg"
 import wembley from "../assets/book/wembley.jpeg"
-import { useAuth } from "../context/AuthContext"
+// import { useAuth } from "../context/AuthContext"
 import { CalendarIcon, MapPinIcon, ShieldCheckIcon } from "./ui/Icons"
 
 const stadiums = [
@@ -50,24 +50,24 @@ const stadiums = [
 ]
 
 export default function Booking() {
-  const { user } = useAuth()
+  // const { user } = useAuth()
 
-  if (user?.role !== "admin") {
-    return (
-      <div className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <section className="rounded-2xl border border-foot-border bg-foot-surface p-8 text-center shadow-2xl shadow-black/20">
-          <ShieldCheckIcon className="mx-auto h-10 w-10 text-foot-rose" />
-          <h1 className="mt-5 text-3xl font-extrabold text-white">
-            Admin venue access
-          </h1>
-          <p className="mx-auto mt-3 max-w-xl text-foot-text-secondary">
-            Sign in with the admin account to manage venue cards and seat
-            bookings.
-          </p>
-        </section>
-      </div>
-    )
-  }
+  // if (user?.role !== "admin") {
+  //   return (
+  //     <div className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+  //       <section className="rounded-2xl border border-foot-border bg-foot-surface p-8 text-center shadow-2xl shadow-black/20">
+  //         <ShieldCheckIcon className="mx-auto h-10 w-10 text-foot-rose" />
+  //         <h1 className="mt-5 text-3xl font-extrabold text-white">
+  //           Admin venue access
+  //         </h1>
+  //         <p className="mx-auto mt-3 max-w-xl text-foot-text-secondary">
+  //           Sign in with the admin account to manage venue cards and seat
+  //           bookings.
+  //         </p>
+  //       </section>
+  //     </div>
+  //   )
+  // }
 
   return (
     <div className="min-h-screen text-foot-text-primary">

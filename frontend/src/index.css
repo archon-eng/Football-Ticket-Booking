@@ -1,24 +1,178 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: "SF Pro";
-  src: url("../fonts/SF-Pro.ttf") format("truetype");
+  font-family: "Google Sans Flex";
+  src: url("/fonts/Google_Sans_Flex.ttf") format("truetype");
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Google Sans Flex";
-  src: url("../fonts/Google_Sans_Flex.ttf") format("truetype");
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-Thin.ttf") format("truetype");
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 100;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-ExtraLight.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 200;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-Light.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 300;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-Medium.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 500;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-SemiBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 600;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-Bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-ExtraBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 800;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-Black.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 900;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-ThinItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 100;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-ExtraLightItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 200;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-LightItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 300;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-Italic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 400;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-MediumItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 500;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-SemiBoldItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 600;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-BoldItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 700;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-ExtraBoldItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 800;
+  size-adjust: 95%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-BlackItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 900;
+  size-adjust: 95%;
   font-display: swap;
 }
 
 @theme {
   --font-flex: "Google Sans Flex", sans-serif;
-  --font-sf: "SF Pro", -apple-system, "Google Sans Flex", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
 
   /* ==========================================================================
      Backgrounds & Surface Hierarchy (Dark Navy)
@@ -102,7 +256,7 @@ body {
     ),
     linear-gradient(180deg, #070c18 0%, #0b1224 50%, #050811 100%);
   color: var(--color-foot-text-primary);
-  font-family: var(--font-sf);
+  font-family: var(--font-poppins);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -125,8 +279,8 @@ button,
 input,
 textarea,
 select {
-  font-family: var(--font-sf);
-  letter-spacing: 0;
+  font-family: var(--font-poppins);
+  letter-spacing: 0.1px;
 }
 
 strong,
