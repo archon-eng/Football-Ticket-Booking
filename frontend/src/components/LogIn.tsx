@@ -42,7 +42,7 @@ export default function LogIn() {
           <div className="mt-8 grid gap-3">
             <NavLink
               to="user_login"
-              className="group flex items-center justify-between rounded-2xl border p-5 text-left transition-all hover:-translate-y-0.5 hover:border-blue-400 hover:shadow-lg border-blue-900/70 hover:border-blue-700 hover:bg-blue-950/60"
+              className="group flex items-center justify-between rounded-2xl border p-5 text-left transition-all hover:-translate-y-0.5 hover:shadow-lg border-blue-900/70 hover:border-blue-700 hover:bg-blue-950/60"
             >
               <span>
                 <span className="block text-base font-bold text-white">
@@ -59,7 +59,7 @@ export default function LogIn() {
 
             <NavLink
               to="admin_login"
-              className="group flex items-center justify-between rounded-2xl border p-5 text-left transition-all hover:-translate-y-0.5 hover:border-red-300 hover:hover:shadow-lg border-slate-800 hover:border-red-900 hover:bg-red-950/30"
+              className="group flex items-center justify-between rounded-2xl border p-5 text-left transition-all hover:-translate-y-0.5 hover:hover:shadow-lg border-slate-800 hover:border-red-900 hover:bg-red-950/30"
             >
               <span>
                 <span className="block text-base font-bold text-white">
