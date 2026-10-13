@@ -257,7 +257,7 @@ body {
     linear-gradient(180deg, #070c18 0%, #0b1224 50%, #050811 100%);
   color: var(--color-foot-text-primary);
   font-family: var(--font-poppins);
-  letter-spacing: 0.1px;
+  letter-spacing: 0;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -270,7 +270,7 @@ h4,
 h5,
 h6 {
   font-family: var(--font-flex);
-  letter-spacing: 0;
+  letter-spacing: -0.3px;
   color: var(--color-foot-text-primary);
 }
 
@@ -281,7 +281,7 @@ input,
 textarea,
 select {
   font-family: var(--font-poppins);
-  letter-spacing: 0.1px;
+  letter-spacing: 0;
 }
 
 strong,
@@ -291,7 +291,7 @@ b,
 .font-extrabold,
 .font-black {
   font-family: var(--font-flex);
-  letter-spacing: 0;
+  letter-spacing: -0.3px;
 }
 
 a {

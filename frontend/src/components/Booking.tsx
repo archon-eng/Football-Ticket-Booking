@@ -158,7 +158,7 @@ export default function Booking() {
 
                   <button
                     type="button"
-                    className="mt-5 flex w-full items-center justify-center gap-2 rounded-full border border-foot-red/40 bg-foot-red/10 px-4 py-2.5 text-sm font-semibold text-foot-rose transition-all hover:border-foot-red hover:bg-foot-red hover:text-white"
+                    className="mt-5 flex w-full items-center justify-center gap-2 rounded-full border border-foot-red/40 bg-foot-red/10 px-4 py-2.5 text-sm font-semibold text-foot-rose transition-all hover:border-foot-red hover:bg-foot-red hover:text-white cursor-pointer"
                   >
                     <CalendarIcon className="h-4 w-4" />
                     Manage bookings

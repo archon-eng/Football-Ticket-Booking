@@ -58,138 +58,144 @@ export default function AdminSignUp() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center px-5 py-10 lg:px-8">
-      <section className="w-full overflow-hidden rounded-4xl border shadow-2xl border-slate-800 bg-slate-900">
+    <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center px-4 py-8 sm:px-6 lg:px-8">
+      <section className="w-full overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl">
         <div className="grid gap-0 lg:grid-cols-[1fr_0.95fr]">
           <div className="relative overflow-hidden bg-linear-to-br from-rose-600 via-red-600 to-orange-500 p-8 text-white lg:p-12">
             <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full border border-white/20" />
             <div className="absolute -bottom-24 -left-20 h-64 w-64 rounded-full border border-white/15" />
             <div className="relative">
               <span className="inline-flex rounded-full border border-white/30 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] backdrop-blur-md">
-                User account
+                Admin account
               </span>
               <h1 className="mt-6 max-w-md text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-                Make match day yours.
+                Run your venue.
               </h1>
               <p className="mt-5 max-w-sm text-base leading-relaxed text-rose-50">
-                Create a personal account to discover fixtures, choose seats,
-                and keep every booking close.
+                Create an administrator account to manage fixtures, venues, and
+                bookings from one place.
               </p>
             </div>
           </div>
 
-          <div className="border-t border-slate-800 lg:border-l lg:border-t-0 lg:p-12">
-            <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col justify-center border-t border-slate-800 p-6 sm:p-8 lg:border-l lg:border-t-0 lg:p-12">
+            <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-400">
-                  User sign up
+                  Administrator sign up
                 </p>
-                <h2 className="mt-3 text-2xl font-bold text-white">
-                  Create your account
+                <h2 className="mt-2 text-2xl font-bold text-white">
+                  Create admin account
                 </h2>
               </div>
               <NavLink
                 to="/signup"
-                className="shrink-0 text-sm font-semibold transition-colors text-slate-400 hover:text-red-400"
+                className="shrink-0 rounded-lg px-2 py-1 text-sm font-semibold text-slate-400 transition-colors hover:text-red-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400"
               >
                 ← Back
               </NavLink>
             </div>
 
-            <div className="mt-8 rounded-2xl border border-slate-800 bg-slate-950/50">
-              <div className="text-sm text-slate-400">
-                Set up your details to start booking seats.
+            <p className="mt-3 text-sm leading-relaxed text-slate-400">
+              Add your details to start managing match-day operations.
+            </p>
+
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <div>
+                <label
+                  htmlFor="signup-name"
+                  className="mb-1.5 block text-xs font-medium text-slate-300"
+                >
+                  Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="signup-name"
+                  type="text"
+                  placeholder="e.g. Alex Johnson"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  autoComplete="name"
+                  className="w-full rounded-xl border border-slate-700 bg-slate-950/60 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-red-400 focus:ring-4 focus:ring-red-400/15"
+                />
               </div>
 
-              <form onSubmit={handleSubmit}>
-                <div className="mt-6 space-y-4">
-                  <div>
-                    <label
-                      htmlFor="signup-name"
-                      className="mb-1.5 block text-xs font-medium text-slate-300"
-                    >
-                      Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      id="signup-name"
-                      type="text"
-                      placeholder="e.g. Alex Johnson"
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:ring-4 border-slate-800 text-white focus:border-red-400"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="signup-email"
-                      className="mb-1.5 block text-xs font-medium text-slate-300"
-                    >
-                      Email <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      id="signup-email"
-                      type="email"
-                      placeholder="name@example.com"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:ring-4 border-slate-800 text-white focus:border-red-400"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="signup-password"
-                      className="mb-1.5 block text-xs font-medium text-slate-300"
-                    >
-                      Password <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      id="signup-password"
-                      type="password"
-                      placeholder="••••••••"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:ring-4 border-slate-800 text-white focus:border-red-400"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="w-full rounded-xl bg-red-600 px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-red-500/25 transition-all hover:-translate-y-0.5 hover:bg-red-700 hover:shadow-red-500/40 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {submitting ? "Signing Up..." : "Sign Up"}
-                  </button>
-                </div>
-              </form>
-
-              {Object.values(errors)
-                .flat()
-                .map((error) => (
-                  <div
-                    key={error}
-                    className="mt-4 rounded-xl border border-red-500/30 0/10 p-3 text-center text-xs font-medium text-red-500"
-                  >
-                    {error}
-                  </div>
-                ))}
-
-              {serverErrors && (
-                <div className="mt-4 rounded-xl border border-red-500/30 0/10 p-3 text-center text-xs font-medium text-red-500">
-                  {serverErrors}
-                </div>
-              )}
-
-              <div className="mt-6 text-center text-xs text-slate-400">
-                Already registered?{" "}
-                <NavLink to="/login" className="font-semibold hover:underline!">
-                  Log In
-                </NavLink>
+              <div>
+                <label
+                  htmlFor="signup-email"
+                  className="mb-1.5 block text-xs font-medium text-slate-300"
+                >
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="signup-email"
+                  type="email"
+                  placeholder="name@example.com"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  className="w-full rounded-xl border border-slate-700 bg-slate-950/60 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-red-400 focus:ring-4 focus:ring-red-400/15"
+                />
               </div>
+
+              <div>
+                <label
+                  htmlFor="signup-password"
+                  className="mb-1.5 block text-xs font-medium text-slate-300"
+                >
+                  Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="signup-password"
+                  type="password"
+                  placeholder="••••••••"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="new-password"
+                  className="w-full rounded-xl border border-slate-700 bg-slate-950/60 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-red-400 focus:ring-4 focus:ring-red-400/15"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full rounded-xl bg-red-600 px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-red-500/20 transition hover:-translate-y-0.5 hover:bg-red-500 hover:shadow-red-500/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {submitting ? "Signing Up..." : "Sign Up"}
+              </button>
+            </form>
+
+            {Object.values(errors)
+              .flat()
+              .map((error) => (
+                <div
+                  key={error}
+                  role="alert"
+                  className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm leading-relaxed text-red-300"
+                >
+                  {error}
+                </div>
+              ))}
+
+            {serverErrors && (
+              <div
+                role="alert"
+                className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm leading-relaxed text-red-300"
+              >
+                {serverErrors}
+              </div>
+            )}
+
+            <div className="mt-6 text-center text-sm text-slate-400">
+              Already registered?{" "}
+              <NavLink
+                to="/login/admin_login"
+                className="font-semibold text-red-400 hover:text-red-300 hover:underline"
+              >
+                Log In
+              </NavLink>
             </div>
           </div>
         </div>
