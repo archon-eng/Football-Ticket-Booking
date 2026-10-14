@@ -1,6 +1,9 @@
-FROM node:26-alpine
+# syntax=docker/dockerfile:1
+ARG NODE_VERSION=26.11.1
+FROM node:${NODE_VERSION}-alpine
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+ARG PNPM_VERSION=12.11.2
+RUN npm install -g pnpm@${PNPM_VERSION}
 
 WORKDIR /app
 
@@ -8,12 +11,10 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY backend/package.json ./backend/
 COPY frontend/package.json ./frontend/
 
-RUN pnpm install
+RUN --mount=type=cache,target=/pnpm/store \
+    pnpm install --frozen-lockfile --filter backend... --store-dir /pnpm/store
 
-COPY backend ./backend
-
+# Source arrives via the bind mount in docker-compose.yml; no COPY needed for development.
 WORKDIR /app/backend
-
 EXPOSE 5000
-
 CMD ["pnpm", "dev"]

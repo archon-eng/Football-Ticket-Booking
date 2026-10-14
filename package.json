@@ -1,8 +1,8 @@
 {
-  "name": "venue_seat_booking",
+  "name": "Football Ticket Booking",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@12.6.0",
+  "packageManager": "pnpm@12.11.2",
   "scripts": {
     "dev": "pnpm --parallel -r dev",
     "build": "pnpm -r build",

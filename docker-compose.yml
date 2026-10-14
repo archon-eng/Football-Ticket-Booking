@@ -1,49 +1,52 @@
+x-build-args: &build-args
+  NODE_VERSION: "26.11.1"
+  PNPM_VERSION: "12.11.2"
+
 services:
-  # 1. Database Service (MongoDB)
   mongo:
-    image: mongo:7.0
-    container_name: venue_seat_booking_db
+    image: mongo:9.0.2
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"
     volumes:
       - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/27017"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
     restart: unless-stopped
 
-  # 2. Backend Service (Node.js Express + Mongoose API)
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile.dev
-    container_name: venue_seat_booking_backend
+      args: *build-args
     ports:
-      - "5000:5000"
+      - "127.0.0.1:5000:5000"
     env_file:
       - ./backend/.env
     environment:
-      - MONGO_URI=mongodb://mongo:27017/grand_prix
+      MONGO_URI: mongodb://mongo:27017/grand_prix
     volumes:
       - ./backend:/app/backend
       - /app/node_modules
       - /app/backend/node_modules
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
 
-  # 3. Frontend Service (React + Vite Web App)
   frontend:
     build:
       context: .
       dockerfile: frontend/Dockerfile.dev
-    container_name: venue_seat_booking_frontend
+      args: *build-args
     ports:
-      - "5173:5173" # Updated host and container ports to match Vite standard
+      - "127.0.0.1:5173:5173"
     volumes:
       - ./frontend:/app/frontend
       - /app/node_modules
       - /app/frontend/node_modules
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-    # Command updated to explicitly serve on port 5173
-    command: pnpm -F frontend dev --host 0.0.0.0 --port 5173
     depends_on:
       - backend
 
