@@ -5,6 +5,7 @@ FROM node:${NODE_VERSION}-alpine
 ARG PNPM_VERSION=12.11.2
 RUN npm install -g pnpm@${PNPM_VERSION}
 
+# frontend setup
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
