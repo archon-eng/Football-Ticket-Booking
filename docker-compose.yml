@@ -4,6 +4,7 @@ x-build-args: &build-args
 
 services:
   mongo:
+    container_name: football-ticket-booking-mongo
     image: mongo:8.3.13
     ports:
       - "127.0.0.1:27017:27017"
@@ -18,6 +19,7 @@ services:
     restart: unless-stopped
 
   backend:
+    container_name: football-ticket-booking-backend
     build:
       context: .
       dockerfile: backend/Dockerfile.dev
@@ -30,13 +32,13 @@ services:
       MONGO_URI: mongodb://mongo:27017/football
     volumes:
       - ./backend:/app/backend
-      - /app/node_modules
       - /app/backend/node_modules
     depends_on:
       mongo:
         condition: service_healthy
 
   frontend:
+    container_name: football-ticket-booking-frontend
     build:
       context: .
       dockerfile: frontend/Dockerfile.dev
@@ -45,7 +47,6 @@ services:
       - "127.0.0.1:5173:5173"
     volumes:
       - ./frontend:/app/frontend
-      - /app/node_modules
       - /app/frontend/node_modules
     depends_on:
       - backend
