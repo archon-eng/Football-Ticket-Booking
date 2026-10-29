@@ -389,6 +389,18 @@ a:hover {
   border-color: var(--color-border);
 }
 
+.lux-auth
+  section
+  :is([class*="hover:bg-blue-"], [class*="hover:bg-red-"]):hover {
+  background-color: var(--color-surface-hover);
+}
+
+.lux-auth
+  section
+  :is([class*="hover:text-blue-"], [class*="hover:text-red-"]):hover {
+  color: var(--color-champagne);
+}
+
 .lux-auth section :is(input, select) {
   border-color: var(--color-border);
   border-radius: 0;

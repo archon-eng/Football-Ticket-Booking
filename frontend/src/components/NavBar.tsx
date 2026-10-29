@@ -13,7 +13,7 @@ export default function NavBar() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-border-subtle bg-background/90 px-4 backdrop-blur-xl sm:px-6 lg:px-10">
-      <div className="mx-auto grid min-h-20 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-3">
+      <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 py-2 sm:min-h-20 sm:grid-cols-[1fr_auto_1fr] sm:py-0">
         <NavLink to="/dashboard" className="flex w-fit items-center gap-3">
           <span className="flex h-10 w-10 items-center justify-center border border-champagne/40 bg-surface">
             <img src={logo} alt="" className="h-6 w-auto" />
@@ -30,7 +30,7 @@ export default function NavBar() {
 
         <nav
           aria-label="Main navigation"
-          className="flex items-center gap-0.5 sm:gap-3"
+          className="col-span-2 row-start-2 -mx-4 flex items-center justify-center gap-0.5 overflow-x-auto border-t border-border-subtle px-2 py-1 sm:col-span-1 sm:row-start-auto sm:mx-0 sm:gap-3 sm:overflow-visible sm:border-0 sm:px-0 sm:py-0"
         >
           <NavLink to="/dashboard" className={getNavClass}>
             Discover
