@@ -1,12 +1,8 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Google Sans Flex";
-  src: url("/fonts/Google_Sans_Flex.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-}
+/* ==========================================================================
+   Variable Fonts
+   ========================================================================== */
 
 @font-face {
   font-family: "Inter";
@@ -32,66 +28,163 @@
   font-display: swap;
 }
 
+/* ==========================================================================
+   Design Tokens
+   Five Base Colours · Semantic Aliases
+   ========================================================================== */
+
 @theme {
-  --font-flex: "Google Sans Flex", sans-serif;
+  /* Typography */
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Manrope", sans-serif;
   --font-inter: "Inter", sans-serif;
   --font-manrope: "Manrope", sans-serif;
 
-  /* ==========================================================================
-     Backgrounds & Surface Hierarchy (Dark Navy)
-     ========================================================================== */
-  --color-foot-bg: #070c18;
-  --color-foot-surface: #0f172a;
-  --color-foot-surface-elevated: #1a243a;
-  --color-foot-surface-hover: #24314d;
-  --color-foot-border: #1e293b;
+  /* --------------------------------------------------------------------------
+     Base Palette: Five Colours
+     -------------------------------------------------------------------------- */
 
-  /* ==========================================================================
-     Brand & Racing Accents (Racing Red)
-     ========================================================================== */
-  --color-foot-red: #e11d48;
-  --color-foot-red-hover: #f43f5e;
-  --color-foot-rose: #fb7185;
-  --color-foot-rose-hover: #fda4af;
-  --color-foot-carbon: #030712;
+  --color-background: #11100e;
+  --color-surface: #1b1915;
+  --color-beige: #f2ebdd;
+  --color-champagne: #d6c19b;
+  --color-muted: #a79b89;
 
-  /* ==========================================================================
-     Seat Map Interactive States
-     ========================================================================== */
-  --color-seat-available: #e11d48;
-  --color-seat-available-hover: #f43f5e;
-  --color-seat-selected: #ff2a4b;
-  --color-seat-selected-glow: rgba(255, 42, 75, 0.35);
-  --color-seat-occupied: #1e293b;
-  --color-seat-reserved: #881337;
-  --color-seat-vip: #ff003c;
+  /* --------------------------------------------------------------------------
+     Backgrounds & Surfaces
+     Derived shades maintain subtle hierarchy without extra palette colours.
+     -------------------------------------------------------------------------- */
 
-  /* ==========================================================================
-     Grandstand Sector Zones
-     ========================================================================== */
-  --color-zone-pit-straight: #ff1e42;
-  --color-zone-paddock-club: #e11d48;
-  --color-zone-hairpin: #f43f5e;
-  --color-zone-chicane: #fb7185;
-  --color-zone-general: #475569;
+  --color-background-deep: var(--color-background);
 
-  /* ==========================================================================
-     Typography & Text Hierarchy
-     ========================================================================== */
-  --color-foot-text-primary: #f8fafc;
-  --color-foot-text-secondary: #cbd5e1;
-  --color-foot-text-muted: #94a3b8;
-  --color-foot-text-disabled: #475569;
+  --color-surface-elevated: color-mix(
+    in srgb,
+    var(--color-surface) 90%,
+    var(--color-beige)
+  );
+
+  --color-surface-hover: color-mix(
+    in srgb,
+    var(--color-surface) 82%,
+    var(--color-beige)
+  );
+
+  --color-surface-active: color-mix(
+    in srgb,
+    var(--color-surface) 72%,
+    var(--color-beige)
+  );
+
+  /* --------------------------------------------------------------------------
+     Borders
+     -------------------------------------------------------------------------- */
+
+  --color-border: color-mix(in srgb, var(--color-beige) 16%, transparent);
+
+  --color-border-subtle: color-mix(in srgb, var(--color-beige) 8%, transparent);
+
+  --color-border-strong: color-mix(
+    in srgb,
+    var(--color-champagne) 40%,
+    transparent
+  );
+
+  /* --------------------------------------------------------------------------
+     Brand & Accent Aliases
+     -------------------------------------------------------------------------- */
+
+  --color-beige-soft: var(--color-beige);
+  --color-beige-muted: var(--color-muted);
+
+  --color-champagne-light: var(--color-beige);
+  --color-bronze: var(--color-champagne);
+  --color-taupe: var(--color-muted);
+
+  /* --------------------------------------------------------------------------
+     Text Hierarchy
+     -------------------------------------------------------------------------- */
+
+  --color-text-primary: var(--color-beige);
+
+  --color-text-secondary: color-mix(
+    in srgb,
+    var(--color-beige) 78%,
+    var(--color-background)
+  );
+
+  --color-text-muted: var(--color-muted);
+
+  --color-text-disabled: color-mix(
+    in srgb,
+    var(--color-muted) 58%,
+    var(--color-background)
+  );
+
+  --color-text-inverse: var(--color-background);
+
+  /* --------------------------------------------------------------------------
+     Interactive Elements & Focus
+     -------------------------------------------------------------------------- */
+
+  --color-interactive: var(--color-champagne);
+  --color-interactive-hover: var(--color-beige);
+  --color-interactive-active: var(--color-champagne);
+  --color-focus-ring: var(--color-beige);
+
+  /* --------------------------------------------------------------------------
+     Seat Map Interactive Status
+     States reuse the base palette; borders and outlines add differentiation.
+     -------------------------------------------------------------------------- */
+
+  --color-seat-available: var(--color-champagne);
+  --color-seat-available-hover: var(--color-beige);
+
+  --color-seat-selected: var(--color-beige);
+  --color-seat-selected-hover: var(--color-beige);
+
+  --color-seat-selected-glow: color-mix(
+    in srgb,
+    var(--color-beige) 20%,
+    transparent
+  );
+
+  --color-seat-occupied: color-mix(
+    in srgb,
+    var(--color-muted) 58%,
+    var(--color-background)
+  );
+
+  --color-seat-reserved: var(--color-muted);
+  --color-seat-vip: var(--color-beige);
+  --color-seat-disabled: var(--color-surface);
+
+  --color-seat-focus: var(--color-beige);
+  --color-seat-outline: var(--color-champagne);
+
+  /* --------------------------------------------------------------------------
+     Generic Map Zones
+     -------------------------------------------------------------------------- */
+
+  --color-map-zone-premium: var(--color-champagne);
+  --color-map-zone-standard: var(--color-muted);
+  --color-map-zone-accessible: var(--color-beige);
+  --color-map-zone-restricted: var(--color-surface-hover);
+  --color-map-zone-neutral: var(--color-surface);
 }
+
+/* ==========================================================================
+   Animation
+   ========================================================================== */
 
 @keyframes fade-slide-up {
   from {
     opacity: 0;
     transform: translateY(1.5rem);
   }
+
   to {
     opacity: 1;
-    transform: translateY(0rem);
+    transform: translateY(0);
   }
 }
 
@@ -104,27 +197,52 @@
   animation-delay: 200ms;
 }
 
+/* ==========================================================================
+   Global Base Styles
+   ========================================================================== */
+
+html {
+  min-height: 100%;
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
 body {
   min-height: 100vh;
+  margin: 0;
+
   background:
     radial-gradient(
       circle at top left,
-      rgba(225, 29, 72, 0.1),
-      transparent 28%
+      color-mix(in srgb, var(--color-champagne) 8%, transparent),
+      transparent 30%
     ),
     radial-gradient(
       circle at top right,
-      rgba(26, 36, 58, 0.55),
-      transparent 26%
+      color-mix(in srgb, var(--color-beige) 4%, transparent),
+      transparent 27%
     ),
-    linear-gradient(180deg, #070c18 0%, #0b1224 50%, #050811 100%);
-  color: var(--color-foot-text-primary);
+    var(--color-background);
+
+  color: var(--color-text-primary);
   font-family: var(--font-inter);
+  font-size: 1rem;
+  font-weight: 400;
   letter-spacing: 0;
+  line-height: 1.7;
+
+  font-optical-sizing: auto;
+  font-synthesis: none;
   text-rendering: optimizeLegibility;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ==========================================================================
+   Typography
+   Manrope: Headings · Inter: Body & Interface
+   ========================================================================== */
 
 h1,
 h2,
@@ -132,37 +250,190 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-flex);
-  letter-spacing: -0.3px;
-  color: var(--color-foot-text-primary);
+  margin-top: 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-manrope);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
 }
 
-html,
-body,
+h1 {
+  font-size: clamp(2.5rem, 5vw + 1rem, 5rem);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+h2 {
+  font-size: clamp(2rem, 3vw + 0.75rem, 3.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+h3 {
+  font-size: clamp(1.25rem, 1.5vw + 0.75rem, 1.75rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+h5,
+h6 {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+p {
+  color: var(--color-text-secondary);
+}
+
+small,
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Forms & Interface Controls
+   ========================================================================== */
+
 button,
 input,
 textarea,
 select {
   font-family: var(--font-inter);
+  font-optical-sizing: auto;
   letter-spacing: 0;
 }
 
-strong,
-b,
-.font-semibold,
-.font-bold,
-.font-extrabold,
-.font-black {
-  font-family: var(--font-flex);
-  letter-spacing: -0.3px;
+button {
+  color: inherit;
 }
+
+input,
+textarea,
+select {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Links & Accessibility
+   ========================================================================== */
 
 a {
   color: inherit;
   text-decoration: none;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--color-beige-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 3px;
 }
 
 ::selection {
-  background: rgba(225, 29, 72, 0.35);
-  color: #ffffff;
+  background: var(--color-beige-soft);
+  color: var(--color-text-inverse);
+}
+
+/* Account surfaces retain their existing form behavior while using the shared palette. */
+.lux-auth > section {
+  border-color: var(--color-border);
+  border-radius: 0;
+  background-color: var(--color-surface);
+  box-shadow: none;
+}
+
+.lux-auth section .bg-linear-to-br {
+  background-color: var(--color-surface-elevated);
+  background-image: none;
+  color: var(--color-text-primary);
+}
+
+.lux-auth section :is(.text-white, .text-slate-200, .text-slate-300) {
+  color: var(--color-text-primary);
+}
+
+.lux-auth section :is(.text-slate-400, .text-slate-500) {
+  color: var(--color-text-muted);
+}
+
+.lux-auth section :is(.text-blue-400, .text-red-400, .text-red-500) {
+  color: var(--color-champagne);
+}
+
+.lux-auth
+  section
+  :is(
+    [class*="border-slate-"],
+    [class*="border-blue-"],
+    [class*="border-red-"]
+  ) {
+  border-color: var(--color-border);
+}
+
+.lux-auth section :is(input, select) {
+  border-color: var(--color-border);
+  border-radius: 0;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+.lux-auth section button[type="submit"] {
+  border-radius: 0;
+  background-color: var(--color-champagne);
+  color: var(--color-background);
+  box-shadow: none;
+}
+
+.lux-auth section button[type="submit"]:hover {
+  background-color: var(--color-beige);
+}
+
+.lux-auth section [role="alert"] {
+  border-color: var(--color-border-strong);
+  background-color: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .animation-fade-up {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
 }

@@ -8,7 +8,7 @@ export default function LogIn() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center px-5 py-10 lg:px-8">
+    <div className="lux-auth mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center px-5 py-10 lg:px-8">
       <section className="grid w-full overflow-hidden rounded-4xl border shadow-2xl border-slate-800 bg-slate-900 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="relative overflow-hidden bg-linear-to-br from-blue-700 via-blue-600 to-sky-500 p-8 text-white lg:p-12">
           <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full border border-white/20" />

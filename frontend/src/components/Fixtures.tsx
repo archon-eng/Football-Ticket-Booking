@@ -29,71 +29,74 @@ const fixtures = [
 
 export default function Fixtures() {
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-      <section className="w-full rounded-2xl border border-foot-border bg-foot-surface p-6 shadow-2xl shadow-black/20 sm:p-8 lg:p-10">
-        <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+    <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 lg:px-12 lg:py-16">
+      <section>
+        <div className="flex flex-col justify-between gap-6 border-b border-border pb-8 sm:flex-row sm:items-end">
           <div>
-            <span className="inline-flex rounded-full border border-foot-red/40 bg-foot-red/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-foot-rose">
-              Fixtures
-            </span>
-            <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-              The next 90 minutes are waiting.
-            </h1>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-foot-text-secondary">
-              Keep every kickoff, venue, and available seat in view.
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-champagne">
+              The fixture list
             </p>
-          </div>
-          <div className="text-left sm:text-right">
-            <div className="text-xs font-semibold uppercase tracking-wider text-foot-text-muted">
-              Matchweek
-            </div>
-            <div className="mt-1 text-lg font-bold text-white">
-              23 - 25 August
-            </div>
+            <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold tracking-normal text-beige sm:text-5xl">
+              Great football deserves a great seat.
+            </h1>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-text-muted">
+              Find your next occasion and reserve a place in the stands.
+            </p>
           </div>
         </div>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
+        <div className="divide-y divide-border-subtle">
           {fixtures.map((fixture) => (
             <article
               key={fixture.competition}
-              className="rounded-xl border border-foot-border bg-foot-surface-elevated/60 p-5 transition-colors hover:border-foot-red/60"
+              className="grid gap-6 py-7 transition-colors sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:py-9"
             >
-              <div className="flex items-center justify-between gap-3">
-                <div className="text-xs font-semibold uppercase tracking-wider text-foot-rose">
-                  {fixture.competition}
-                </div>
-                <span className="rounded-full bg-foot-red/10 px-2 py-1 text-[0.65rem] font-semibold uppercase tracking-wider text-foot-rose">
-                  Open
-                </span>
-              </div>
-              <div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-                <div className="font-semibold text-white">{fixture.home}</div>
-                <div className="text-xs font-bold uppercase tracking-wider text-foot-text-muted">
-                  vs
-                </div>
-                <div className="text-right font-semibold text-white">
-                  {fixture.away}
-                </div>
-              </div>
-              <div className="mt-6 border-t border-foot-border pt-4 text-sm text-foot-text-secondary">
-                <div className="flex justify-between gap-3">
-                  <span>{fixture.date}</span>
-                  <span className="font-semibold text-white">
+              <div className="grid gap-5 sm:grid-cols-[7rem_minmax(0,1fr)_minmax(10rem,auto)] sm:items-center sm:gap-8">
+                <div className="border-l border-champagne/60 pl-4">
+                  <p className="text-xs uppercase tracking-[0.16em] text-text-muted">
+                    {fixture.date}
+                  </p>
+                  <p className="mt-1 font-display text-xl font-semibold tracking-normal text-beige">
                     {fixture.time}
-                  </span>
+                  </p>
                 </div>
-                <div className="mt-2 text-foot-text-muted">{fixture.venue}</div>
+
+                <div>
+                  <p className="text-xs uppercase tracking-[0.16em] text-champagne">
+                    {fixture.competition}
+                  </p>
+                  <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <h2 className="font-display text-xl font-semibold tracking-normal text-beige sm:text-2xl">
+                      {fixture.home}
+                    </h2>
+                    <span className="text-xs uppercase tracking-[0.16em] text-text-muted">
+                      v
+                    </span>
+                    <h2 className="font-display text-xl font-semibold tracking-normal text-beige sm:text-2xl">
+                      {fixture.away}
+                    </h2>
+                  </div>
+                </div>
+
+                <div className="text-sm text-text-muted sm:text-right">
+                  <p>{fixture.venue}</p>
+                  <p className="mt-1">{fixture.competition}</p>
+                </div>
               </div>
+
               <Link
                 to="/booking/form"
-                className="mt-5 block rounded-full bg-foot-red px-4 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-foot-red-hover"
+                className="inline-flex min-h-11 items-center justify-center gap-3 border border-champagne/50 px-5 text-sm font-semibold text-beige transition-colors hover:bg-champagne hover:text-background"
               >
-                Book seats
+                Reserve seats <span aria-hidden="true">↗</span>
               </Link>
             </article>
           ))}
         </div>
+
+        <p className="mt-6 text-xs leading-5 text-text-muted">
+          Fixture details and availability are subject to change.
+        </p>
       </section>
     </div>
   )

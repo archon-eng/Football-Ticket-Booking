@@ -1,197 +1,172 @@
-import { useEffect, useRef, useState } from "react"
+import { Link } from "react-router-dom"
 import championsImage from "../assets/argentine_champions.webp"
-import emptySeatsImage from "../assets/empty_seats.jpeg"
-import footballPitchImage from "../assets/football_on_pitch.jpg"
-import neymarMessi from "../assets/neymar_messi.webp"
-import ronaldoImage from "../assets/ronaldo.webp"
 import stadiumImage from "../assets/venue.jpeg"
-import vozinha from "../assets/vozinha.avif"
+import santiagoImage from "../assets/book/santiago.jpeg"
 
-interface MatchdayMoment {
+interface FeaturedVenue {
   src: string
   title: string
   description: string
+  location: string
 }
 
-const featuredImages: MatchdayMoment[] = [
+const featuredVenues: FeaturedVenue[] = [
   {
     src: stadiumImage,
-    title: "Stadium Atmosphere",
-    description: "Feel the anticipation build before the first whistle.",
+    title: "The home of football",
+    description: "An occasion made for the grandest stage.",
+    location: "London, England",
   },
   {
-    src: neymarMessi,
-    title: "Pitch-Level Energy",
-    description: "Follow the match from the sharpest angle on the pitch.",
-  },
-  {
-    src: ronaldoImage,
-    title: "Legend Spotlight",
-    description: "Celebrate the players who define football's biggest nights.",
+    src: santiagoImage,
+    title: "A night in Madrid",
+    description: "A modern icon, lit for the big occasion.",
+    location: "Madrid, Spain",
   },
   {
     src: championsImage,
-    title: "Championship Moments",
-    description: "Relive the scenes that turn a fixture into history.",
-  },
-  {
-    src: emptySeatsImage,
-    title: "Seats Ready to Book",
-    description: "Pick from available sections and secure your place early.",
-  },
-  {
-    src: vozinha,
-    title: "Fan Experience",
-    description: "Immerse yourself in the authentic matchday environment.",
+    title: "Where history is made",
+    description: "Be there when the final whistle becomes a memory.",
+    location: "A moment worth travelling for",
   },
 ]
 
 export default function Dashboard() {
-  const [visibleCards, setVisibleCards] = useState<boolean[]>(
-    Array(featuredImages.length).fill(false),
-  )
-
-  const gridRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const index = Number((entry.target as HTMLElement).dataset.cardIndex)
-
-          if (Number.isNaN(index)) return
-
-          setVisibleCards((current) =>
-            current.map((isVisible, currentIndex) =>
-              currentIndex === index ? entry.isIntersecting : isVisible,
-            ),
-          )
-        })
-      },
-      {
-        threshold: 0.25,
-      },
-    )
-
-    if (gridRef.current) {
-      const cards = gridRef.current.querySelectorAll("article")
-      cards.forEach((card) => observer.observe(card))
-    }
-
-    return () => observer.disconnect()
-  }, [])
-
   return (
-    <div className="min-h-screen text-foot-text-primary">
-      <div className="relative mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-        <section className="relative overflow-hidden rounded-2xl border border-foot-border bg-foot-surface/95 shadow-2xl shadow-black/20">
-          <div className="absolute -right-24 -top-20 h-56 w-56 rounded-full bg-foot-red/10 blur-3xl" />
-          <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-foot-rose/10 blur-3xl" />
+    <div className="pb-20 text-text-primary">
+      <section className="relative isolate flex min-h-[min(72vh,720px)] items-end overflow-hidden border-b border-border sm:min-h-160">
+        <img
+          src={stadiumImage}
+          alt="A floodlit football stadium before kick-off"
+          fetchPriority="high"
+          className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+        />
+        <div className="absolute inset-0 -z-10 bg-linear-to-r from-background/95 via-background/65 to-background/10" />
+        <div className="absolute inset-0 -z-10 bg-linear-to-t from-background/70 via-transparent to-background/10" />
 
-          <div className="grid gap-8 px-5 py-7 sm:px-7 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-10 lg:py-10">
-            <div>
-              <span className="inline-flex rounded-full border border-foot-red/40 bg-foot-red/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-foot-rose">
-                UEFA-inspired matchday booking
-              </span>
-              <h1 className="mt-6 max-w-2xl text-4xl font-extrabold tracking-tight sm:text-5xl text-white">
-                Lock in your seat for the biggest nights on the pitch.
-              </h1>
-              <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-300">
-                Every point matters. Every rivalry runs deep. Claim your spot in
-                the stands, track upcoming European fixtures, and feel the noise
-                of matchday live.
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a
-                  href="/booking"
-                  className="rounded-full bg-foot-red px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-foot-red/25 transition-all hover:bg-foot-red-hover hover:-translate-y-0.5 active:translate-y-0"
-                >
-                  Book seats
-                </a>
-                <a
-                  href="/fixtures"
-                  className="rounded-full border border-foot-border px-5 py-2.5 text-sm font-semibold text-foot-text-secondary transition-colors hover:bg-foot-surface-hover"
-                >
-                  View fixtures
-                </a>
-              </div>
-
-              <div className="mt-8 grid gap-3 sm:grid-cols-3">
-                {[
-                  ["Instant", "seat access"],
-                  ["Guaranteed", "matchday entry"],
-                  ["Fast", "booking flow"],
-                ].map(([value, label]) => (
-                  <div
-                    key={value}
-                    className="rounded-xl border border-foot-border bg-foot-surface-elevated/60 px-4 py-3"
-                  >
-                    <div className="text-2xl font-bold text-white">{value}</div>
-                    <div className="mt-1 text-sm text-slate-400">{label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="overflow-hidden rounded-2xl border border-foot-border bg-foot-surface">
-                <img
-                  src={footballPitchImage}
-                  alt="Football on the pitch"
-                  className="h-104 w-full object-cover sm:h-120"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-foot-bg/70 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-foot-border/70 bg-foot-surface/85 p-4 shadow-lg">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-foot-rose">
-                    Live atmosphere
-                  </div>
-                  <div className="mt-1 text-base font-semibold text-white">
-                    Prime pitch-side section, 90 minutes of relentless
-                    intensity.
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <section className="mx-auto w-full max-w-7xl px-4 pb-12 pt-2 sm:px-6 lg:px-8 lg:pb-16">
-        <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-white">
-          Featured Matchday Moments
-        </h2>
-
-        <div ref={gridRef} className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {featuredImages.map((image, index) => (
-            <article
-              key={image.src}
-              data-card-index={index}
-              className={`overflow-hidden rounded-xl border border-foot-border bg-foot-surface shadow-md transition-all duration-700 ease-out ${
-                visibleCards[index]
-                  ? "translate-y-0 opacity-100"
-                  : "translate-y-8 opacity-0"
-              }`}
+        <div className="mx-auto w-full max-w-7xl px-5 pb-14 pt-24 sm:px-8 sm:pb-20 lg:px-12">
+          <p className="mb-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-champagne">
+            <span className="h-px w-8 bg-champagne" />A better way to be there
+          </p>
+          <h1 className="max-w-3xl font-display text-5xl font-semibold leading-[1.02] tracking-normal text-beige sm:text-6xl lg:text-7xl">
+            The match is better
+            <br className="hidden sm:block" />
+            <span className="text-champagne">when you are there.</span>
+          </h1>
+          <p className="mt-6 max-w-xl text-base leading-7 text-beige/80 sm:text-lg">
+            Exceptional seats. Unforgettable fixtures. Your next great football
+            story starts here.
+          </p>
+          <div className="mt-9 flex flex-wrap items-center gap-4">
+            <Link
+              to="/fixtures"
+              className="inline-flex min-h-12 items-center justify-center bg-champagne px-6 text-sm font-semibold text-background transition-colors hover:bg-beige"
             >
-              <div className="relative">
-                <img
-                  src={image.src}
-                  alt={image.title || "Matchday moment"}
-                  loading="lazy"
-                  decoding="async"
-                  className="h-64 w-full object-cover"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-foot-bg/50 via-transparent to-transparent" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-white">
-                  {image.title}
+              Explore fixtures
+            </Link>
+            <Link
+              to="/booking"
+              className="inline-flex min-h-12 items-center justify-center border border-beige/50 px-6 text-sm font-semibold text-beige transition-colors hover:border-beige hover:bg-beige/10"
+            >
+              Discover venues
+            </Link>
+          </div>
+
+          <div className="mt-12 flex flex-wrap gap-x-10 gap-y-4 border-t border-beige/20 pt-5 text-xs uppercase tracking-[0.16em] text-beige/70">
+            <span>Curated matchday experiences</span>
+            <span>Secure booking</span>
+            <span>Iconic grounds</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-12 lg:py-20">
+        <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-champagne">
+              Choose your occasion
+            </p>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-normal text-beige sm:text-4xl">
+              Grounds worth the journey
+            </h2>
+          </div>
+          <Link
+            to="/booking"
+            className="w-fit border-b border-champagne/60 pb-1 text-sm font-medium text-beige transition-colors hover:border-champagne"
+          >
+            View all venues <span aria-hidden="true">↗</span>
+          </Link>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-3">
+          {featuredVenues.map((venue, index) => (
+            <Link
+              to="/booking"
+              key={venue.title}
+              className="group relative isolate flex aspect-4/5 min-h-80 items-end overflow-hidden border border-border-subtle"
+            >
+              <img
+                src={venue.src}
+                alt={venue.title}
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 -z-20 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 -z-10 bg-linear-to-t from-background via-background/20 to-transparent" />
+              <div className="w-full p-5 sm:p-6">
+                <span className="text-xs uppercase tracking-[0.18em] text-champagne">
+                  {venue.location}
+                </span>
+                <h3 className="mt-2 font-display text-2xl font-semibold tracking-normal text-beige">
+                  {venue.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                  {image.description}
+                <p className="mt-2 max-w-xs text-sm text-beige/70">
+                  {venue.description}
+                </p>
+                <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-beige">
+                  Explore venue <span aria-hidden="true">↗</span>
+                </span>
+              </div>
+              <span className="absolute right-5 top-5 text-xs tracking-[0.18em] text-beige/70">
+                0{index + 1}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-y border-border-subtle bg-surface/60">
+        <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 sm:grid-cols-3 sm:px-8 lg:px-12">
+          {[
+            [
+              "01",
+              "A considered selection",
+              "Find the right fixture and the right seat.",
+            ],
+            [
+              "02",
+              "A seamless booking",
+              "Clear options from first look to confirmation.",
+            ],
+            [
+              "03",
+              "A day to remember",
+              "Arrive ready for the moments that matter.",
+            ],
+          ].map(([number, title, description]) => (
+            <div key={number} className="grid grid-cols-[auto_1fr] gap-4">
+              <span className="pt-1 text-xs tracking-[0.16em] text-champagne">
+                {number}
+              </span>
+              <div>
+                <h3 className="font-display text-lg font-semibold tracking-normal text-beige">
+                  {title}
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-text-muted">
+                  {description}
                 </p>
               </div>
-            </article>
+            </div>
           ))}
         </div>
       </section>

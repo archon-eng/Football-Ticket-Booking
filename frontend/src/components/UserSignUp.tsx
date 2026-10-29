@@ -53,7 +53,7 @@ export default function UserSignUp() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center px-4 py-8 sm:px-6 lg:px-8">
+    <div className="lux-auth mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center px-4 py-8 sm:px-6 lg:px-8">
       <section className="w-full overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl">
         <div className="grid gap-0 lg:grid-cols-[1fr_0.95fr]">
           <div className="relative overflow-hidden bg-linear-to-br from-rose-600 via-red-600 to-orange-500 p-8 text-white lg:p-12">

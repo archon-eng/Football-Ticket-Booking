@@ -15,18 +15,45 @@ import UserSignUp from "./components/UserSignUp"
 
 function Layout() {
   return (
-    <div className="min-h-screen w-full text-foot-text-primary">
+    <div className="flex min-h-screen w-full flex-col text-text-primary">
       <NavBar />
-      <main className="min-h-screen">
+      <main className="flex-1">
         <Outlet />
       </main>
+      <footer className="border-t border-border-subtle px-5 py-6 sm:px-8 lg:px-12">
+        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 text-xs text-text-muted sm:flex-row sm:items-center">
+          <p className="font-display text-sm font-semibold tracking-[0.08em] text-beige">
+            THE MATCHDAY{" "}
+            <span className="font-sans font-normal text-text-muted">
+              · Ticket house
+            </span>
+          </p>
+          <nav aria-label="Footer navigation" className="flex gap-5">
+            <NavLink
+              to="/fixtures"
+              className="transition-colors hover:text-beige"
+            >
+              Fixtures
+            </NavLink>
+            <NavLink
+              to="/booking"
+              className="transition-colors hover:text-beige"
+            >
+              Venues
+            </NavLink>
+            <NavLink to="/faq" className="transition-colors hover:text-beige">
+              Guest services
+            </NavLink>
+          </nav>
+        </div>
+      </footer>
     </div>
   )
 }
 
 function App() {
   return (
-    <div className="min-h-screen bg-foot-bg">
+    <div className="min-h-screen bg-background">
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="dashboard" />} />
