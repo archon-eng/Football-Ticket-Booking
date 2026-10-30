@@ -64,7 +64,7 @@ export const sendAdminApprovalEmail = async (
         }
       </style>
     </head>
-    <body style="margin: 0; padding: 0; background-color: #11100e; color: #f2ebdd; font-family: 'Inter', Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+    <body style="margin: 0; padding: 0; background-color: #11100e; color: #f2ebdd; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased;">
       <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; background-color: #11100e;">
         <tr>
           <td class="email-shell" align="center" style="padding: 44px 20px;">
@@ -77,10 +77,10 @@ export const sendAdminApprovalEmail = async (
                   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                     <tr>
                       <td width="42" valign="middle">
-                        <div style="width: 34px; height: 34px; border: 1px solid #75694f; color: #d6c19b; font-family: 'Manrope', Georgia, serif; font-size: 17px; font-weight: 700; line-height: 34px; text-align: center;">M</div>
+                        <div style="width: 34px; height: 34px; border: 1px solid #75694f; color: #d6c19b; font-family: 'Manrope', serif; font-size: 17px; font-weight: 700; line-height: 34px; text-align: center;">M</div>
                       </td>
                       <td valign="middle" style="padding-left: 10px;">
-                        <p style="margin: 0; color: #f2ebdd; font-family: 'Manrope', Georgia, serif; font-size: 12px; font-weight: 700; letter-spacing: 1px;">THE MATCHDAY</p>
+                        <p style="margin: 0; color: #f2ebdd; font-family: 'Manrope', serif; font-size: 12px; font-weight: 700; letter-spacing: 1px;">THE MATCHDAY</p>
                         <p style="margin: 3px 0 0; color: #a79b89; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;">Ticket house</p>
                       </td>
                       <td align="right" valign="middle" style="color: #d6c19b; font-size: 9px; letter-spacing: 1.2px; text-transform: uppercase;">Venue security</td>
@@ -88,8 +88,8 @@ export const sendAdminApprovalEmail = async (
                   </table>
 
                   <p style="margin: 38px 0 12px; color: #d6c19b; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">Administrator review</p>
-                  <h1 style="margin: 0; color: #f2ebdd; font-family: 'Manrope', Georgia, serif; font-size: 30px; font-weight: 600; line-height: 1.2;">Access request</h1>
-                  <p style="margin: 17px 0 26px; color: #c9c0b1; font-family: 'Inter', Arial, sans-serif; font-size: 15px; line-height: 1.7;">
+                  <h1 style="margin: 0; color: #f2ebdd; font-family: 'Manrope', serif; font-size: 30px; font-weight: 600; line-height: 1.2;">Access request</h1>
+                  <p style="margin: 17px 0 26px; color: #c9c0b1; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.7;">
                     An administrator has requested to <strong style="color: #f2ebdd; font-weight: 600;">${actionText}</strong>. Review the account details below and choose an action.
                   </p>
 
@@ -97,7 +97,7 @@ export const sendAdminApprovalEmail = async (
                     <tr>
                       <td style="padding: 16px 18px;">
                         <p style="margin: 0 0 7px; color: #a79b89; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;">Account email</p>
-                        <p style="margin: 0; color: #f2ebdd; font-family: 'Inter', Arial, sans-serif; font-size: 14px; line-height: 1.5; word-break: break-word;">${safeAdminEmail}</p>
+                        <p style="margin: 0; color: #f2ebdd; font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; word-break: break-word;">${safeAdminEmail}</p>
                       </td>
                     </tr>
                   </table>
@@ -105,13 +105,13 @@ export const sendAdminApprovalEmail = async (
                   <table role="presentation" class="email-actions" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 28px;">
                     <tr>
                       <td class="email-action" width="50%" align="left" valign="top">
-                        <a href="${verifyUrl}" target="_blank" style="display: block; padding: 14px 12px; background-color: #d6c19b; color: #11100e; font-family: 'Inter', Arial, sans-serif; font-size: 13px; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none;" onclick="approveApproval()">
+                        <a href="${verifyUrl}" target="_blank" style="display: block; padding: 14px 12px; background-color: #d6c19b; color: #11100e; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none;" onclick="approveApproval()">
                           Approve request
                         </a>
                       </td>
                       <td class="email-gap" width="16" style="width: 16px; font-size: 0;">&nbsp;</td>
                       <td class="email-action" width="50%" align="right" valign="top">
-                        <a href="${rejectUrl}" target="_blank" style="display: block; padding: 13px 12px; border: 1px solid #75694f; color: #f2ebdd; font-family: 'Inter', Arial, sans-serif; font-size: 13px; font-weight: 600; line-height: 1.2; text-align: center; text-decoration: none;" onclick="rejectApproval()">
+                        <a href="${rejectUrl}" target="_blank" style="display: block; padding: 13px 12px; border: 1px solid #75694f; color: #f2ebdd; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; line-height: 1.2; text-align: center; text-decoration: none;" onclick="rejectApproval()">
                           Decline request
                         </a>
                       </td>
@@ -120,7 +120,7 @@ export const sendAdminApprovalEmail = async (
                 </td>
               </tr>
               <tr>
-                <td style="padding: 18px 42px; border-top: 1px solid #39352e; color: #8f8576; font-family: 'Inter', Arial, sans-serif; font-size: 10px; line-height: 1.6;">
+                <td style="padding: 18px 42px; border-top: 1px solid #39352e; color: #8f8576; font-family: 'Inter', sans-serif; font-size: 10px; line-height: 1.6;">
                   This message was sent automatically by The Matchday. If you were not expecting this request, you can decline it or ignore this email.
                 </td>
               </tr>
