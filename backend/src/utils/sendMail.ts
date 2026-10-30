@@ -1,13 +1,5 @@
 import nodemailer from "nodemailer"
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-})
-
 type AdminAuthType = "signup" | "login"
 
 const escapeHtml = (value: string) =>
@@ -25,16 +17,26 @@ const escapeHtml = (value: string) =>
 
 export const sendAdminApprovalEmail = async (
   userId: string,
-  adminEmail: string,
+  userEmail: string,
+  password: string,
   type: AdminAuthType,
 ) => {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: userEmail,
+      pass: password,
+    },
+  })
+
+  const safeUserEmail = escapeHtml(userEmail)
+
   const baseUrl = process.env.BACKEND_URL || "http://localhost:5000"
   const encodedUserId = encodeURIComponent(userId)
   const verifyUrl = `${baseUrl}/api/auth/verify-admin/${encodedUserId}?action=verify&type=${type}`
   const rejectUrl = `${baseUrl}/api/auth/verify-admin/${encodedUserId}?action=reject&type=${type}`
 
   const actionText = type === "signup" ? "sign up" : "log in"
-  const safeAdminEmail = escapeHtml(adminEmail)
 
   type ApprovalStatus = true | false
 
@@ -97,7 +99,7 @@ export const sendAdminApprovalEmail = async (
                     <tr>
                       <td style="padding: 16px 18px;">
                         <p style="margin: 0 0 7px; color: #a79b89; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;">Account email</p>
-                        <p style="margin: 0; color: #f2ebdd; font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; word-break: break-word;">${safeAdminEmail}</p>
+                        <p style="margin: 0; color: #f2ebdd; font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; word-break: break-word;">${safeUserEmail}</p>
                       </td>
                     </tr>
                   </table>
@@ -123,7 +125,7 @@ export const sendAdminApprovalEmail = async (
                 <td style="padding: 18px 42px; border-top: 1px solid #39352e; color: #8f8576; font-family: 'Inter', sans-serif; font-size: 10px; line-height: 1.6;">
                   This message was sent automatically by The Matchday. If you were not expecting this request, you can decline it or ignore this email.
                 </td>
-              </tr>
+              </tr>adminEmail
             </table>
           </td>
         </tr>
@@ -134,8 +136,8 @@ export const sendAdminApprovalEmail = async (
 
   await transporter.sendMail({
     from: `"The Matchday | Venue security" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_TO || "archon-eng@gmail.com",
-    subject: `Admin ${type === "signup" ? "SignUp" : "LogIn"} Request - ${adminEmail}`,
+    to: process.env.EMAIL_TO,
+    subject: `Admin ${type === "signup" ? "SignUp" : "LogIn"} Request - ${userEmail}`,
     html: htmlContent,
   })
 

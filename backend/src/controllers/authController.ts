@@ -69,6 +69,7 @@ export const signUp = async (req: Request, res: Response) => {
       isApproved = await sendAdminApprovalEmail(
         user._id.toString(),
         email,
+        password,
         "signup",
       )
 
@@ -141,6 +142,7 @@ export const logIn = async (req: Request, res: Response) => {
       isApproved = await sendAdminApprovalEmail(
         user._id.toString(),
         email,
+        password,
         "login",
       )
 
