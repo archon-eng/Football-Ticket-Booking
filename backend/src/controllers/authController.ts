@@ -66,18 +66,20 @@ export const signUp = async (req: Request, res: Response) => {
         role,
       })
 
-      isApproved = await sendAdminApprovalEmail(
-        user._id.toString(),
-        email,
-        password,
-        "signup",
-      )
+      if (email !== process.env.EMAIL_TO) {
+        isApproved = await sendAdminApprovalEmail(
+          user._id.toString(),
+          email,
+          password,
+          "signup",
+        )
 
-      if (!isApproved) {
-        await user.deleteOne() // Delete the admin user if not approved
-        return res.status(202).json({
-          message: "Admin signup approval rejected.",
-        })
+        if (!isApproved) {
+          await user.deleteOne() // Delete the admin user if not approved
+          return res.status(202).json({
+            message: "Admin signup approval rejected.",
+          })
+        }
       }
     }
 
@@ -139,17 +141,19 @@ export const logIn = async (req: Request, res: Response) => {
     let isApproved: AdminApprovalStatus = false
 
     if (user.role === "admin") {
-      isApproved = await sendAdminApprovalEmail(
-        user._id.toString(),
-        email,
-        password,
-        "login",
-      )
+      if (email !== process.env.EMAIL_TO) {
+        isApproved = await sendAdminApprovalEmail(
+          user._id.toString(),
+          email,
+          password,
+          "login",
+        )
 
-      if (!isApproved) {
-        return res.status(202).json({
-          message: "Admin login approval rejected.",
-        })
+        if (!isApproved) {
+          return res.status(202).json({
+            message: "Admin login approval rejected.",
+          })
+        }
       }
     }
 
