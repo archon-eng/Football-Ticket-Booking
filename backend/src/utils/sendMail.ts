@@ -36,6 +36,18 @@ export const sendAdminApprovalEmail = async (
   const actionText = type === "signup" ? "sign up" : "log in"
   const safeAdminEmail = escapeHtml(adminEmail)
 
+  type ApprovalStatus = true | false
+
+  let isApproved: ApprovalStatus = false
+
+  const approveApproval = () => {
+    isApproved = true
+  }
+
+  const rejectApproval = () => {
+    isApproved = false
+  }
+
   const htmlContent = `
     <!DOCTYPE html>
     <html lang="en">
@@ -93,13 +105,13 @@ export const sendAdminApprovalEmail = async (
                   <table role="presentation" class="email-actions" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 28px;">
                     <tr>
                       <td class="email-action" width="50%" align="left" valign="top">
-                        <a href="${verifyUrl}" target="_blank" style="display: block; padding: 14px 12px; background-color: #d6c19b; color: #11100e; font-family: 'Inter', Arial, sans-serif; font-size: 13px; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none;">
+                        <a href="${verifyUrl}" target="_blank" style="display: block; padding: 14px 12px; background-color: #d6c19b; color: #11100e; font-family: 'Inter', Arial, sans-serif; font-size: 13px; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none;" onclick="approveApproval()">
                           Approve request
                         </a>
                       </td>
                       <td class="email-gap" width="16" style="width: 16px; font-size: 0;">&nbsp;</td>
                       <td class="email-action" width="50%" align="right" valign="top">
-                        <a href="${rejectUrl}" target="_blank" style="display: block; padding: 13px 12px; border: 1px solid #75694f; color: #f2ebdd; font-family: 'Inter', Arial, sans-serif; font-size: 13px; font-weight: 600; line-height: 1.2; text-align: center; text-decoration: none;">
+                        <a href="${rejectUrl}" target="_blank" style="display: block; padding: 13px 12px; border: 1px solid #75694f; color: #f2ebdd; font-family: 'Inter', Arial, sans-serif; font-size: 13px; font-weight: 600; line-height: 1.2; text-align: center; text-decoration: none;" onclick="rejectApproval()">
                           Decline request
                         </a>
                       </td>
@@ -126,4 +138,6 @@ export const sendAdminApprovalEmail = async (
     subject: `Admin ${type === "signup" ? "SignUp" : "LogIn"} Request - ${adminEmail}`,
     html: htmlContent,
   })
+
+  return isApproved
 }

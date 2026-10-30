@@ -45,6 +45,10 @@ export const signUp = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10)
     const passwordHash = await bcrypt.hash(password, salt)
 
+    type AdminApprovalStatus = true | false
+
+    let isApproved: AdminApprovalStatus = false
+
     let user: HydratedDocument<IUser> | null = null
     if (role === "user") {
       user = await User.create({
@@ -62,17 +66,23 @@ export const signUp = async (req: Request, res: Response) => {
         passwordHash,
         role,
       })
+
+      isApproved = await sendAdminApprovalEmail(
+        user._id.toString(),
+        email,
+        "signup",
+      )
+
+      if (!isApproved) {
+        await user.deleteOne() // Delete the admin user if not approved
+        return res.status(202).json({
+          message: "Admin signup approval rejected.",
+        })
+      }
     }
 
     if (!user) {
       return res.status(400).json({ message: "User is required!" })
-    }
-
-    if (role === "admin") {
-      await sendAdminApprovalEmail(user._id.toString(), email, "signup")
-      return res.status(202).json({
-        message: "Admin signup submitted. Awaiting approval by email.",
-      })
     }
 
     const jwtSecret =
