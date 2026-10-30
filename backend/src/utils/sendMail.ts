@@ -10,16 +10,34 @@ const transporter = nodemailer.createTransport({
 
 type AdminAuthType = "signup" | "login"
 
+const escapeHtml = (value: string) =>
+  value.replace(/[&<>"']/g, (character) => {
+    const entities: Record<string, string> = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    }
+
+    return entities[character]
+  })
+
 export const sendAdminApprovalEmail = async (
   userId: string,
   adminEmail: string,
   type: AdminAuthType,
 ) => {
-  const baseUrl = process.env.BACKEND_URL || "http://localhost:5000"
-  const verifyUrl = `${baseUrl}/api/auth/verify-admin/${userId}?action=verify&type=${type}`
-  const rejectUrl = `${baseUrl}/api/auth/verify-admin/${userId}?action=reject&type=${type}`
+  const baseUrl = (process.env.BACKEND_URL || "http://localhost:5000").replace(
+    /\/+$/,
+    "",
+  )
+  const encodedUserId = encodeURIComponent(userId)
+  const verifyUrl = `${baseUrl}/api/auth/verify-admin/${encodedUserId}?action=verify&type=${type}`
+  const rejectUrl = `${baseUrl}/api/auth/verify-admin/${encodedUserId}?action=reject&type=${type}`
 
   const actionText = type === "signup" ? "sign up" : "log in"
+  const safeAdminEmail = escapeHtml(adminEmail)
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -27,78 +45,86 @@ export const sendAdminApprovalEmail = async (
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Admin ${type === "signup" ? "SignUp" : "LogIn"} Verification</title>
+      <title>Administrator access request</title>
       <style>
-        @font-face {
-          font-family: "Google Sans Flex";
-          src: url("../../public/fonts/Google_Sans_Flex.ttf") format("truetype");
-          font-style: normal;
-          font-weight: 100 900;
-          font-display: swap;
-        }
-
-        * {
-          font-family: "Google Sans Flex", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+        @media only screen and (max-width: 560px) {
+          .email-shell { padding: 20px 12px !important; }
+          .email-pad { padding: 28px 22px !important; }
+          .email-action { display: block !important; width: 100% !important; }
+          .email-gap { display: block !important; height: 12px !important; width: 100% !important; }
         }
       </style>
     </head>
-    <body style="margin: 0; padding: 0; background-color: #121212; color: #e6e1e5; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
-
-      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #121212; width: 100%; padding: 32px 16px;">
+    <body style="margin: 0; padding: 0; background-color: #11100e; color: #f2ebdd; font-family: 'Inter', Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; background-color: #11100e;">
         <tr>
-          <td align="center">
-
-            <!-- M3 Container / Card -->
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 480px; background-color: #2b2930; border-radius: 24px; border: 1px solid #49454f; overflow: hidden;">
-
-              <!-- Content Block -->
+          <td class="email-shell" align="center" style="padding: 44px 20px;">
+            <table role="presentation" class="email-card" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 560px; background-color: #1b1915; border: 1px solid #39352e;">
               <tr>
-                <td style="padding: 24px;">
-                  <p style="margin: 0 0 12px 0; font-size: 15px; line-height: 22px; color: #e6e1e5;">
-                    An admin wants to <strong style="font-weight: 700;">${actionText}</strong>. Verify the following credentials:
-                  </p>
-
-                  <!-- Inset Credential Box -->
-                  <div style="background-color: #1c1b1f; border-radius: 12px; padding: 12px 16px; border: 1px solid #49454f; font-size: 14px; color: #d0bcff; margin-bottom: 24px;">
-                    Email: ${adminEmail}
-                  </div>
-
-                  <!-- Action Buttons -->
+                <td height="3" style="height: 3px; background-color: #d6c19b; font-size: 0; line-height: 0;">&nbsp;</td>
+              </tr>
+              <tr>
+                <td class="email-pad" style="padding: 40px 42px;">
                   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                     <tr>
-                      <!-- Verify Button (M3 Primary Filled) -->
-                      <td width="48%" align="left">
-                        <a href="${verifyUrl}" target="_blank" style="display: block; text-align: center; background-color: #d0bcff; color: #381e72; font-size: 14px; font-weight: 600; text-decoration: none; padding: 10px 16px; border-radius: 100px; box-sizing: border-box;">
-                          Verify
-                        </a>
+                      <td width="42" valign="middle">
+                        <div style="width: 34px; height: 34px; border: 1px solid #75694f; color: #d6c19b; font-family: 'Manrope', Georgia, serif; font-size: 17px; font-weight: 700; line-height: 34px; text-align: center;">M</div>
                       </td>
+                      <td valign="middle" style="padding-left: 10px;">
+                        <p style="margin: 0; color: #f2ebdd; font-family: 'Manrope', Georgia, serif; font-size: 12px; font-weight: 700; letter-spacing: 1px;">THE MATCHDAY</p>
+                        <p style="margin: 3px 0 0; color: #a79b89; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;">Ticket house</p>
+                      </td>
+                      <td align="right" valign="middle" style="color: #d6c19b; font-size: 9px; letter-spacing: 1.2px; text-transform: uppercase;">Venue security</td>
+                    </tr>
+                  </table>
 
-                      <td width="4%"></td>
+                  <p style="margin: 38px 0 12px; color: #d6c19b; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">Administrator review</p>
+                  <h1 style="margin: 0; color: #f2ebdd; font-family: 'Manrope', Georgia, serif; font-size: 30px; font-weight: 600; line-height: 1.2;">Access request</h1>
+                  <p style="margin: 17px 0 26px; color: #c9c0b1; font-family: 'Inter', Arial, sans-serif; font-size: 15px; line-height: 1.7;">
+                    An administrator has requested to <strong style="color: #f2ebdd; font-weight: 600;">${actionText}</strong>. Review the account details below and choose an action.
+                  </p>
 
-                      <!-- Reject Button (M3 Error Tonal) -->
-                      <td width="48%" align="right">
-                        <a href="${rejectUrl}" target="_blank" style="display: block; text-align: center; background-color: #601410; color: #f2b8b5; border: 1px solid #8c1d18; font-size: 14px; font-weight: 600; text-decoration: none; padding: 10px 16px; border-radius: 100px; box-sizing: border-box;">
-                          Reject
-                        </a>
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #11100e; border: 1px solid #39352e;">
+                    <tr>
+                      <td style="padding: 16px 18px;">
+                        <p style="margin: 0 0 7px; color: #a79b89; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;">Account email</p>
+                        <p style="margin: 0; color: #f2ebdd; font-family: 'Inter', Arial, sans-serif; font-size: 14px; line-height: 1.5; word-break: break-word;">${safeAdminEmail}</p>
                       </td>
                     </tr>
                   </table>
 
+                  <table role="presentation" class="email-actions" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 28px;">
+                    <tr>
+                      <td class="email-action" width="50%" align="left" valign="top">
+                        <a href="${verifyUrl}" target="_blank" style="display: block; padding: 14px 12px; background-color: #d6c19b; color: #11100e; font-family: 'Inter', Arial, sans-serif; font-size: 13px; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none;">
+                          Approve request
+                        </a>
+                      </td>
+                      <td class="email-gap" width="16" style="width: 16px; font-size: 0;">&nbsp;</td>
+                      <td class="email-action" width="50%" align="right" valign="top">
+                        <a href="${rejectUrl}" target="_blank" style="display: block; padding: 13px 12px; border: 1px solid #75694f; color: #f2ebdd; font-family: 'Inter', Arial, sans-serif; font-size: 13px; font-weight: 600; line-height: 1.2; text-align: center; text-decoration: none;">
+                          Decline request
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
                 </td>
               </tr>
-
+              <tr>
+                <td style="padding: 18px 42px; border-top: 1px solid #39352e; color: #8f8576; font-family: 'Inter', Arial, sans-serif; font-size: 10px; line-height: 1.6;">
+                  This message was sent automatically by The Matchday. If you were not expecting this request, you can decline it or ignore this email.
+                </td>
+              </tr>
             </table>
-
           </td>
         </tr>
       </table>
-
     </body>
     </html>
   `
 
   await transporter.sendMail({
-    from: `"System Security" <${process.env.EMAIL_USER}>`,
+    from: `"The Matchday | Venue security" <${process.env.EMAIL_USER}>`,
     to: process.env.EMAIL_TO || "archon-eng@gmail.com",
     subject: `Admin ${type === "signup" ? "SignUp" : "LogIn"} Request - ${adminEmail}`,
     html: htmlContent,
