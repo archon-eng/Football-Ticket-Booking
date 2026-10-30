@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs"
 import { Request, Response } from "express"
 import jwt from "jsonwebtoken"
-import { isValidObjectId, type HydratedDocument } from "mongoose"
+import { type HydratedDocument } from "mongoose"
 import { z } from "zod"
 import { User, type IUser } from "../models/User.js"
 import { sendAdminApprovalEmail } from "../utils/sendMail.js"
@@ -46,7 +46,6 @@ export const signUp = async (req: Request, res: Response) => {
     const passwordHash = await bcrypt.hash(password, salt)
 
     type AdminApprovalStatus = true | false
-
     let isApproved: AdminApprovalStatus = false
 
     let user: HydratedDocument<IUser> | null = null
@@ -135,13 +134,19 @@ export const logIn = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid Email or Password" })
     }
 
-    if (user.role === "user") {
-      // Regular users can log in immediately.
-    } else if (user.role === "admin") {
-      if (!user.isVerified) {
-        await sendAdminApprovalEmail(user._id.toString(), email, "login")
+    type AdminApprovalStatus = true | false
+    let isApproved: AdminApprovalStatus = false
+
+    if (user.role === "admin") {
+      isApproved = await sendAdminApprovalEmail(
+        user._id.toString(),
+        email,
+        "login",
+      )
+
+      if (!isApproved) {
         return res.status(202).json({
-          message: "Admin login submitted. Awaiting approval by email.",
+          message: "Admin login approval rejected.",
         })
       }
     }
@@ -184,39 +189,6 @@ export const logIn = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("LogIn Error:", error)
     return res.status(500).json({ message: "Internal server error" })
-  }
-}
-
-export const verifyAdmin = async (req: Request, res: Response) => {
-  const { userId } = req.params
-  const action = req.query.action
-
-  if (
-    !isValidObjectId(userId) ||
-    (action !== "verify" && action !== "reject")
-  ) {
-    return res.status(400).send("Invalid admin approval link.")
-  }
-
-  try {
-    const user = await User.findById(userId)
-    if (!user || user.role !== "admin") {
-      return res.status(404).send("Admin account not found.")
-    }
-
-    user.isVerified = action === "verify"
-    await user.save()
-
-    return res
-      .status(200)
-      .send(
-        action === "verify"
-          ? "Admin access approved. The admin can now log in."
-          : "Admin access rejected.",
-      )
-  } catch (error) {
-    console.error("Admin Approval Error:", error)
-    return res.status(500).send("Unable to process admin approval.")
   }
 }
 
