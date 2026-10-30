@@ -28,10 +28,7 @@ export const sendAdminApprovalEmail = async (
   adminEmail: string,
   type: AdminAuthType,
 ) => {
-  const baseUrl = (process.env.BACKEND_URL || "http://localhost:5000").replace(
-    /\/+$/,
-    "",
-  )
+  const baseUrl = process.env.BACKEND_URL || "http://localhost:5000"
   const encodedUserId = encodeURIComponent(userId)
   const verifyUrl = `${baseUrl}/api/auth/verify-admin/${encodedUserId}?action=verify&type=${type}`
   const rejectUrl = `${baseUrl}/api/auth/verify-admin/${encodedUserId}?action=reject&type=${type}`
