@@ -85,9 +85,17 @@ export const signUp = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "User is required!" })
     }
 
-    const jwtSecret =
-      process.env.JWT_SECRET ||
-      "8f4a1c5d9e3b7a0f6c2d8e1b5f0a3c7d9e2b8f4a4a8f9c2d7e1b5f0a3c6d9e2b"
+    const stringifyJWTSecret = (): string => {
+      const jwtSecret = process.env.JWT_SECRET
+      if (!jwtSecret) {
+        throw new Error("JWT_SECRET is not defined in environment variables")
+      }
+      return jwtSecret
+    }
+
+    // It converts the JWT_SECRET from type "string | undefined" to type "string" to elimnate typescript error of being undefined
+    const jwtSecret = stringifyJWTSecret()
+
     const token = jwt.sign({ userId: user._id, role: user.role }, jwtSecret, {
       expiresIn: "14d",
     }) // jwt.sign(payload, signature, options), here, the options are also included in the paylod; the header isn't defined, alg is declared HS256 and the type is declared jwt by default
@@ -154,9 +162,16 @@ export const logIn = async (req: Request, res: Response) => {
       }
     }
 
-    const jwtSecret =
-      process.env.JWT_SECRET ||
-      "8f4a1c5d9e3b7a0f6c2d8e1b5f0a3c7d9e2b8f4a4a8f9c2d7e1b5f0a3c6d9e2b"
+    const stringifyJWTSecret = (): string => {
+      const jwtSecret = process.env.JWT_SECRET
+      if (!jwtSecret) {
+        throw new Error("JWT_SECRET is not defined in environment variables")
+      }
+      return jwtSecret
+    }
+
+    // It converts the JWT_SECRET from type "string | undefined" to type "string" to elimnate typescript error of being undefined
+    const jwtSecret = stringifyJWTSecret()
 
     let token: string | null = null
     if (user.role === "user") {
@@ -206,9 +221,16 @@ export const getMe = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Not authenticated" })
     }
 
-    const jwtSecret =
-      process.env.JWT_SECRET ||
-      "8f4a1c5d9e3b7a0f6c2d8e1b5f0a3c7d9e2b8f4a4a8f9c2d7e1b5f0a3c6d9e2b"
+    const stringifyJWTSecret = (): string => {
+      const jwtSecret = process.env.JWT_SECRET
+      if (!jwtSecret) {
+        throw new Error("JWT_SECRET is not defined in environment variables")
+      }
+      return jwtSecret
+    }
+
+    // It converts the JWT_SECRET from type "string | undefined" to type "string" to elimnate typescript error of being undefined
+    const jwtSecret = stringifyJWTSecret()
     const payload = jwt.verify(token, jwtSecret) as { userId: string }
 
     const user = await User.findById(payload.userId).select("-passwordHash")
