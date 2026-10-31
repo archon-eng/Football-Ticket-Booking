@@ -12,7 +12,6 @@ export interface User {
   _id: string
   username: string
   email: string
-  ID: string
   role: string
 }
 

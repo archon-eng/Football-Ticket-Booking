@@ -3,7 +3,6 @@ import { Document, Schema, model } from "mongoose"
 export interface IUser extends Document {
   username: string
   email: string
-  ID: string
   passwordHash: string
   role: String
   isVerified: boolean
@@ -14,7 +13,6 @@ export interface IUser extends Document {
 const userSchema = new Schema<IUser>(
   {
     username: { type: String, trim: true },
-    ID: { type: String, required: true },
     email: {
       type: String,
       required: true,

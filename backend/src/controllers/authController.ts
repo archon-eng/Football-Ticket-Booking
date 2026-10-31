@@ -53,7 +53,6 @@ export const signUp = async (req: Request, res: Response) => {
       user = await User.create({
         username: name,
         email,
-        ID,
         passwordHash,
         role,
       })
@@ -61,7 +60,6 @@ export const signUp = async (req: Request, res: Response) => {
       user = await User.create({
         username: name,
         email,
-        ID,
         passwordHash,
         role,
       })
@@ -105,7 +103,6 @@ export const signUp = async (req: Request, res: Response) => {
       user: {
         _id: user._id.toString(),
         username: user.username,
-        ID: user.ID,
         email: user.email,
         role: user.role,
       },
@@ -187,7 +184,6 @@ export const logIn = async (req: Request, res: Response) => {
       user: {
         _id: user._id.toString(),
         username: user.username,
-        ID: user.ID,
         email: user.email,
         role: user.role,
       },
