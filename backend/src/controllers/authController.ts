@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs"
 import { Request, Response } from "express"
 import jwt from "jsonwebtoken"
 import { type HydratedDocument } from "mongoose"
@@ -39,7 +38,11 @@ export const signUp = async (req: Request, res: Response) => {
         .json({ errors: z.flattenError(result.error).fieldErrors }) // a method to display error in simple language
     }
 
-    const { name, email, password, role } = result.data // making a new object for validation
+    let { name, email, role } = result.data // making a new object for validation
+
+    if (name === "") {
+      name = email.split("@")[0]
+    }
 
     const existingUser = await User.findOne({ email })
     if (existingUser) {
@@ -69,7 +72,6 @@ export const signUp = async (req: Request, res: Response) => {
         isApproved = await sendAdminApprovalEmail(
           user._id.toString(),
           email,
-          password,
           "signup",
         )
 
@@ -138,7 +140,6 @@ export const logIn = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid Email or Password" })
     }
 
-    const isMatch = await bcrypt.compare(password, user.passwordHash)
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid Email or Password" })
     }
@@ -234,7 +235,8 @@ export const getMe = async (req: Request, res: Response) => {
     const jwtSecret = stringifyJWTSecret()
     const payload = jwt.verify(token, jwtSecret) as { userId: string }
 
-    const user = await User.findById(payload.userId).select("-passwordHash")
+    // A place to resolve errors
+
     if (!user) {
       return res.status(404).json({ message: "User not found" })
     }

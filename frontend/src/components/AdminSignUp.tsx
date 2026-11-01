@@ -6,7 +6,6 @@ import { validateUserCredentials } from "../context/validateUserCredentials"
 export default function AdminSignUp() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [errors, setErrors] = useState<Record<string, string[]>>({})
   const [serverErrors, setServerErrors] = useState("")
   const [submitting, setSubmitting] = useState<boolean>(false)
@@ -26,7 +25,7 @@ export default function AdminSignUp() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ name, email, password, role }),
+        body: JSON.stringify({ name, email, role }),
       })
 
       const data = await res.json()
@@ -151,8 +150,7 @@ export default function AdminSignUp() {
                   type="password"
                   placeholder="••••••••"
                   required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={}
                   autoComplete="new-password"
                   className="w-full rounded-xl border border-slate-700 bg-slate-950/60 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-red-400 focus:ring-4 focus:ring-red-400/15"
                 />

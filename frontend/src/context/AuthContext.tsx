@@ -9,9 +9,9 @@ import { validateUserCredentials } from "./validateUserCredentials"
 
 // User type definition
 export interface User {
-  _id: string
   username: string
   email: string
+  _id: string
   role: string
 }
 
