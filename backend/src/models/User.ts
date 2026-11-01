@@ -22,7 +22,6 @@ const userSchema = new Schema<IUser>(
     },
     passwordHash: { type: String, required: true },
     role: { type: String, enum: ["user", "admin"] },
-    isVerified: { type: Boolean, default: (doc: IUser) => doc.role === "user" },
   },
   { timestamps: true },
 )

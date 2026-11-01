@@ -21,6 +21,15 @@ const logInSchema = z.object({
   role: z.enum(["user", "admin"]),
 })
 
+const fixtureSchema = z.object({
+  teamA: z.string().trim().min(1, { message: "Team A is required" }),
+  teamB: z.string().trim().min(1, { message: "Team B is required" }),
+  date: z.string().refine((date) => isNaN(Date.parse(date)) === false, {
+    message: "Invalid date format",
+  }),
+  Location: z.string().trim().min(1, { message: "Location is required" }),
+})
+
 export const signUp = async (req: Request, res: Response) => {
   try {
     const result = signUpSchema.safeParse(req.body)
@@ -39,12 +48,6 @@ export const signUp = async (req: Request, res: Response) => {
         .json({ message: "User already exists with this email" })
     }
 
-    // ID is generated from the email; username comes from the optional name.
-    const ID = email.split("@")[0] // split function makes an array, [0] means first index
-
-    const salt = await bcrypt.genSalt(10)
-    const passwordHash = await bcrypt.hash(password, salt)
-
     type AdminApprovalStatus = true | false
     let isApproved: AdminApprovalStatus = false
 
@@ -53,14 +56,12 @@ export const signUp = async (req: Request, res: Response) => {
       user = await User.create({
         username: name,
         email,
-        passwordHash,
         role,
       })
     } else if (role === "admin") {
       user = await User.create({
         username: name,
         email,
-        passwordHash,
         role,
       })
 
@@ -241,5 +242,11 @@ export const getMe = async (req: Request, res: Response) => {
     return res.status(200).json({ user })
   } catch (error) {
     return res.status(401).json({ message: "Invalid or expired token" })
+  }
+}
+
+export const newFixture = async (req: Request, res: Response) => {
+  try {
+
   }
 }
