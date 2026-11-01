@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs"
 import { Request, Response } from "express"
 import jwt from "jsonwebtoken"
 import { type HydratedDocument } from "mongoose"
@@ -6,7 +7,7 @@ import { User, type IUser } from "../models/User.js"
 import { sendAdminApprovalEmail } from "../utils/sendMail.js"
 
 const signUpSchema = z.object({
-  name: z.string().trim().optional(),
+  username: z.string().trim().optional(),
   email: z.email({ message: "Invalid email address" }),
   password: z
     .string()
@@ -38,11 +39,11 @@ export const signUp = async (req: Request, res: Response) => {
         .json({ errors: z.flattenError(result.error).fieldErrors }) // a method to display error in simple language
     }
 
-    let { name, email, password, role } = result.data // making a new object for validation
+    const { username, email, password, role } = result.data // making a new object for validation
 
-    if (name === "") {
-      name = email.split("@")[0]
-    }
+    const passwordHash = await bcrypt.hash(password, 10)
+
+    const name = username === "" ? email.split("@")[0] : username
 
     const existingUser = await User.findOne({ email })
     if (existingUser) {
@@ -59,12 +60,14 @@ export const signUp = async (req: Request, res: Response) => {
       user = await User.create({
         username: name,
         email,
+        passwordHash,
         role,
       })
     } else if (role === "admin") {
       user = await User.create({
         username: name,
         email,
+        passwordHash,
         role,
       })
 
@@ -141,6 +144,7 @@ export const logIn = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid Email or Password" })
     }
 
+    const isMatch = await bcrypt.compare(password, user.passwordHash)
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid Email or Password" })
     }
@@ -237,6 +241,7 @@ export const getMe = async (req: Request, res: Response) => {
     const payload = jwt.verify(token, jwtSecret) as { userId: string }
 
     // A place to resolve errors
+    const user = await User.findById(payload.userId).select("-passwordHash") // Exclude the passwordHash field from the response
 
     if (!user) {
       return res.status(404).json({ message: "User not found" })
