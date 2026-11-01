@@ -7,19 +7,14 @@ export function validateUserCredentials(data: unknown): User {
 
   const user = data as Record<string, unknown>
 
-  if (typeof user._id !== "string" || !user._id) {
-    throw new Error(
-      "Invalid user payload: missing required property '_id' or invalid type.",
-    )
-  }
   if (typeof user.email !== "string" || !user.email) {
     throw new Error(
       "Invalid user payload: missing required property 'email' or invalid type.",
     )
   }
-  if (typeof user.ID !== "string" || !user.ID) {
+  if (typeof user._id !== "string" || !user._id) {
     throw new Error(
-      "Invalid user payload: missing required property 'ID' or invalid type.",
+      "Invalid user payload: missing required property '_id' or invalid type.",
     )
   }
   if (
@@ -38,10 +33,9 @@ export function validateUserCredentials(data: unknown): User {
     user.username.trim() === "" ? "no_username" : user.username
 
   return {
-    _id: user._id,
     username: finalUsername,
     email: user.email,
-    ID: user.ID,
+    _id: user._id,
     role: user.role,
   }
 }

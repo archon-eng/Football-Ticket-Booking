@@ -7,7 +7,7 @@ import { User, type IUser } from "../models/User.js"
 import { sendAdminApprovalEmail } from "../utils/sendMail.js"
 
 const signUpSchema = z.object({
-  username: z.string().trim().optional(),
+  username: z.string().trim(),
   email: z.email({ message: "Invalid email address" }),
   password: z
     .string()
@@ -138,6 +138,8 @@ export const logIn = async (req: Request, res: Response) => {
     }
 
     const { email, password } = result.data
+
+    const passwordHash = await bcrypt.hash(password, 10)
 
     const user = await User.findOne({ email })
     if (!user) {
