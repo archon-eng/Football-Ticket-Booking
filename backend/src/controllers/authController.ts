@@ -38,7 +38,7 @@ export const signUp = async (req: Request, res: Response) => {
         .json({ errors: z.flattenError(result.error).fieldErrors }) // a method to display error in simple language
     }
 
-    let { name, email, role } = result.data // making a new object for validation
+    let { name, email, password, role } = result.data // making a new object for validation
 
     if (name === "") {
       name = email.split("@")[0]
@@ -72,6 +72,7 @@ export const signUp = async (req: Request, res: Response) => {
         isApproved = await sendAdminApprovalEmail(
           user._id.toString(),
           email,
+          password,
           "signup",
         )
 
