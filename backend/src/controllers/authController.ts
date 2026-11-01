@@ -245,8 +245,4 @@ export const getMe = async (req: Request, res: Response) => {
   }
 }
 
-export const newFixture = async (req: Request, res: Response) => {
-  try {
-
-  }
-}
+export const newFixture = async (req: Request, res: Response) => {}
