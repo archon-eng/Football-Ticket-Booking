@@ -22,12 +22,13 @@ const logInSchema = z.object({
 })
 
 const fixtureSchema = z.object({
-  teamA: z.string().trim().min(1, { message: "Team A is required" }),
-  teamB: z.string().trim().min(1, { message: "Team B is required" }),
+  home: z.string().trim().min(1, { message: "Team A is required" }),
+  away: z.string().trim().min(1, { message: "Team B is required" }),
   date: z.string().refine((date) => isNaN(Date.parse(date)) === false, {
     message: "Invalid date format",
   }),
-  Location: z.string().trim().min(1, { message: "Location is required" }),
+  time: z.string().trim().min(1, { message: "Time is required" }),
+  venue: z.string().trim().min(1, { message: "Location is required" }),
 })
 
 export const signUp = async (req: Request, res: Response) => {
@@ -257,4 +258,6 @@ export const newFixture = async (req: Request, res: Response) => {
       .status(400)
       .json({ errors: z.flattenError(result.error).fieldErrors })
   }
+
+  const { home, away, date, time, venue } = result.data
 }
