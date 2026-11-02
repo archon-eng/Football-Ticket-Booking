@@ -1,9 +1,12 @@
 import { Document, Schema, model } from "mongoose"
 
 interface IFixture extends Document {
-  teamA: string
-  teamB: string
+  competition: string
+  home: string
+  away: string
   date: Date
+  time: string
+  venue: string
   Location: string
   createdAt: Date
   updatedAt: Date
@@ -11,9 +14,12 @@ interface IFixture extends Document {
 
 const fixtureSchema = new Schema<IFixture>(
   {
-    teamA: { type: String, required: true },
-    teamB: { type: String, required: true },
+    competition: { type: String, required: true },
+    home: { type: String, required: true },
+    away: { type: String, required: true },
     date: { type: Date, required: true },
+    time: { type: String, required: true },
+    venue: { type: String, required: true },
     Location: { type: String, required: true },
   },
   { timestamps: true },
