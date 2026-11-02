@@ -5,7 +5,6 @@ export interface IUser extends Document {
   email: string
   passwordHash: string
   role: String
-  isVerified: boolean
   createdAt: Date
   updatedAt: Date
 }
