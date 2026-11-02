@@ -250,4 +250,11 @@ export const getMe = async (req: Request, res: Response) => {
   }
 }
 
-export const newFixture = async (req: Request, res: Response) => {}
+export const newFixture = async (req: Request, res: Response) => {
+  const result = fixtureSchema.safeParse(req.body)
+  if (!result.success) {
+    return res
+      .status(400)
+      .json({ errors: z.flattenError(result.error).fieldErrors })
+  }
+}
