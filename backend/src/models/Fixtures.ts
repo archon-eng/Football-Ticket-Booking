@@ -7,7 +7,6 @@ interface IFixture extends Document {
   date: Date
   time: string
   venue: string
-  Location: string
   createdAt: Date
   updatedAt: Date
 }
@@ -20,7 +19,6 @@ const fixtureSchema = new Schema<IFixture>(
     date: { type: Date, required: true },
     time: { type: String, required: true },
     venue: { type: String, required: true },
-    Location: { type: String, required: true },
   },
   { timestamps: true },
 )
