@@ -182,16 +182,11 @@ export const logIn = async (req: Request, res: Response) => {
     // It converts the JWT_SECRET from type "string | undefined" to type "string" to elimnate typescript error of being undefined
     const jwtSecret = stringifyJWTSecret()
 
-    let token: string | null = null
-    if (user.role === "user") {
-      token = jwt.sign({ userId: user._id, role: user.role }, jwtSecret, {
-        expiresIn: "14d",
-      })
-    } else if (user.role === "admin") {
-      token = jwt.sign({ userId: user._id, role: user.role }, jwtSecret, {
-        expiresIn: "14d",
-      })
-    }
+    let token: string = jwt.sign(
+      { userId: user._id, role: user.role },
+      jwtSecret,
+      { expiresIn: "14d" },
+    )
 
     if (!token) {
       return res.status(403).json({ message: "Invalid user role" })
@@ -206,9 +201,9 @@ export const logIn = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       user: {
-        _id: user._id.toString(),
         username: user.username,
         email: user.email,
+        _id: user._id.toString(),
         role: user.role,
       },
     })

@@ -11,7 +11,7 @@ export interface User {
   username: string
   email: string
   _id: string
-  role: string
+  role: "user" | "admin"
 }
 
 // Interface defining all values and functions provided by this context
