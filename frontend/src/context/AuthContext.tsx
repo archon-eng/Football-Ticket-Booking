@@ -1,3 +1,4 @@
+import validateUserCredentials from "./validateUserCredentials"
 import {
   createContext,
   useContext,
@@ -41,7 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (res.ok) {
           const data = await res.json()
-          setUser(data.user)
+          setUser(validateUserCredentials(data.user))
         } else {
           setUser(null)
         }

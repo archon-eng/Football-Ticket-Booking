@@ -17,11 +17,7 @@ export function validateUserCredentials(data: unknown): User {
       "Invalid user payload: missing required property '_id' or invalid type.",
     )
   }
-  if (
-    typeof user.role !== "string" ||
-    !["admin", "user"].includes(user.role) ||
-    !user.role
-  ) {
+  if (user.role !== "user" && user.role !== "admin") {
     throw new Error(
       "Invalid user payload: missing required property 'role' orinvalid type..",
     )
@@ -29,8 +25,7 @@ export function validateUserCredentials(data: unknown): User {
   if (typeof user.username !== "string") {
     throw new Error("Invalid user payload: Type of 'username' is invalid.")
   }
-  const finalUsername =
-    user.username.trim() === "" ? "no_username" : user.username
+  const finalUsername = user.username.trim()
 
   return {
     username: finalUsername,
