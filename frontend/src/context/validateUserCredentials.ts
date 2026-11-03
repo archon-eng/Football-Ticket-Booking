@@ -1,6 +1,6 @@
 import { type User } from "./AuthContext"
 
-export function validateUserCredentials(data: unknown): User {
+export default function validateUserCredentials(data: unknown): User {
   if (typeof data !== "object" || !data) {
     throw new Error("Invalid user payload: payload is empty or not an object.")
   }
