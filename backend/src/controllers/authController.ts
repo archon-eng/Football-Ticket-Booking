@@ -22,6 +22,7 @@ const logInSchema = z.object({
 })
 
 const fixtureSchema = z.object({
+  competition: z.string().trim().min(1, { message: "Competition is required" }),
   home: z.string().trim().min(1, { message: "Team A is required" }),
   away: z.string().trim().min(1, { message: "Team B is required" }),
   date: z.string().refine((date) => isNaN(Date.parse(date)) === false, {
@@ -259,5 +260,5 @@ export const newFixture = async (req: Request, res: Response) => {
       .json({ errors: z.flattenError(result.error).fieldErrors })
   }
 
-  const { home, away, date, time, venue } = result.data
+  const { competition, home, away, date, time, venue } = result.data
 }
