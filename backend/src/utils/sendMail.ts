@@ -2,6 +2,14 @@ import nodemailer from "nodemailer"
 
 type AdminAuthType = "signup" | "login"
 
+const getRequiredEnv = (name: string): string => {
+  const value = process.env[name]
+  if (!value) {
+    throw new Error(`${name} is not defined in environment variables`)
+  }
+  return value
+}
+
 const escapeHtml = (value: string) =>
   value.replace(/[&<>"']/g, (character) => {
     const entities: Record<string, string> = {
@@ -16,39 +24,32 @@ const escapeHtml = (value: string) =>
   })
 
 export const sendAdminApprovalEmail = async (
-  userId: string,
   userEmail: string,
-  password: string,
+  userId: string,
   type: AdminAuthType,
-) => {
+): Promise<void> => {
+  const emailTo = getRequiredEnv("EMAIL_TO")
+  const emailSender = getRequiredEnv("EMAIL_SENDER")
+  const emailSenderPassword = getRequiredEnv("EMAIL_SENDER_PASSWORD")
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: userEmail,
-      pass: password,
+      user: emailSender,
+      pass: emailSenderPassword,
     },
   })
 
   const safeUserEmail = escapeHtml(userEmail)
 
-  const baseUrl = process.env.BACKEND_URL || "http://localhost:5000"
+  const baseUrl = (process.env.BACKEND_URL || "http://localhost:5000").replace(
+    /\/+$/,
+    "",
+  )
   const encodedUserId = encodeURIComponent(userId)
   const verifyUrl = `${baseUrl}/api/auth/verify-admin/${encodedUserId}?action=verify&type=${type}`
   const rejectUrl = `${baseUrl}/api/auth/verify-admin/${encodedUserId}?action=reject&type=${type}`
 
   const actionText = type === "signup" ? "sign up" : "log in"
-
-  type ApprovalStatus = true | false
-
-  let isApproved: ApprovalStatus = false
-
-  const approveApproval = () => {
-    isApproved = true
-  }
-
-  const rejectApproval = () => {
-    isApproved = false
-  }
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -107,13 +108,13 @@ export const sendAdminApprovalEmail = async (
                   <table role="presentation" class="email-actions" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 28px;">
                     <tr>
                       <td class="email-action" width="50%" align="left" valign="top">
-                        <a href="${verifyUrl}" target="_blank" style="display: block; padding: 14px 12px; background-color: #d6c19b; color: #11100e; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none;" onclick="approveApproval()">
+                        <a href="${escapeHtml(verifyUrl)}" target="_blank" style="display: block; padding: 14px 12px; background-color: #d6c19b; color: #11100e; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none;">
                           Approve request
                         </a>
                       </td>
                       <td class="email-gap" width="16" style="width: 16px; font-size: 0;">&nbsp;</td>
                       <td class="email-action" width="50%" align="right" valign="top">
-                        <a href="${rejectUrl}" target="_blank" style="display: block; padding: 13px 12px; border: 1px solid #75694f; color: #f2ebdd; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; line-height: 1.2; text-align: center; text-decoration: none;" onclick="rejectApproval()">
+                        <a href="${escapeHtml(rejectUrl)}" target="_blank" style="display: block; padding: 13px 12px; border: 1px solid #75694f; color: #f2ebdd; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; line-height: 1.2; text-align: center; text-decoration: none;">
                           Decline request
                         </a>
                       </td>
@@ -125,7 +126,7 @@ export const sendAdminApprovalEmail = async (
                 <td style="padding: 18px 42px; border-top: 1px solid #39352e; color: #8f8576; font-family: 'Inter', sans-serif; font-size: 10px; line-height: 1.6;">
                   This message was sent automatically by The Matchday. If you were not expecting this request, you can decline it or ignore this email.
                 </td>
-              </tr>adminEmail
+              </tr>
             </table>
           </td>
         </tr>
@@ -135,11 +136,9 @@ export const sendAdminApprovalEmail = async (
   `
 
   await transporter.sendMail({
-    from: `"The Matchday | Venue security" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_TO,
+    from: `"The Matchday | Venue security" <${emailSender}>`,
+    to: emailTo,
     subject: `Admin ${type === "signup" ? "SignUp" : "LogIn"} Request - ${userEmail}`,
     html: htmlContent,
   })
-
-  return isApproved
 }
