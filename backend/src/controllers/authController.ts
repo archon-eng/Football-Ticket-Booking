@@ -107,9 +107,9 @@ export const signUp = async (req: Request, res: Response) => {
 
     return res.status(201).json({
       user: {
-        _id: user._id.toString(),
         username: user.username,
         email: user.email,
+        _id: user._id.toString(),
         role: user.role,
       },
     })
@@ -269,7 +269,17 @@ export const newFixture = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Fixture is required!" })
     }
 
-    return res.status(201).json(fixture)
+    return res.status(201).json({
+      fixture: {
+        competition: fixture.competition,
+        home: fixture.home,
+        away: fixture.away,
+        date: fixture.date,
+        time: fixture.time,
+        venue: fixture.venue,
+        _id: fixture._id.toString(),
+      },
+    })
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" })
   }
