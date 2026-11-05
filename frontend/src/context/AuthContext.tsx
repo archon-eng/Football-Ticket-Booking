@@ -76,6 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           method: "GET",
           credentials: "include",
         })
+        const data = await res.arrayBuffer()
       } catch (error) {
         console.error("Failed to fetch fixtures:", error)
         setFixtures(null)
