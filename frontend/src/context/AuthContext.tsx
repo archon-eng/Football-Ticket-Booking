@@ -34,7 +34,7 @@ interface AuthContextUserType {
 
 interface AuthContextFixturesType {
   fixtures: Fixture[] | null
-  setFixture: (fixtures: Fixture[] | null) => void
+  setFixtures: (fixtures: Fixture[] | null) => void
   loading: boolean
 }
 
@@ -45,6 +45,7 @@ const AuthContext = createContext<AuthContextUserType | undefined>(undefined)
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
+  const [fixtures, setFixtures] = useState<Fixture[] | null>(null)
 
   // Fetch current user session on app start / page refresh
   useEffect(() => {
@@ -69,7 +70,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     }
 
+    const fetchFixtures = async () => {
+      try {
+        const res = await fetch("/api/auth/get_fixtures", {
+          method: "GET",
+          credentials: "include",
+        })
+      } catch (error) {
+        console.error("Failed to fetch fixtures:", error)
+        setFixtures(null)
+      }
+    }
+
     fetchMe()
+    fetchFixtures()
   }, [])
 
   // Centralized logout handler
