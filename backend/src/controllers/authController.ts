@@ -3,7 +3,7 @@ import { Request, Response } from "express"
 import jwt from "jsonwebtoken"
 import { type HydratedDocument } from "mongoose"
 import { z } from "zod"
-import { Fixture } from "../models/Fixtures.js"
+import { Fixture, type IFixture } from "../models/Fixtures.js"
 import { User, type IUser } from "../models/User.js"
 import { sendAdminApprovalEmail } from "../utils/sendMail.js"
 
@@ -255,7 +255,7 @@ export const newFixture = async (req: Request, res: Response) => {
         .json({ message: "Fixture already exists with these details." })
     }
 
-    let fixture = await Fixture.create({
+    let fixture: IFixture = await Fixture.create({
       competition,
       home,
       away,
@@ -263,6 +263,12 @@ export const newFixture = async (req: Request, res: Response) => {
       time,
       venue,
     })
+
+    if (!fixture) {
+      return res.status(400).json({ message: "Fixture is required!" })
+    }
+
+    return res.status(201).json(fixture)
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" })
   }
