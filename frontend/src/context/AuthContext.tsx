@@ -15,16 +15,31 @@ export interface User {
   role: "user" | "admin"
 }
 
+export interface Fixture {
+  competition: string
+  home: string
+  away: string
+  date: Date
+  time: string
+  venue: string
+}
+
 // Interface defining all values and functions provided by this context
-interface AuthContextType {
+interface AuthContextUserType {
   user: User | null
   setUser: (user: User | null) => void
   loading: boolean
   logout: () => Promise<void>
 }
 
+interface AuthContextFixturesType {
+  fixtures: Fixture[] | null
+  setFixture: (fixtures: Fixture[] | null) => void
+  loading: boolean
+}
+
 // 1. Create Context with an undefined default value for safety
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextUserType | undefined>(undefined)
 
 // 2. AuthProvider Component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -81,7 +96,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 // 3. Custom Hook to easily consume AuthContext anywhere in the app
 // This hook is intentionally exported with the provider from this context module.
 // eslint-disable-next-line react-refresh/only-export-components
-export const useAuth = (): AuthContextType => {
+export const useAuth = (): AuthContextUserType => {
   const context = useContext(AuthContext)
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider")
