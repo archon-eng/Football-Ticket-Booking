@@ -1,6 +1,6 @@
 import { Document, Schema, model } from "mongoose"
 
-interface IFixture extends Document {
+export interface IFixture extends Document {
   competition: string
   home: string
   away: string

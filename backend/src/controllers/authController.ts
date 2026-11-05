@@ -3,6 +3,7 @@ import { Request, Response } from "express"
 import jwt from "jsonwebtoken"
 import { type HydratedDocument } from "mongoose"
 import { z } from "zod"
+import { Fixture } from "../models/Fixtures.js"
 import { User, type IUser } from "../models/User.js"
 import { sendAdminApprovalEmail } from "../utils/sendMail.js"
 
@@ -230,12 +231,39 @@ export const getMe = async (req: Request, res: Response) => {
 }
 
 export const newFixture = async (req: Request, res: Response) => {
-  const result = fixtureSchema.safeParse(req.body)
-  if (!result.success) {
-    return res
-      .status(400)
-      .json({ errors: z.flattenError(result.error).fieldErrors })
-  }
+  try {
+    const result = fixtureSchema.safeParse(req.body)
+    if (!result.success) {
+      return res
+        .status(400)
+        .json({ errors: z.flattenError(result.error).fieldErrors })
+    }
 
-  const { competition, home, away, date, time, venue } = result.data
+    const { competition, home, away, date, time, venue } = result.data
+
+    const existingFixture = await Fixture.findOne({
+      competition,
+      home,
+      away,
+      date,
+      time,
+      venue,
+    })
+    if (existingFixture) {
+      return res
+        .status(409)
+        .json({ message: "Fixture already exists with these details." })
+    }
+
+    let fixture = await Fixture.create({
+      competition,
+      home,
+      away,
+      date,
+      time,
+      venue,
+    })
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" })
+  }
 }
