@@ -284,3 +284,12 @@ export const newFixture = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Internal server error" })
   }
 }
+
+export const getFixtures = async (_req: Request, res: Response) => {
+  try {
+    const fixtures = await Fixture.find().sort({ date: 1, time: 1 })
+    return res.status(200).json({ fixtures })
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" })
+  }
+}
