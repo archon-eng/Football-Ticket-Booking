@@ -79,7 +79,7 @@ export const signUp = async (req: Request, res: Response) => {
       }
     }
 
-    if (!user) {
+    if (!user || user === null) {
       return res.status(400).json({ message: "User is required!" })
     }
 
@@ -255,7 +255,8 @@ export const newFixture = async (req: Request, res: Response) => {
         .json({ message: "Fixture already exists with these details." })
     }
 
-    let fixture: IFixture = await Fixture.create({
+    let fixture: HydratedDocument<IFixture> | null = null
+    fixture = await Fixture.create({
       competition,
       home,
       away,
@@ -264,7 +265,7 @@ export const newFixture = async (req: Request, res: Response) => {
       venue,
     })
 
-    if (!fixture) {
+    if (!fixture || fixture === null) {
       return res.status(400).json({ message: "Fixture is required!" })
     }
 
