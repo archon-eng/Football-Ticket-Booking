@@ -35,7 +35,7 @@ interface AuthContextUserType {
 interface AuthContextFixturesType {
   fixtures: Fixture[] | null
   setFixtures: (fixtures: Fixture[] | null) => void
-  loading: boolean
+  loadingFixtures: boolean
 }
 
 // 1. Create Context with an undefined default value for safety
