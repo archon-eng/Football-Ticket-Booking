@@ -46,6 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [fixtures, setFixtures] = useState<Fixture[] | null>(null)
+  const [loadingFixtures, setLoadingFixtures] = useState<boolean>(true)
 
   // Fetch current user session on app start / page refresh
   useEffect(() => {
