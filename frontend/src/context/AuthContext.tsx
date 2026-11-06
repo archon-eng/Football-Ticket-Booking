@@ -39,7 +39,9 @@ interface AuthContextFixturesType {
 }
 
 // 1. Create Context with an undefined default value for safety
-const AuthContext = createContext<AuthContextUserType | undefined>(undefined)
+const AuthContext = createContext<
+  (AuthContextUserType & AuthContextFixturesType) | undefined
+>(undefined)
 
 // 2. AuthProvider Component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -77,10 +79,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           method: "GET",
           credentials: "include",
         })
-        const data = await res.arrayBuffer()
+        const data = await res.json()
+        setFixtures(data.fixtures)
       } catch (error) {
         console.error("Failed to fetch fixtures:", error)
         setFixtures(null)
+      } finally {
+        setLoadingFixtures(false)
       }
     }
 
@@ -103,7 +108,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        loading,
+        logout,
+        fixtures,
+        setFixtures,
+        loadingFixtures,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )
@@ -112,7 +127,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 // 3. Custom Hook to easily consume AuthContext anywhere in the app
 // This hook is intentionally exported with the provider from this context module.
 // eslint-disable-next-line react-refresh/only-export-components
-export const useAuth = (): AuthContextUserType => {
+export const useAuth = (): AuthContextUserType & AuthContextFixturesType => {
   const context = useContext(AuthContext)
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider")
