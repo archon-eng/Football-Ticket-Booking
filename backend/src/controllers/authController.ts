@@ -130,8 +130,6 @@ export const logIn = async (req: Request, res: Response) => {
 
     const { email, password } = result.data
 
-    const passwordHash = await bcrypt.hash(password, 10)
-
     const user = await User.findOne({ email })
     if (!user) {
       return res.status(401).json({ message: "Invalid Email or Password" })
