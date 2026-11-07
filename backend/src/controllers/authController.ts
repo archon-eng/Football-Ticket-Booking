@@ -128,16 +128,14 @@ export const logIn = async (req: Request, res: Response) => {
         .json({ errors: result.error.flatten().fieldErrors })
     }
 
-    const { email, password } = result.data
-
-    const passwordHash = await bcrypt.hash(password, 10)
+    const { email, _id } = result.data
 
     const user = await User.findOne({ email })
     if (!user) {
       return res.status(401).json({ message: "Invalid Email or Password" })
     }
 
-    const isMatch = await bcrypt.compare(password, user.passwordHash)
+    const isMatch = await
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid Email or Password" })
     }
