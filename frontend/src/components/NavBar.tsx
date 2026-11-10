@@ -35,7 +35,7 @@ export default function NavBar() {
           <NavLink to="/dashboard" className={getNavClass}>
             Discover
           </NavLink>
-          <NavLink to="/booking" className={getNavClass}>
+          <NavLink to="/venues" className={getNavClass}>
             Venues
           </NavLink>
           <NavLink to="/fixtures" className={getNavClass}>

@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation } from "react-router-dom"
+import { Link } from "react-router-dom"
 import camp_nou from "../assets/book/camp_nou.webp"
 import education_city_stadium from "../assets/book/education_city_stadium.jpeg"
 import san_sario from "../assets/book/san_sairo.webp"
@@ -49,13 +49,7 @@ const stadiums = [
   },
 ]
 
-export default function Booking() {
-  const location = useLocation()
-
-  if (location.pathname === "/booking/form") {
-    return <Outlet />
-  }
-
+export default function Venue() {
   return (
     <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 lg:px-12 lg:py-16">
       <header className="max-w-3xl border-b border-border pb-8">

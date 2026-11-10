@@ -1,8 +1,7 @@
 import { Navigate, NavLink, Outlet, Route, Routes } from "react-router-dom"
 import AdminLogIn from "./components/AdminLogIn"
 import AdminSignUp from "./components/AdminSignUp"
-import Booking from "./components/Venue.tsx"
-import BookingRecipt from "./components/BookingForm"
+import BookingForm from "./components/BookingForm"
 import Dashboard from "./components/Dashboard"
 import FAQ from "./components/FAQ"
 import Fixtures from "./components/Fixtures"
@@ -12,6 +11,7 @@ import NavBar from "./components/NavBar"
 import SignUp from "./components/SignUp"
 import UserLogIn from "./components/UserLogIn"
 import UserSignUp from "./components/UserSignUp"
+import Venue from "./components/Venue"
 
 function Layout() {
   return (
@@ -36,7 +36,7 @@ function Layout() {
               Fixtures
             </NavLink>
             <NavLink
-              to="/booking"
+              to="/venues"
               className="transition-colors hover:text-beige"
             >
               Venues
@@ -67,9 +67,9 @@ function App() {
             <Route path="user_login" element={<UserLogIn />} />
           </Route>
           <Route path="fixtures" element={<Fixtures />} />
-          <Route path="booking" element={<Booking />}>
-            <Route path="form" element={<BookingRecipt />} />
-          </Route>
+          <Route path="venues" element={<Venue />} />
+          <Route path="booking" element={<Navigate to="/venues" replace />} />
+          <Route path="booking/form" element={<BookingForm />} />
           <Route path="guideline" element={<Guidline />} />
           <Route path="faq" element={<FAQ />} />
         </Route>

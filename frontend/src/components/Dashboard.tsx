@@ -65,7 +65,7 @@ export default function Dashboard() {
               Explore fixtures
             </Link>
             <Link
-              to="/booking"
+              to="/venues"
               className="inline-flex min-h-12 items-center justify-center border border-beige/50 px-6 text-sm font-semibold text-beige transition-colors hover:border-beige hover:bg-beige/10"
             >
               Discover venues
@@ -91,7 +91,7 @@ export default function Dashboard() {
             </h2>
           </div>
           <Link
-            to="/booking"
+            to="/venues"
             className="w-fit border-b border-champagne/60 pb-1 text-sm font-medium text-beige transition-colors hover:border-champagne"
           >
             View all venues <span aria-hidden="true">↗</span>
@@ -101,7 +101,7 @@ export default function Dashboard() {
         <div className="grid gap-5 md:grid-cols-3">
           {featuredVenues.map((venue, index) => (
             <Link
-              to="/booking"
+              to="/venues"
               key={venue.title}
               className="group relative isolate flex aspect-4/5 min-h-80 items-end overflow-hidden border border-border-subtle"
             >
