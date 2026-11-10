@@ -1,33 +1,9 @@
-import { Link } from "react-router-dom"
-
-const fixtures = [
-  {
-    competition: "Champions League",
-    home: "Real Madrid",
-    away: "Manchester City",
-    date: "Tonight",
-    time: "21:00",
-    venue: "Santiago Bernabeu",
-  },
-  {
-    competition: "Europa League",
-    home: "FC Barcelona",
-    away: "Paris Saint-Germain",
-    date: "Tomorrow",
-    time: "20:45",
-    venue: "Estadi Olimpic",
-  },
-  {
-    competition: "Conference League",
-    home: "Bayern Munich",
-    away: "Inter Milan",
-    date: "Saturday, 24 Aug",
-    time: "18:30",
-    venue: "Allianz Arena",
-  },
-]
+import { useAuth } from "../context/AuthContext"
+import FixtureVariable from "./ui/FixtureVariable"
 
 export default function Fixtures() {
+  const { fixtures, loadingFixtures } = useAuth()
+
   return (
     <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 lg:px-12 lg:py-16">
       <section>
@@ -48,6 +24,22 @@ export default function Fixtures() {
         <p className="mt-6 text-xs leading-5 text-text-muted">
           Fixture details and availability are subject to change.
         </p>
+
+        {loadingFixtures ? (
+          <p className="py-10 text-sm text-text-muted" role="status">
+            Loading fixtures...
+          </p>
+        ) : fixtures === null ? (
+          <p className="py-10 text-sm text-text-muted" role="status">
+            Fixtures are unavailable right now. Please try again later.
+          </p>
+        ) : fixtures.length === 0 ? (
+          <p className="py-10 text-sm text-text-muted">
+            No fixtures are available at the moment.
+          </p>
+        ) : (
+          <FixtureVariable fixtures={fixtures} />
+        )}
       </section>
     </div>
   )
