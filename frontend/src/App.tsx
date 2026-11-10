@@ -11,7 +11,7 @@ import NavBar from "./components/NavBar"
 import SignUp from "./components/SignUp"
 import UserLogIn from "./components/UserLogIn"
 import UserSignUp from "./components/UserSignUp"
-import Venue from "./components/Venue"
+import Venue from "./components/Venues"
 
 function Layout() {
   return (
