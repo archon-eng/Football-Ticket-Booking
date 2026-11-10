@@ -1,7 +1,7 @@
 import { Navigate, NavLink, Outlet, Route, Routes } from "react-router-dom"
 import AdminLogIn from "./components/AdminLogIn"
 import AdminSignUp from "./components/AdminSignUp"
-import Booking from "./components/Booking.tsx"
+import Booking from "./components/Venue.tsx"
 import BookingRecipt from "./components/BookingForm"
 import Dashboard from "./components/Dashboard"
 import FAQ from "./components/FAQ"
