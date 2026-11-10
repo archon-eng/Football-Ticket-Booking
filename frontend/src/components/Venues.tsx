@@ -49,7 +49,7 @@ const stadiums = [
   },
 ]
 
-export default function Venue() {
+export default function Venues() {
   return (
     <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 lg:px-12 lg:py-16">
       <header className="max-w-3xl border-b border-border pb-8">

@@ -11,7 +11,7 @@ import NavBar from "./components/NavBar"
 import SignUp from "./components/SignUp"
 import UserLogIn from "./components/UserLogIn"
 import UserSignUp from "./components/UserSignUp"
-import Venue from "./components/Venues"
+import Venues from "./components/Venues"
 
 function Layout() {
   return (
@@ -67,7 +67,7 @@ function App() {
             <Route path="user_login" element={<UserLogIn />} />
           </Route>
           <Route path="fixtures" element={<Fixtures />} />
-          <Route path="venues" element={<Venue />} />
+          <Route path="venues" element={<Venues />} />
           <Route path="booking" element={<Navigate to="/venues" replace />} />
           <Route path="booking/form" element={<BookingForm />} />
           <Route path="guideline" element={<Guidline />} />
