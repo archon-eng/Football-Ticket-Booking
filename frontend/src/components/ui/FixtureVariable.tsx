@@ -6,22 +6,26 @@ interface FixtureVariableProps {
 }
 
 const formatFixtureDate = (date: Fixture["date"]) => {
-  const parsedDate = new Date(date.toString())
-  if (Number.isNaN(parsedDate.getTime())) return date.toString()
+  const parsedDate = new Date(date)
+  if (Number.isNaN(parsedDate.getTime())) return date
 
   return new Intl.DateTimeFormat(undefined, {
     weekday: "short",
     day: "numeric",
     month: "short",
+    timeZone: "UTC",
   }).format(parsedDate)
 }
 
 export default function FixtureVariable({ fixtures }: FixtureVariableProps) {
   return (
     <div className="divide-y divide-border-subtle">
-      {fixtures.map((fixture) => (
+      {fixtures.map((fixture, index) => (
         <article
-          key={`${fixture.home}-${fixture.away}-${fixture.date}`}
+          key={
+            fixture._id ??
+            `${fixture.home}-${fixture.away}-${fixture.date}-${index}`
+          }
           className="grid gap-6 py-7 transition-colors sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:py-9"
         >
           <div className="grid gap-5 sm:grid-cols-[7rem_minmax(0,1fr)_minmax(10rem,auto)] sm:items-center sm:gap-8">
