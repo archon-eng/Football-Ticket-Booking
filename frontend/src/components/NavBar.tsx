@@ -32,19 +32,19 @@ export default function NavBar() {
           aria-label="Main navigation"
           className="col-span-2 row-start-2 -mx-4 flex items-center justify-center gap-0.5 overflow-x-auto border-t border-border-subtle px-2 py-1 sm:col-span-1 sm:row-start-auto sm:mx-0 sm:gap-3 sm:overflow-visible sm:border-0 sm:px-0 sm:py-0"
         >
-          <NavLink to="/dashboard" className={getNavClass}>
+          <NavLink to="/dashboard" className={navClass}>
             Discover
           </NavLink>
-          <NavLink to="/venues" className={getNavClass}>
+          <NavLink to="/venues" className={navClass}>
             Venues
           </NavLink>
-          <NavLink to="/fixtures" className={getNavClass}>
+          <NavLink to="/fixtures" className={navClass}>
             Fixtures
           </NavLink>
-          <NavLink to="/guideline" className={`${getNavClass} hidden md:block`}>
+          <NavLink to="/guideline" className={`${navClass} hidden md:block`}>
             The experience
           </NavLink>
-          <NavLink to="/faq" className={`${getNavClass} hidden lg:block`}>
+          <NavLink to="/faq" className={`${navClass} hidden lg:block`}>
             Help
           </NavLink>
         </nav>
