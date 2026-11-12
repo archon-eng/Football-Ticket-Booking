@@ -47,7 +47,7 @@ export default function FixtureVariable({ fixtures }: FixtureVariableProps) {
                   {fixture.home}
                 </h2>
                 <span className="text-xs uppercase tracking-[0.16em] text-text-muted">
-                  v
+                  vs
                 </span>
                 <h2 className="font-display text-xl font-semibold tracking-normal text-beige sm:text-2xl">
                   {fixture.away}
