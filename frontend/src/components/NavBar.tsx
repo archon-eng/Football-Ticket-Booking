@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext"
 export default function NavBar() {
   const { user, loading, logout } = useAuth()
 
-  const getNavClass = ({ isActive }: { isActive: boolean }) =>
+  const navClass = ({ isActive }: { isActive: boolean }) =>
     `relative px-3 py-2 text-sm font-medium transition-colors after:absolute after:bottom-0 after:left-3 after:h-px after:w-[calc(100%-1.5rem)] after:origin-center after:scale-x-0 after:bg-champagne after:transition-transform after:duration-300 hover:text-beige hover:after:scale-x-100 ${
       isActive ? "text-beige after:scale-x-100" : "text-muted"
     }`
