@@ -113,6 +113,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const fetchMe = async () => {
       try {
+        setUser(null)
+
         const res = await fetch("/api/auth/me", {
           method: "GET",
           credentials: "include", // Sends the httpOnly JWT cookie automatically
