@@ -76,7 +76,7 @@ export default function NavBar() {
               className="flex items-center gap-2 border border-champagne/50 px-3 py-2 text-xs font-semibold text-beige transition-colors hover:bg-champagne hover:text-background sm:px-4"
             >
               <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
-              <span>Sign in</span>
+              <span>Sign In</span>
             </NavLink>
           )}
         </div>
