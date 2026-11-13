@@ -29,7 +29,10 @@ export default function AdminLogIn() {
       const data = await res.json()
 
       if (!res.ok) {
-        setServerError(data.message || "Login failed")
+        setServerError(
+          data.message ||
+            "We couldn't verify your credentials. Please try again.",
+        )
         return
       }
 
@@ -43,8 +46,8 @@ export default function AdminLogIn() {
       }
 
       navigate("/dashboard")
-    } catch (error) {
-      setServerError(error instanceof Error ? error.message : "Login failed")
+    } catch {
+      setServerError("We couldn't complete your sign-in. Please try again shortly.")
     } finally {
       setSubmitting(false)
     }
@@ -59,14 +62,13 @@ export default function AdminLogIn() {
           <div className="absolute -right-10 top-1/3 h-40 w-40 rounded-full bg-champagne/10 blur-3xl" />
           <div className="relative">
             <span className="inline-flex rounded-full border border-champagne/30 bg-background/40 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-champagne backdrop-blur-md">
-              Admin account
+              Venue administration
             </span>
             <h1 className="mt-6 max-w-md font-display text-4xl font-semibold leading-tight tracking-normal text-beige sm:text-5xl">
-              Welcome back.
+              Welcome back to matchday.
             </h1>
             <p className="mt-5 max-w-sm text-base leading-relaxed text-muted">
-              Sign in to pick up where you left off and keep your match-day
-              plans together.
+              Sign in to manage fixtures, venues, and ticketing with care.
             </p>
           </div>
         </div>
@@ -75,10 +77,10 @@ export default function AdminLogIn() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-champagne">
-                Administrator sign in
+                Administrator access
               </p>
               <h2 className="mt-2 font-display text-2xl font-semibold tracking-normal text-beige">
-                Manage your venue
+                Sign in to your account
               </h2>
             </div>
             <NavLink
@@ -137,7 +139,7 @@ export default function AdminLogIn() {
               disabled={submitting}
               className="luxury-button luxury-button-primary w-full rounded-xl px-5 py-3.5 transition hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-beige active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {submitting ? "Logging in..." : "Log In"}
+              {submitting ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
@@ -152,12 +154,12 @@ export default function AdminLogIn() {
 
           <div className="mt-6 text-center text-sm text-muted">
             <p className="flex items-center justify-center gap-1.5">
-              <span>Need an admin account?</span>
+              <span>Need administrator access?</span>
               <NavLink
                 to="/signup/admin_signup"
                 className="font-semibold text-champagne hover:text-beige hover:underline"
               >
-                Create one
+                Create an account
               </NavLink>
             </p>
           </div>

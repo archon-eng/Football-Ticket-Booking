@@ -49,7 +49,10 @@ export const sendAdminApprovalEmail = async (
   const verifyUrl = `${baseUrl}/api/auth/verify-admin/${encodedUserId}?action=verify&type=${type}`
   const rejectUrl = `${baseUrl}/api/auth/verify-admin/${encodedUserId}?action=reject&type=${type}`
 
-  const actionText = type === "signup" ? "sign up" : "log in"
+  const actionText =
+    type === "signup"
+      ? "create an administrator account"
+      : "sign in to an administrator account"
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -57,7 +60,7 @@ export const sendAdminApprovalEmail = async (
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Administrator access request</title>
+      <title>Administrator access review | The Matchday</title>
       <style>
         @media only screen and (max-width: 560px) {
           .email-shell { padding: 20px 12px !important; }
@@ -71,7 +74,7 @@ export const sendAdminApprovalEmail = async (
       <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; background-color: #11100e;">
         <tr>
           <td class="email-shell" align="center" style="padding: 44px 20px;">
-            <table role="presentation" class="email-card" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 560px; background-color: #1b1915; border: 1px solid #39352e;">
+            <table role="presentation" class="email-card" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 560px; background-color: #1b1915; border: 1px solid #39352e; border-radius: 18px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);">
               <tr>
                 <td height="3" style="height: 3px; background-color: #d6c19b; font-size: 0; line-height: 0;">&nbsp;</td>
               </tr>
@@ -86,17 +89,17 @@ export const sendAdminApprovalEmail = async (
                         <p style="margin: 0; color: #f2ebdd; font-family: 'Manrope', serif; font-size: 12px; font-weight: 700; letter-spacing: 1px;">THE MATCHDAY</p>
                         <p style="margin: 3px 0 0; color: #a79b89; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;">Ticket house</p>
                       </td>
-                      <td align="right" valign="middle" style="color: #d6c19b; font-size: 9px; letter-spacing: 1.2px; text-transform: uppercase;">Venue security</td>
+                      <td align="right" valign="middle" style="color: #d6c19b; font-size: 9px; letter-spacing: 1.2px; text-transform: uppercase;">Secure access review</td>
                     </tr>
                   </table>
 
-                  <p style="margin: 38px 0 12px; color: #d6c19b; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">Administrator review</p>
-                  <h1 style="margin: 0; color: #f2ebdd; font-family: 'Manrope', serif; font-size: 30px; font-weight: 600; line-height: 1.2;">Access request</h1>
+                  <p style="margin: 38px 0 12px; color: #d6c19b; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">The Matchday · Venue administration</p>
+                  <h1 style="margin: 0; color: #f2ebdd; font-family: 'Manrope', serif; font-size: 30px; font-weight: 600; line-height: 1.2;">Administrator access review</h1>
                   <p style="margin: 17px 0 26px; color: #c9c0b1; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.7;">
-                    An administrator has requested to <strong style="color: #f2ebdd; font-weight: 600;">${actionText}</strong>. Review the account details below and choose an action.
+                    A request to <strong style="color: #f2ebdd; font-weight: 600;">${actionText}</strong> is ready for your review. Confirm the account details below, then approve or decline this request.
                   </p>
 
-                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #11100e; border: 1px solid #39352e;">
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #11100e; border: 1px solid #39352e; border-radius: 10px;">
                     <tr>
                       <td style="padding: 16px 18px;">
                         <p style="margin: 0 0 7px; color: #a79b89; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;">Account email</p>
@@ -108,13 +111,13 @@ export const sendAdminApprovalEmail = async (
                   <table role="presentation" class="email-actions" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 28px;">
                     <tr>
                       <td class="email-action" width="50%" align="left" valign="top">
-                        <a href="${escapeHtml(verifyUrl)}" target="_blank" style="display: block; padding: 14px 12px; background-color: #d6c19b; color: #11100e; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none;">
+                        <a href="${escapeHtml(verifyUrl)}" target="_blank" style="display: block; padding: 14px 12px; background-color: #d6c19b; border-radius: 8px; color: #11100e; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none;">
                           Approve request
                         </a>
                       </td>
                       <td class="email-gap" width="16" style="width: 16px; font-size: 0;">&nbsp;</td>
                       <td class="email-action" width="50%" align="right" valign="top">
-                        <a href="${escapeHtml(rejectUrl)}" target="_blank" style="display: block; padding: 13px 12px; border: 1px solid #75694f; color: #f2ebdd; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; line-height: 1.2; text-align: center; text-decoration: none;">
+                        <a href="${escapeHtml(rejectUrl)}" target="_blank" style="display: block; padding: 13px 12px; border: 1px solid #75694f; border-radius: 8px; color: #f2ebdd; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; line-height: 1.2; text-align: center; text-decoration: none;">
                           Decline request
                         </a>
                       </td>
@@ -124,7 +127,7 @@ export const sendAdminApprovalEmail = async (
               </tr>
               <tr>
                 <td style="padding: 18px 42px; border-top: 1px solid #39352e; color: #8f8576; font-family: 'Inter', sans-serif; font-size: 10px; line-height: 1.6;">
-                  This message was sent automatically by The Matchday. If you were not expecting this request, you can decline it or ignore this email.
+                  The Matchday generated this notice automatically. If you were not expecting this request, you may decline it or ignore this email.
                 </td>
               </tr>
             </table>
@@ -136,9 +139,9 @@ export const sendAdminApprovalEmail = async (
   `
 
   await transporter.sendMail({
-    from: `"The Matchday | Venue security" <${emailSender}>`,
+    from: `"The Matchday | Access review" <${emailSender}>`,
     to: emailTo,
-    subject: `Admin ${type === "signup" ? "SignUp" : "LogIn"} Request - ${userEmail}`,
+    subject: `Administrator ${type === "signup" ? "account" : "sign-in"} access review - ${userEmail}`,
     html: htmlContent,
   })
 }

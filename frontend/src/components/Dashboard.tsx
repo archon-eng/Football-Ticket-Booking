@@ -14,20 +14,20 @@ const featuredVenues: FeaturedVenue[] = [
   {
     src: stadiumImage,
     title: "The home of football",
-    description: "An occasion made for the grandest stage.",
+    description: "An evening on one of football's grandest stages.",
     location: "London, England",
   },
   {
     src: santiagoImage,
     title: "A night in Madrid",
-    description: "A modern icon, lit for the big occasion.",
+    description: "A modern classic, ready for the occasion.",
     location: "Madrid, Spain",
   },
   {
     src: championsImage,
     title: "Where history is made",
-    description: "Be there when the final whistle becomes a memory.",
-    location: "A moment worth travelling for",
+    description: "A storied ground for moments that stay with you.",
+    location: "A matchday destination",
   },
 ]
 
@@ -46,16 +46,15 @@ export default function Dashboard() {
 
         <div className="mx-auto w-full max-w-7xl px-5 pb-14 pt-24 sm:px-8 sm:pb-20 lg:px-12">
           <p className="mb-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-champagne">
-            <span className="h-px w-8 bg-champagne" />A better way to be there
+            <span className="h-px w-8 bg-champagne" />
+            A different kind of matchday
           </p>
           <h1 className="max-w-3xl font-display text-5xl font-semibold leading-[1.02] tracking-normal text-beige sm:text-6xl lg:text-7xl">
-            The match is better
-            <br className="hidden sm:block" />
-            <span className="text-champagne">when you are there.</span>
+            A great match deserves a place in the stands.
           </h1>
           <p className="mt-6 max-w-xl text-base leading-7 text-beige/80 sm:text-lg">
-            Exceptional seats. Unforgettable fixtures. Your next great football
-            story starts here.
+            Discover upcoming fixtures, explore remarkable grounds, and choose
+            a seating tier that suits your day.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <Link
@@ -68,14 +67,14 @@ export default function Dashboard() {
               to="/venues"
               className="luxury-button luxury-button-secondary"
             >
-              Discover venues
+              Explore venues
             </Link>
           </div>
 
           <div className="mt-12 flex flex-wrap gap-x-10 gap-y-4 border-t border-beige/20 pt-5 text-xs uppercase tracking-[0.16em] text-beige/70">
-            <span>Curated matchday experiences</span>
-            <span>Secure booking</span>
-            <span>Iconic grounds</span>
+            <span>Upcoming fixtures</span>
+            <span>Clear seating estimates</span>
+            <span>Remarkable grounds</span>
           </div>
         </div>
       </section>
@@ -84,17 +83,17 @@ export default function Dashboard() {
         <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-champagne">
-              Choose your occasion
+              Find your next occasion
             </p>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-normal text-beige sm:text-4xl">
-              Grounds worth the journey
+              Grounds worth discovering
             </h2>
           </div>
           <Link
             to="/venues"
             className="w-fit border-b border-champagne/60 pb-1 text-sm font-medium text-beige transition-colors hover:border-champagne"
           >
-            View all venues <span aria-hidden="true">↗</span>
+            Explore all venues <span aria-hidden="true">↗</span>
           </Link>
         </div>
 
@@ -124,7 +123,7 @@ export default function Dashboard() {
                   {venue.description}
                 </p>
                 <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-beige">
-                  Explore venue <span aria-hidden="true">↗</span>
+                  Discover venue <span aria-hidden="true">↗</span>
                 </span>
               </div>
               <span className="absolute right-5 top-5 text-xs tracking-[0.18em] text-beige/70">
@@ -140,18 +139,18 @@ export default function Dashboard() {
           {[
             [
               "01",
-              "A considered selection",
-              "Find the right fixture and the right seat.",
+              "A considered matchday",
+              "Find a fixture and seating tier that suit you.",
             ],
             [
               "02",
-              "A seamless booking",
-              "Clear options from first look to confirmation.",
+              "Clear choices",
+              "Review seating options before you decide.",
             ],
             [
               "03",
-              "A day to remember",
-              "Arrive ready for the moments that matter.",
+              "A day worth remembering",
+              "Make room for the moments that matter.",
             ],
           ].map(([number, title, description]) => (
             <div key={number} className="grid grid-cols-[auto_1fr] gap-4">

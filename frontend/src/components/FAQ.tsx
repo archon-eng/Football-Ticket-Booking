@@ -2,24 +2,24 @@ import { Link } from "react-router-dom"
 
 const questions = [
   {
-    question: "How do I find tickets for a fixture?",
+    question: "How can I explore tickets for a fixture?",
     answer:
-      "Visit Fixtures to browse the listed matches, then choose Reserve seats to select a seating tier and quantity.",
+      "Browse Fixtures, select a match, and choose Explore seating to review the available tiers and estimate.",
   },
   {
-    question: "Can I choose a seating category?",
+    question: "Can I choose a seating tier?",
     answer:
-      "Yes. The reservation form currently offers pitch-side, lower-tier, and upper-tier estimates. Availability and final pricing will be confirmed when checkout is available.",
+      "Yes. The estimate currently includes pitch-side, lower-tier, and upper-tier options. Final availability and pricing will be confirmed when checkout is introduced.",
   },
   {
-    question: "Is my booking confirmed after I review the order?",
+    question: "Is my seat reserved when I review an estimate?",
     answer:
-      "No. Reviewing the estimate does not reserve tickets. Payment and ticket confirmation are not yet available through this site.",
+      "No. Reviewing an estimate does not reserve a seat. Checkout and ticket confirmation are not yet available.",
   },
   {
-    question: "Do I need an account?",
+    question: "Do I need an account to explore?",
     answer:
-      "You can browse venues and fixtures without signing in. An account is available for supporters and venue administrators.",
+      "No. You can explore venues and fixtures without signing in. Accounts are available for supporters and venue administrators.",
   },
 ]
 
@@ -34,7 +34,7 @@ export default function FAQ() {
           A few helpful details.
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-7 text-text-muted">
-          Clear answers for planning your next matchday.
+          Straightforward answers to help you plan your next matchday.
         </p>
       </header>
 
@@ -64,12 +64,14 @@ export default function FAQ() {
       </section>
 
       <div className="mt-12 flex flex-col justify-between gap-5 border-t border-border pt-7 sm:flex-row sm:items-center">
-        <p className="text-sm text-text-muted">Ready to find your fixture?</p>
+        <p className="text-sm text-text-muted">
+          Ready to discover your next fixture?
+        </p>
         <Link
           to="/fixtures"
           className="luxury-button luxury-button-primary"
         >
-          Browse fixtures <span aria-hidden="true">↗</span>
+          Explore fixtures <span aria-hidden="true">↗</span>
         </Link>
       </div>
     </div>

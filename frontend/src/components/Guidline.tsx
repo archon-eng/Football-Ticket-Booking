@@ -4,18 +4,18 @@ import matchdayImage from "../assets/football_on_pitch.jpg"
 const steps = [
   [
     "01",
-    "Choose the fixture",
-    "Browse upcoming matches and select the occasion you want to attend.",
+    "Choose a fixture",
+    "Explore upcoming matches and find the occasion that feels right.",
   ],
   [
     "02",
-    "Find your tier",
-    "Compare the listed seating categories and set the number of tickets.",
+    "Choose your seating tier",
+    "Compare the listed seating options and select your preferred seats.",
   ],
   [
     "03",
-    "Review the estimate",
-    "Check your selection and the itemised total before continuing.",
+    "Review your estimate",
+    "See your selection and estimated total before you decide.",
   ],
 ]
 
@@ -28,12 +28,12 @@ export default function Guidline() {
             The matchday experience
           </p>
           <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold tracking-normal text-beige sm:text-5xl">
-            From first whistle to lasting memory.
+            From the first choice to matchday.
           </h1>
         </div>
         <p className="max-w-xl text-base leading-7 text-text-muted">
-          A considered way to discover a fixture, explore iconic venues, and
-          plan your place in the stands.
+          Explore the fixture list, discover remarkable venues, and consider
+          your place in the stands at your own pace.
         </p>
       </header>
 
@@ -66,7 +66,7 @@ export default function Guidline() {
             className="h-full w-full object-cover"
           />
           <figcaption className="absolute inset-x-0 bottom-0 bg-linear-to-t from-background/90 to-transparent px-5 pb-5 pt-14 text-xs uppercase tracking-[0.16em] text-beige">
-            Every great occasion starts with being there.
+            Some occasions are better experienced in person.
           </figcaption>
         </figure>
       </section>

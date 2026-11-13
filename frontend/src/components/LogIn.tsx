@@ -27,8 +27,7 @@ export default function LogIn() {
                 Your seat is waiting.
               </h1>
               <p className="mt-6 max-w-sm text-base leading-relaxed text-text-secondary">
-                Sign in to pick up where you left off and keep every match-day
-                moment close.
+                Sign in to continue planning your next matchday.
               </p>
             </div>
             <p className="text-[0.65rem] font-medium uppercase tracking-[0.22em] text-muted">
@@ -44,10 +43,10 @@ export default function LogIn() {
               Continue to your account
             </p>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-normal text-beige">
-              Choose your entrance
+              Choose how to sign in
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              Pick up right where your matchday story left off.
+              Select the account that brings you to your matchday.
             </p>
           </div>
 
@@ -62,10 +61,10 @@ export default function LogIn() {
                 </span>
                 <span>
                   <span className="block text-base font-semibold text-beige">
-                    Supporter
+                    Supporter account
                   </span>
                   <span className="mt-1 block text-sm text-muted">
-                    Book seats and manage your tickets
+                    Explore fixtures and manage your tickets
                   </span>
                 </span>
               </span>
@@ -84,10 +83,10 @@ export default function LogIn() {
                 </span>
                 <span>
                   <span className="block text-base font-semibold text-beige">
-                    Venue team
+                    Venue administration
                   </span>
                   <span className="mt-1 block text-sm text-muted">
-                    Manage fixtures, venues, and bookings
+                    Manage fixtures, venues, and ticketing
                   </span>
                 </span>
               </span>

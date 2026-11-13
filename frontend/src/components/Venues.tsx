@@ -11,24 +11,25 @@ export default function Venues() {
           The venue collection
         </p>
         <h1 className="mt-4 font-display text-4xl font-semibold tracking-normal text-beige sm:text-5xl">
-          Great grounds. Unrivalled atmosphere.
+          Remarkable grounds. Unforgettable atmosphere.
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-7 text-text-muted">
-          Explore the grounds hosting matches in the fixture list.
+          Discover the venues hosting upcoming fixtures and choose where your
+          next matchday begins.
         </p>
       </header>
 
       {loadingFixtures ? (
         <p className="py-10 text-sm text-text-muted" role="status">
-          Loading venues...
+          Preparing the venue collection...
         </p>
       ) : fixtures === null ? (
         <p className="py-10 text-sm text-text-muted" role="status">
-          Venues are unavailable right now. Please try again later.
+          Venues are temporarily unavailable. Please try again shortly.
         </p>
       ) : fixtures.length === 0 ? (
         <p className="py-10 text-sm text-text-muted">
-          No venues are listed at the moment.
+          No venues are currently listed.
         </p>
       ) : (
         <VenueVariable fixtures={fixtures} />

@@ -10,13 +10,14 @@ export default function Fixtures() {
         <div className="flex flex-col justify-between gap-6 border-b border-border pb-8 sm:flex-row sm:items-end">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-champagne">
-              The fixture list
+              Upcoming fixtures
             </p>
             <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold tracking-normal text-beige sm:text-5xl">
-              Great football deserves a great seat.
+              Find a fixture worth looking forward to.
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-text-muted">
-              Find your next occasion and reserve a place in the stands.
+              Explore the schedule, compare match details, and consider your
+              next day at the ground.
             </p>
           </div>
         </div>
@@ -30,18 +31,18 @@ export default function Fixtures() {
             className="luxury-card my-8 px-6 py-10 text-sm text-text-muted"
             role="status"
           >
-            Loading fixtures...
+            Preparing your fixture list...
           </p>
         ) : fixtures === null ? (
           <p
             className="luxury-card my-8 px-6 py-10 text-sm text-text-muted"
             role="status"
           >
-            Fixtures are unavailable right now. Please try again later.
+            Fixtures are temporarily unavailable. Please try again shortly.
           </p>
         ) : fixtures.length === 0 ? (
           <p className="luxury-card my-8 px-6 py-10 text-sm text-text-muted">
-            No fixtures are available at the moment.
+            No fixtures are currently listed.
           </p>
         ) : (
           <FixtureVariable fixtures={fixtures} />

@@ -25,7 +25,7 @@ export default function SeatingPlan({
             id="seat-map-heading"
             className="font-display text-xl font-semibold tracking-normal text-beige"
           >
-            Choose your seats
+            Select your seats
           </h2>
           <p className="mt-1 text-sm text-text-muted">
             Select up to {maxSeats} seats.

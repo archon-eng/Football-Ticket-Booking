@@ -26,7 +26,7 @@ export default function AdminSignUp() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ name, email, password, role }),
+        body: JSON.stringify({ username: name, email, password, role }),
       })
 
       const data = await res.json()
@@ -35,7 +35,9 @@ export default function AdminSignUp() {
         if (data.errors) {
           setErrors(data.errors)
         } else {
-          setServerErrors(data.message || "Registration Failed!")
+          setServerErrors(
+            data.message || "We couldn't create your account. Please try again.",
+          )
         }
         return
       }
@@ -50,8 +52,8 @@ export default function AdminSignUp() {
       }
 
       navigate("/dashboard")
-    } catch (error) {
-      setServerErrors(`Server error: ${error}`)
+    } catch {
+      setServerErrors("We couldn't complete your request. Please try again shortly.")
     } finally {
       setSubmitting(false)
     }
@@ -67,14 +69,14 @@ export default function AdminSignUp() {
             <div className="absolute -right-10 top-1/3 h-40 w-40 rounded-full bg-champagne/10 blur-3xl" />
             <div className="relative">
               <span className="inline-flex rounded-full border border-champagne/30 bg-background/40 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-champagne backdrop-blur-md">
-                Admin account
+                Venue administration
               </span>
               <h1 className="mt-6 max-w-md font-display text-4xl font-semibold leading-tight tracking-normal text-beige sm:text-5xl">
-                Run your venue.
+                Lead every matchday with confidence.
               </h1>
               <p className="mt-5 max-w-sm text-base leading-relaxed text-muted">
-                Create an administrator account to manage fixtures, venues, and
-                bookings from one place.
+                Bring fixtures, venues, and ticketing together in one
+                administrator account.
               </p>
             </div>
           </div>
@@ -83,10 +85,10 @@ export default function AdminSignUp() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-champagne">
-                  Administrator sign up
+                  Administrator account
                 </p>
                 <h2 className="mt-2 font-display text-2xl font-semibold tracking-normal text-beige">
-                  Create admin account
+                  Create your administrator account
                 </h2>
               </div>
               <NavLink
@@ -98,7 +100,7 @@ export default function AdminSignUp() {
             </div>
 
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              Add your details to start managing match-day operations.
+              Enter your details to set up administrator access.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -164,7 +166,7 @@ export default function AdminSignUp() {
                 disabled={submitting}
                 className="luxury-button luxury-button-primary w-full rounded-xl px-5 py-3.5 transition hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-beige active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {submitting ? "Signing Up..." : "Sign Up"}
+                {submitting ? "Creating your account..." : "Create account"}
               </button>
             </form>
 
@@ -195,7 +197,7 @@ export default function AdminSignUp() {
                 to="/login/admin_login"
                 className="font-semibold text-champagne hover:text-beige hover:underline"
               >
-                Log In
+                Sign in
               </NavLink>
             </div>
           </div>

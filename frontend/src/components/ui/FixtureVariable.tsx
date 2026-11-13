@@ -65,7 +65,7 @@ export default function FixtureVariable({ fixtures }: FixtureVariableProps) {
             to="/booking/form"
             className="luxury-button luxury-button-primary"
           >
-            Reserve seats <span aria-hidden="true">↗</span>
+            Explore seating <span aria-hidden="true">↗</span>
           </Link>
         </article>
       ))}

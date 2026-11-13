@@ -25,7 +25,7 @@ export default function UserSignUp() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ name, email, password, role }),
+        body: JSON.stringify({ username: name, email, password, role }),
       })
 
       const data = await res.json()
@@ -34,7 +34,9 @@ export default function UserSignUp() {
         if (data.errors) {
           setErrors(data.errors)
         } else {
-          setServerErrors(data.message || "Registration Failed!")
+          setServerErrors(
+            data.message || "We couldn't create your account. Please try again.",
+          )
         }
         return
       }
@@ -44,8 +46,8 @@ export default function UserSignUp() {
       }
 
       navigate("/dashboard")
-    } catch (error) {
-      setServerErrors(`Server error: ${error}`)
+    } catch {
+      setServerErrors("We couldn't complete your request. Please try again shortly.")
     } finally {
       setSubmitting(false)
     }
@@ -61,14 +63,14 @@ export default function UserSignUp() {
             <div className="absolute -right-10 top-1/3 h-40 w-40 rounded-full bg-champagne/10 blur-3xl" />
             <div className="relative">
               <span className="inline-flex rounded-full border border-champagne/30 bg-background/40 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-champagne backdrop-blur-md">
-                User account
+                Supporter account
               </span>
               <h1 className="mt-6 max-w-md font-display text-4xl font-semibold leading-tight tracking-normal text-beige sm:text-5xl">
-                Make match day yours.
+                Make room for matchday.
               </h1>
               <p className="mt-5 max-w-sm text-base leading-relaxed text-muted">
-                Create a personal account to discover fixtures, choose seats,
-                and keep every booking close.
+                Create a supporter account to explore fixtures, choose your
+                seats, and keep your ticket details together.
               </p>
             </div>
           </div>
@@ -77,10 +79,10 @@ export default function UserSignUp() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-champagne">
-                  Supporter sign up
+                  Supporter account
                 </p>
                 <h2 className="mt-2 font-display text-2xl font-semibold tracking-normal text-beige">
-                  Create your account
+                  Create your supporter account
                 </h2>
               </div>
               <NavLink
@@ -92,7 +94,7 @@ export default function UserSignUp() {
             </div>
 
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              Create your account to explore fixtures and book seats.
+              Enter your details to create a supporter account.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -158,7 +160,7 @@ export default function UserSignUp() {
                 disabled={submitting}
                 className="luxury-button luxury-button-primary w-full rounded-xl px-5 py-3.5 transition hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-beige active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {submitting ? "Signing Up..." : "Sign Up"}
+                {submitting ? "Creating your account..." : "Create account"}
               </button>
             </form>
 
@@ -189,7 +191,7 @@ export default function UserSignUp() {
                 to="/login/user_login"
                 className="font-semibold text-champagne hover:text-beige hover:underline"
               >
-                Log In
+                Sign in
               </NavLink>
             </div>
           </div>

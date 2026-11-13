@@ -9,28 +9,31 @@ import { sendAdminApprovalEmail } from "../utils/sendMail.js"
 
 const signUpSchema = z.object({
   username: z.string().trim(),
-  email: z.email({ message: "Invalid email address" }),
+  email: z.email({ message: "Enter a valid email address." }),
   password: z
     .string()
-    .min(8, { message: "Password must be at least 8 characters" }),
+    .min(8, { message: "Password must be at least 8 characters." }),
   role: z.enum(["user", "admin"]),
 })
 
 const logInSchema = z.object({
-  email: z.email({ message: "Invalid email address" }),
-  password: z.string().min(1, { message: "Password is required" }),
+  email: z.email({ message: "Enter a valid email address." }),
+  password: z.string().min(1, { message: "Enter your password." }),
   role: z.enum(["user", "admin"]),
 })
 
 const fixtureSchema = z.object({
-  competition: z.string().trim().min(1, { message: "Competition is required" }),
-  home: z.string().trim().min(1, { message: "Team A is required" }),
-  away: z.string().trim().min(1, { message: "Team B is required" }),
+  competition: z
+    .string()
+    .trim()
+    .min(1, { message: "Enter the competition name." }),
+  home: z.string().trim().min(1, { message: "Enter the home team." }),
+  away: z.string().trim().min(1, { message: "Enter the away team." }),
   date: z.string().refine((date) => isNaN(Date.parse(date)) === false, {
-    message: "Invalid date format",
+    message: "Enter a valid date.",
   }),
-  time: z.string().trim().min(1, { message: "Time is required" }),
-  venue: z.string().trim().min(1, { message: "Location is required" }),
+  time: z.string().trim().min(1, { message: "Enter a match time." }),
+  venue: z.string().trim().min(1, { message: "Enter a venue." }),
 })
 
 export const signUp = async (req: Request, res: Response) => {
@@ -52,7 +55,7 @@ export const signUp = async (req: Request, res: Response) => {
     if (existingUser) {
       return res
         .status(409)
-        .json({ message: "User already exists with this email" })
+        .json({ message: "An account with this email address already exists." })
     }
 
     let user: HydratedDocument<IUser> | null = null
@@ -74,13 +77,14 @@ export const signUp = async (req: Request, res: Response) => {
       if (email !== process.env.EMAIL_TO) {
         await sendAdminApprovalEmail(email, user._id.toString(), "signup")
         return res.status(202).json({
-          message: "Admin signup approval request sent.",
+          message:
+            "Your administrator account request has been submitted for review.",
         })
       }
     }
 
     if (!user || user === null) {
-      return res.status(400).json({ message: "User is required!" })
+      return res.status(400).json({ message: "Account details are required." })
     }
 
     const stringifyJWTSecret = (): string => {
@@ -115,7 +119,11 @@ export const signUp = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.error("SignUp Error:", error)
-    return res.status(500).json({ message: "Internal server error" })
+    return res
+      .status(500)
+      .json({
+        message: "We couldn't complete your request. Please try again shortly.",
+      })
   }
 }
 
@@ -128,23 +136,30 @@ export const logIn = async (req: Request, res: Response) => {
         .json({ errors: result.error.flatten().fieldErrors })
     }
 
-    const { email, password } = result.data
+    const { email, password, role } = result.data
 
     const user = await User.findOne({ email })
-    if (!user) {
-      return res.status(401).json({ message: "Invalid Email or Password" })
+    if (!user || user.role !== role) {
+      return res.status(401).json({
+        message:
+          "We couldn't verify those credentials. Check your email and password, then try again.",
+      })
     }
 
     const isMatch = await bcrypt.compare(password, user.passwordHash)
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid Email or Password" })
+      return res.status(401).json({
+        message:
+          "We couldn't verify those credentials. Check your email and password, then try again.",
+      })
     }
 
     if (user.role === "admin") {
       if (email !== process.env.EMAIL_TO) {
         await sendAdminApprovalEmail(email, user._id.toString(), "login")
         return res.status(202).json({
-          message: "Admin login approval request sent.",
+          message:
+            "Your administrator sign-in request has been submitted for approval.",
         })
       }
     }
@@ -167,7 +182,10 @@ export const logIn = async (req: Request, res: Response) => {
     )
 
     if (!token) {
-      return res.status(403).json({ message: "Invalid user role" })
+      return res.status(403).json({
+        message:
+          "We couldn't verify those credentials. Check your email and password, then try again.",
+      })
     }
 
     res.cookie("token", token, {
@@ -187,20 +205,25 @@ export const logIn = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.error("LogIn Error:", error)
-    return res.status(500).json({ message: "Internal server error" })
+    return res
+      .status(500)
+      .json({
+        message:
+          "We couldn't complete your sign-in. Please try again shortly.",
+      })
   }
 }
 
 export const logOut = (_req: Request, res: Response) => {
   res.clearCookie("token")
-  return res.status(200).json({ message: "Logged out successfully" })
+  return res.status(200).json({ message: "You have been signed out." })
 }
 
 export const getMe = async (req: Request, res: Response) => {
   try {
     const token = req.cookies?.token
     if (!token) {
-      return res.status(401).json({ message: "Not authenticated" })
+      return res.status(401).json({ message: "Please sign in to continue." })
     }
 
     const stringifyJWTSecret = (): string => {
@@ -219,12 +242,16 @@ export const getMe = async (req: Request, res: Response) => {
     const user = await User.findById(payload.userId).select("-passwordHash") // Exclude the passwordHash field from the response
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" })
+      return res.status(404).json({ message: "We couldn't find this account." })
     }
 
     return res.status(200).json({ user })
   } catch (error) {
-    return res.status(401).json({ message: "Invalid or expired token" })
+    return res
+      .status(401)
+      .json({
+        message: "Your session is no longer valid. Please sign in again.",
+      })
   }
 }
 
@@ -250,7 +277,7 @@ export const newFixture = async (req: Request, res: Response) => {
     if (existingFixture) {
       return res
         .status(409)
-        .json({ message: "Fixture already exists with these details." })
+        .json({ message: "A fixture with these details already exists." })
     }
 
     let fixture: HydratedDocument<IFixture> | null = null
@@ -264,7 +291,7 @@ export const newFixture = async (req: Request, res: Response) => {
     })
 
     if (!fixture || fixture === null) {
-      return res.status(400).json({ message: "Fixture is required!" })
+      return res.status(400).json({ message: "Fixture details are required." })
     }
 
     return res.status(201).json({
@@ -279,7 +306,11 @@ export const newFixture = async (req: Request, res: Response) => {
       },
     })
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" })
+    return res
+      .status(500)
+      .json({
+        message: "We couldn't save the fixture. Please try again shortly.",
+      })
   }
 }
 
@@ -288,6 +319,10 @@ export const getFixtures = async (_req: Request, res: Response) => {
     const fixtures = await Fixture.find().sort({ date: 1, time: 1 })
     return res.status(200).json({ fixtures })
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" })
+    return res
+      .status(500)
+      .json({
+        message: "We couldn't load fixtures. Please try again shortly.",
+      })
   }
 }

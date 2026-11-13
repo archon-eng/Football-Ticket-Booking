@@ -17,7 +17,7 @@ export default function SignUp() {
           <div className="relative flex h-full flex-col justify-between gap-16">
             <span className="inline-flex w-fit items-center gap-2 rounded-full border border-champagne/25 bg-background/40 px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-champagne backdrop-blur">
               <span className="h-1.5 w-1.5 rounded-full bg-champagne shadow-[0_0_12px_var(--color-champagne)]" />
-              Join the crowd
+              Your matchday, your way
             </span>
             <div>
               <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-champagne/80">
@@ -27,8 +27,8 @@ export default function SignUp() {
                 Make match day yours.
               </h1>
               <p className="mt-6 max-w-sm text-base leading-relaxed text-text-secondary">
-                Create an account to discover fixtures, choose your seats, and
-                keep every booking close.
+                Explore upcoming fixtures, select your preferred seats, and keep
+                your ticket details in one place.
               </p>
             </div>
             <p className="text-[0.65rem] font-medium uppercase tracking-[0.22em] text-muted">
@@ -47,7 +47,7 @@ export default function SignUp() {
               Create your account
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              Choose the experience that fits your place in the game.
+              Choose the account that suits how you enjoy matchday.
             </p>
           </div>
 
@@ -62,10 +62,10 @@ export default function SignUp() {
                 </span>
                 <span>
                   <span className="block text-base font-semibold text-beige">
-                    Supporter
+                    Supporter account
                   </span>
                   <span className="mt-1 block text-sm text-muted">
-                    Save seats and follow your bookings
+                    Explore fixtures and manage your tickets
                   </span>
                 </span>
               </span>
@@ -84,10 +84,10 @@ export default function SignUp() {
                 </span>
                 <span>
                   <span className="block text-base font-semibold text-beige">
-                    Venue team
+                    Venue administration
                   </span>
                   <span className="mt-1 block text-sm text-muted">
-                    Manage fixtures, venues, and bookings
+                    Manage fixtures, venues, and ticketing
                   </span>
                 </span>
               </span>

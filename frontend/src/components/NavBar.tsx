@@ -80,7 +80,7 @@ export default function NavBar() {
               className="luxury-button luxury-button-primary gap-2 px-3 py-2 text-xs sm:px-4"
             >
               <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
-              <span>Sign In</span>
+              <span>Sign in</span>
             </NavLink>
           )}
         </div>

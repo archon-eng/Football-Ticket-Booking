@@ -29,13 +29,13 @@ export default function BookingForm() {
 
     if (quantity === 0) {
       setReviewMessage(
-        "Choose at least one available seat to review your order.",
+        "Select at least one available seat to review your estimate.",
       )
       return
     }
 
     setReviewMessage(
-      `${quantity} ${quantity === 1 ? "ticket" : "tickets"} for ${fixture} are ready to review. Payment is not available yet.`,
+      `Your estimate for ${quantity} ${quantity === 1 ? "ticket" : "tickets"} to ${fixture} is ready. Checkout is not currently available.`,
     )
   }
 
@@ -58,11 +58,11 @@ export default function BookingForm() {
             Your matchday
           </p>
           <h1 className="mt-4 font-display text-4xl font-semibold tracking-normal text-beige sm:text-5xl">
-            Choose your seats.
+            Choose your view of the game.
           </h1>
           <p className="mt-4 max-w-xl text-base leading-7 text-text-muted">
-            Select a fixture and seating tier. Your order estimate updates as
-            you make your choices.
+            Select a fixture, seating tier, and seats to review a clear price
+            estimate before you decide.
           </p>
 
           <form
@@ -134,7 +134,7 @@ export default function BookingForm() {
               type="submit"
               className="luxury-button luxury-button-primary"
             >
-              Review order <span aria-hidden="true">↗</span>
+              Review estimate <span aria-hidden="true">↗</span>
             </button>
             {reviewMessage && (
               <p role="status" className="text-sm leading-6 text-champagne">
@@ -146,7 +146,7 @@ export default function BookingForm() {
 
         <aside className="luxury-card h-fit p-6 sm:p-8 lg:sticky lg:top-28">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-champagne">
-            Order estimate
+            Your estimate
           </p>
           <h2 className="mt-4 font-display text-2xl font-semibold tracking-normal text-beige">
             {fixture}
@@ -156,7 +156,7 @@ export default function BookingForm() {
           </p>
           <p className="mt-3 text-xs leading-5 text-text-muted">
             {quantity > 0
-              ? `Seats ${selectedSeats.join(", ")}`
+              ? `Selected seats: ${selectedSeats.join(", ")}`
               : "No seats selected"}
           </p>
 
@@ -181,8 +181,8 @@ export default function BookingForm() {
             </div>
           </dl>
           <p className="mt-5 text-xs leading-5 text-text-muted">
-            Estimate only. Tickets are not reserved until checkout is available
-            and your booking is confirmed.
+            This is an estimate only. Seats are not reserved, and checkout is
+            not currently available.
           </p>
         </aside>
       </div>
