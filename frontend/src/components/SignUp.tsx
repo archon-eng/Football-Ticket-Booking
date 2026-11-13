@@ -14,7 +14,7 @@ export default function SignUp() {
           <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full border border-champagne/20" />
           <div className="absolute -bottom-24 -left-20 h-64 w-64 rounded-full border border-champagne/15" />
           <div className="relative">
-            <span className="inline-flex rounded-full border border-white/30 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] backdrop-blur-md">
+            <span className="inline-flex rounded-full border border-champagne/30 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] backdrop-blur-md">
               Join the crowd
             </span>
             <h1 className="mt-6 max-w-md text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
