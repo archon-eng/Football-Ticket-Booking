@@ -5,7 +5,7 @@ const steps = [
   [
     "01",
     "Choose a fixture",
-    "Explore upcoming matches and find the occasion that feels right.",
+    "Explore listed matches and find the occasion that feels right.",
   ],
   [
     "02",

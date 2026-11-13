@@ -10,13 +10,13 @@ export default function Fixtures() {
         <div className="flex flex-col justify-between gap-6 border-b border-border pb-8 sm:flex-row sm:items-end">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-champagne">
-              Upcoming fixtures
+              The fixture list
             </p>
             <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold tracking-normal text-beige sm:text-5xl">
               Find a fixture worth looking forward to.
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-text-muted">
-              Explore the schedule, compare match details, and consider your
+              Browse listed matches, compare the details, and consider your
               next day at the ground.
             </p>
           </div>

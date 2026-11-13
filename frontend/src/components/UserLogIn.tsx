@@ -62,7 +62,7 @@ export default function UserLogIn() {
               Welcome back to matchday.
             </h1>
             <p className="mt-5 max-w-sm text-base leading-relaxed text-muted">
-              Sign in to explore fixtures and keep your ticket details close.
+              Sign in to browse fixtures and continue planning your next matchday.
             </p>
           </div>
         </div>

@@ -69,8 +69,8 @@ export default function UserSignUp() {
                 Make room for matchday.
               </h1>
               <p className="mt-5 max-w-sm text-base leading-relaxed text-muted">
-                Create a supporter account to explore fixtures, choose your
-                seats, and keep your ticket details together.
+                Create a supporter account to browse fixtures, review seating
+                estimates, and plan your matchday.
               </p>
             </div>
           </div>

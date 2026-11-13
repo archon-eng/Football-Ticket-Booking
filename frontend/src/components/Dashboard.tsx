@@ -53,7 +53,7 @@ export default function Dashboard() {
             A great match deserves a place in the stands.
           </h1>
           <p className="mt-6 max-w-xl text-base leading-7 text-beige/80 sm:text-lg">
-            Discover upcoming fixtures, explore remarkable grounds, and choose
+            Discover fixtures, explore remarkable grounds, and choose
             a seating tier that suits your day.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
@@ -72,7 +72,7 @@ export default function Dashboard() {
           </div>
 
           <div className="mt-12 flex flex-wrap gap-x-10 gap-y-4 border-t border-beige/20 pt-5 text-xs uppercase tracking-[0.16em] text-beige/70">
-            <span>Upcoming fixtures</span>
+            <span>Listed fixtures</span>
             <span>Clear seating estimates</span>
             <span>Remarkable grounds</span>
           </div>

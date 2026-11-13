@@ -75,8 +75,7 @@ export default function AdminSignUp() {
                 Lead every matchday with confidence.
               </h1>
               <p className="mt-5 max-w-sm text-base leading-relaxed text-muted">
-                Bring fixtures, venues, and ticketing together in one
-                administrator account.
+                Request administrator access for venue and fixture operations.
               </p>
             </div>
           </div>

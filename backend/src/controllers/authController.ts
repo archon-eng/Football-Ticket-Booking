@@ -139,7 +139,7 @@ export const logIn = async (req: Request, res: Response) => {
     const { email, password, role } = result.data
 
     const user = await User.findOne({ email })
-    if (!user || user.role !== role) {
+    if (!user) {
       return res.status(401).json({
         message:
           "We couldn't verify those credentials. Check your email and password, then try again.",
@@ -147,7 +147,7 @@ export const logIn = async (req: Request, res: Response) => {
     }
 
     const isMatch = await bcrypt.compare(password, user.passwordHash)
-    if (!isMatch) {
+    if (!isMatch || user.role !== role) {
       return res.status(401).json({
         message:
           "We couldn't verify those credentials. Check your email and password, then try again.",

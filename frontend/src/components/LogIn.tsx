@@ -64,7 +64,7 @@ export default function LogIn() {
                     Supporter account
                   </span>
                   <span className="mt-1 block text-sm text-muted">
-                    Explore fixtures and manage your tickets
+                    Browse fixtures and plan your matchday
                   </span>
                 </span>
               </span>
@@ -86,7 +86,7 @@ export default function LogIn() {
                     Venue administration
                   </span>
                   <span className="mt-1 block text-sm text-muted">
-                    Manage fixtures, venues, and ticketing
+                    For venue and fixture administration
                   </span>
                 </span>
               </span>

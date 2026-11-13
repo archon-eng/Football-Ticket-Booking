@@ -68,7 +68,7 @@ export default function AdminLogIn() {
               Welcome back to matchday.
             </h1>
             <p className="mt-5 max-w-sm text-base leading-relaxed text-muted">
-              Sign in to manage fixtures, venues, and ticketing with care.
+              Sign in for venue and fixture administration.
             </p>
           </div>
         </div>

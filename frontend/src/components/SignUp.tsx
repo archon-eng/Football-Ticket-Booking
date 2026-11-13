@@ -24,10 +24,10 @@ export default function SignUp() {
                 Your place in the stands
               </p>
               <h1 className="max-w-md font-display text-4xl font-semibold leading-[1.05] tracking-normal text-beige sm:text-5xl lg:text-6xl">
-                Make match day yours.
+                Make matchday yours.
               </h1>
               <p className="mt-6 max-w-sm text-base leading-relaxed text-text-secondary">
-                Explore upcoming fixtures, select your preferred seats, and keep
+                Explore fixtures, select your preferred seats, and keep
                 your ticket details in one place.
               </p>
             </div>
@@ -65,7 +65,7 @@ export default function SignUp() {
                     Supporter account
                   </span>
                   <span className="mt-1 block text-sm text-muted">
-                    Explore fixtures and manage your tickets
+                    Browse fixtures and plan your matchday
                   </span>
                 </span>
               </span>
@@ -87,7 +87,7 @@ export default function SignUp() {
                     Venue administration
                   </span>
                   <span className="mt-1 block text-sm text-muted">
-                    Manage fixtures, venues, and ticketing
+                    For venue and fixture administration
                   </span>
                 </span>
               </span>
@@ -103,7 +103,7 @@ export default function SignUp() {
               to="/login"
               className="font-semibold text-champagne hover:text-beige hover:underline!"
             >
-              Log in
+              Sign in
             </NavLink>
           </p>
         </div>
