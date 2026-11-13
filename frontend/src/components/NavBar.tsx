@@ -61,7 +61,11 @@ export default function NavBar() {
                 className="flex items-center gap-2 border border-border px-3 py-2 text-xs font-medium text-text-secondary transition-colors hover:border-champagne/50 hover:text-beige focus-visible:border-champagne/50 focus-visible:text-beige sm:px-4"
               >
                 <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
-                <span>{user.username.slice(0, 5)}</span>
+                <span>
+                  {user.username.length > 7
+                    ? `${user.username.slice(0, 7)}...`
+                    : user.username}
+                </span>
               </button>
               <span
                 role="tooltip"
