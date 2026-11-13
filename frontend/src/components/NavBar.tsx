@@ -60,8 +60,8 @@ export default function NavBar() {
                 aria-label={`Sign out ${user.username}`}
                 className="flex items-center gap-2 border border-border px-3 py-2 text-xs font-medium text-text-secondary transition-colors hover:border-champagne/50 hover:text-beige focus-visible:border-champagne/50 focus-visible:text-beige sm:px-4"
               >
-                <span>{user.username.slice(0, 5)}</span>
                 <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
+                <span>{user.username.slice(0, 5)}</span>
               </button>
               <span
                 role="tooltip"
@@ -75,8 +75,8 @@ export default function NavBar() {
               to="/login"
               className="flex items-center gap-2 border border-champagne/50 px-3 py-2 text-xs font-semibold text-beige transition-colors hover:bg-champagne hover:text-background sm:px-4"
             >
-              <span>Sign in</span>
               <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
+              <span>Sign in</span>
             </NavLink>
           )}
         </div>
