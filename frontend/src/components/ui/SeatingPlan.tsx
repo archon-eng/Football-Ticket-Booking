@@ -62,7 +62,7 @@ export default function SeatingPlan({
                 occupied
                   ? "rounded-sm border-border-subtle bg-surface-hover opacity-45"
                   : isSelected
-                    ? "rounded-sm border-champagne bg-champagne text-background shadow-[0_0_16px_rgb(214_193_155_/_24%)]"
+                    ? "rounded-sm border-champagne bg-champagne text-background shadow-[0_0_16px_rgb(214_193_155_/24%)]"
                     : "rounded-sm border-border bg-surface text-text-secondary hover:border-champagne/70 hover:bg-surface-hover hover:text-beige"
               }`}
             >
