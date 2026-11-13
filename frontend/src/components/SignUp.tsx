@@ -8,76 +8,97 @@ export default function SignUp() {
   }
 
   return (
-    <div className="lux-auth mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center px-5 py-10 lg:px-8">
-      <section className="grid w-full overflow-hidden rounded-none border border-border bg-surface shadow-none lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="relative order-2 overflow-hidden bg-surface-elevated p-8 text-text-primary lg:order-1 lg:p-12">
-          <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full border border-champagne/20" />
-          <div className="absolute -bottom-24 -left-20 h-64 w-64 rounded-full border border-champagne/15" />
-          <div className="relative">
-            <span className="inline-flex rounded-full border border-champagne/30 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] backdrop-blur-md">
+    <div className="lux-auth lux-auth-luxe mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center px-5 py-12 lg:px-8">
+      <section className="grid w-full overflow-hidden rounded-3xl border border-border-strong bg-surface shadow-2xl md:grid-cols-[1.1fr_0.9fr]">
+        <div className="relative isolate order-1 overflow-hidden bg-linear-to-br from-surface-elevated via-surface to-background p-8 text-text-primary md:order-1 lg:p-14">
+          <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-champagne/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-28 -left-20 h-72 w-72 rounded-full border border-champagne/15" />
+          <div className="pointer-events-none absolute bottom-12 right-10 h-40 w-40 rounded-full border border-champagne/10" />
+          <div className="relative flex h-full flex-col justify-between gap-16">
+            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-champagne/25 bg-background/40 px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-champagne backdrop-blur">
+              <span className="h-1.5 w-1.5 rounded-full bg-champagne shadow-[0_0_12px_var(--color-champagne)]" />
               Join the crowd
             </span>
-            <h1 className="mt-6 max-w-md text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-              Make match day yours.
-            </h1>
-            <p className="mt-5 max-w-sm text-base leading-relaxed text-muted">
-              Create an account to discover fixtures, choose your seats, and
-              keep every booking close.
+            <div>
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-champagne/80">
+                Your place in the stands
+              </p>
+              <h1 className="max-w-md font-display text-4xl font-semibold leading-[1.05] tracking-normal text-beige sm:text-5xl lg:text-6xl">
+                Make match day yours.
+              </h1>
+              <p className="mt-6 max-w-sm text-base leading-relaxed text-text-secondary">
+                Create an account to discover fixtures, choose your seats, and
+                keep every booking close.
+              </p>
+            </div>
+            <p className="text-[0.65rem] font-medium uppercase tracking-[0.22em] text-muted">
+              The Matchday <span className="mx-2 text-champagne/50">/</span>{" "}
+              Ticket house
             </p>
           </div>
         </div>
 
-        <div className="order-1 flex flex-col justify-center p-8 lg:order-2 lg:p-12">
+        <div className="order-2 flex flex-col justify-center bg-background/70 p-7 sm:p-10 md:order-2 lg:p-12">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-champagne">
-              Create account as
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-champagne">
+              Begin your experience
             </p>
-            <h2 className="mt-3 text-2xl font-bold text-beige">
-              Choose your starting point
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-normal text-beige">
+              Create your account
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              Pick the account type that fits how you use the venue.
+              Choose the experience that fits your place in the game.
             </p>
           </div>
 
-          <div className="mt-8 grid gap-3">
+          <div className="mt-8 grid gap-3.5">
             <NavLink
               to="user_signup"
-              className="group flex items-center justify-between border border-border-subtle bg-surface p-5 text-left transition-all hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-hover hover:shadow-lg"
+              className="group flex items-center justify-between gap-4 rounded-2xl border border-border-subtle bg-surface/80 p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-champagne/40 hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne sm:p-5"
             >
-              <span>
-                <span className="block text-base font-bold text-beige">
-                  User Sign Up
+              <span className="flex min-w-0 items-center gap-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-champagne/25 bg-background text-xs font-semibold tracking-widest text-champagne transition-colors group-hover:bg-champagne group-hover:text-background">
+                  01
                 </span>
-                <span className="mt-1 block text-sm text-muted">
-                  Save seats and follow your bookings
+                <span>
+                  <span className="block text-base font-semibold text-beige">
+                    Supporter
+                  </span>
+                  <span className="mt-1 block text-sm text-muted">
+                    Save seats and follow your bookings
+                  </span>
                 </span>
               </span>
-              <span className="text-xl text-champagne transition-transform group-hover:translate-x-1">
+              <span className="shrink-0 text-xl text-champagne transition-transform duration-300 group-hover:translate-x-1">
                 →
               </span>
             </NavLink>
 
             <NavLink
               to="admin_signup"
-              className="group flex items-center justify-between border border-border-subtle bg-surface p-5 text-left transition-all hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-hover hover:shadow-lg"
+              className="group flex items-center justify-between gap-4 rounded-2xl border border-border-subtle bg-surface/80 p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-champagne/40 hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne sm:p-5"
             >
-              <span>
-                <span className="block text-base font-bold text-beige">
-                  Admin Sign Up
+              <span className="flex min-w-0 items-center gap-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-champagne/25 bg-background text-xs font-semibold tracking-widest text-champagne transition-colors group-hover:bg-champagne group-hover:text-background">
+                  02
                 </span>
-                <span className="mt-1 block text-sm text-muted">
-                  Set up venue and fixture management
+                <span>
+                  <span className="block text-base font-semibold text-beige">
+                    Venue team
+                  </span>
+                  <span className="mt-1 block text-sm text-muted">
+                    Manage fixtures, venues, and bookings
+                  </span>
                 </span>
               </span>
-              <span className="text-xl text-champagne transition-transform">
+              <span className="shrink-0 text-xl text-champagne transition-transform duration-300 group-hover:translate-x-1">
                 →
               </span>
             </NavLink>
           </div>
 
-          <p className="mt-8 text-center text-sm text-muted">
-            Already registered?{" "}
+          <p className="mt-8 border-t border-border-subtle pt-6 text-center text-sm text-muted">
+            Already part of The Matchday?{" "}
             <NavLink
               to="/login"
               className="font-semibold text-champagne hover:text-beige hover:underline!"

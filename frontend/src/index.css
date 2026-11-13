@@ -361,44 +361,12 @@ a:hover {
   box-shadow: none;
 }
 
-.lux-auth section .bg-linear-to-br {
-  background-color: var(--color-surface-elevated);
-  background-image: none;
-  color: var(--color-text-primary);
-}
-
-.lux-auth section :is(.text-white, .text-slate-200, .text-slate-300) {
-  color: var(--color-text-primary);
-}
-
-.lux-auth section :is(.text-slate-400, .text-slate-500) {
-  color: var(--color-text-muted);
-}
-
-.lux-auth section :is(.text-blue-400, .text-red-400, .text-red-500) {
-  color: var(--color-champagne);
-}
-
-.lux-auth
-  section
-  :is(
-    [class*="border-slate-"],
-    [class*="border-blue-"],
-    [class*="border-red-"]
-  ) {
-  border-color: var(--color-border);
-}
-
-.lux-auth
-  section
-  :is([class*="hover:bg-blue-"], [class*="hover:bg-red-"]):hover {
-  background-color: var(--color-surface-hover);
-}
-
-.lux-auth
-  section
-  :is([class*="hover:text-blue-"], [class*="hover:text-red-"]):hover {
-  color: var(--color-champagne);
+.lux-auth.lux-auth-luxe > section {
+  border-color: var(--color-border-strong);
+  border-radius: 1.5rem;
+  box-shadow:
+    0 28px 80px color-mix(in srgb, var(--color-champagne) 8%, transparent),
+    0 4px 24px rgb(0 0 0 / 35%);
 }
 
 .lux-auth section :is(input, select) {
