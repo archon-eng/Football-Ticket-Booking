@@ -53,14 +53,23 @@ export default function NavBar() {
           {loading ? (
             <span className="h-9 w-24 animate-pulse border border-border-subtle bg-surface" />
           ) : user ? (
-            <button
-              type="button"
-              onClick={logout}
-              className="flex items-center gap-2 border border-border px-3 py-2 text-xs font-medium text-text-secondary transition-colors hover:border-champagne/50 hover:text-beige sm:px-4"
-            >
-              <span className="hidden sm:inline">{user.username}</span>
-              <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
-            </button>
+            <span className="group relative">
+              <button
+                type="button"
+                onClick={logout}
+                aria-label={`Sign out ${user.username}`}
+                className="flex items-center gap-2 border border-border px-3 py-2 text-xs font-medium text-text-secondary transition-colors hover:border-champagne/50 hover:text-beige focus-visible:border-champagne/50 focus-visible:text-beige sm:px-4"
+              >
+                <span>{user.username.slice(0, 5)}</span>
+                <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
+              </button>
+              <span
+                role="tooltip"
+                className="pointer-events-none absolute right-0 top-full z-50 mt-2 whitespace-nowrap border border-border-subtle bg-surface px-3 py-2 text-xs text-beige opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+              >
+                Sign out
+              </span>
+            </span>
           ) : (
             <NavLink
               to="/login"
