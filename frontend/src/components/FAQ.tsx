@@ -19,7 +19,7 @@ const questions = [
   {
     question: "Do I need an account to explore?",
     answer:
-      "No. You can explore venues and fixtures without signing in. Accounts are available for supporters and venue administrators.",
+      "No. You can explore venues and fixtures without signing in. Accounts are available for users and venue administrators.",
   },
 ]
 

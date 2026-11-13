@@ -61,7 +61,7 @@ export default function LogIn() {
                 </span>
                 <span>
                   <span className="block text-base font-semibold text-beige">
-                    Supporter account
+                    User account
                   </span>
                   <span className="mt-1 block text-sm text-muted">
                     Browse fixtures and plan your matchday

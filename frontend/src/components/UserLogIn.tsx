@@ -56,7 +56,7 @@ export default function UserLogIn() {
           <div className="absolute -right-10 top-1/3 h-40 w-40 rounded-full bg-champagne/10 blur-3xl" />
           <div className="relative">
             <span className="inline-flex rounded-full border border-champagne/30 bg-background/40 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-champagne backdrop-blur-md">
-              Supporter account
+              User account
             </span>
             <h1 className="mt-6 max-w-md font-display text-4xl font-semibold leading-tight tracking-normal text-beige sm:text-5xl">
               Welcome back to matchday.
@@ -71,7 +71,7 @@ export default function UserLogIn() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-champagne">
-                Supporter access
+                User account
               </p>
               <h2 className="mt-2 font-display text-2xl font-semibold tracking-normal text-beige">
                 Sign in to your account
@@ -86,7 +86,7 @@ export default function UserLogIn() {
           </div>
 
           <p className="mt-3 text-sm leading-relaxed text-muted">
-            Use the email connected to your supporter account.
+            Use the email address associated with your account.
           </p>
 
           <form onSubmit={handleSubmit} className="mt-7 space-y-5">
