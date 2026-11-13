@@ -46,15 +46,15 @@ export default function Dashboard() {
 
         <div className="mx-auto w-full max-w-7xl px-5 pb-14 pt-24 sm:px-8 sm:pb-20 lg:px-12">
           <p className="mb-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-champagne">
-            <span className="h-px w-8 bg-champagne" />
-            A different kind of matchday
+            <span className="h-px w-8 bg-champagne" />A different kind of
+            matchday
           </p>
           <h1 className="max-w-3xl font-display text-5xl font-semibold leading-[1.02] tracking-normal text-beige sm:text-6xl lg:text-7xl">
             A great match deserves a place in the stands.
           </h1>
           <p className="mt-6 max-w-xl text-base leading-7 text-beige/80 sm:text-lg">
-            Discover fixtures, explore remarkable grounds, and choose
-            a seating tier that suits your day.
+            Discover fixtures, explore remarkable grounds, and choose a seating
+            tier that suits your day.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <Link
@@ -123,7 +123,7 @@ export default function Dashboard() {
                   {venue.description}
                 </p>
                 <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-beige">
-                  Discover venue <span aria-hidden="true">↗</span>
+                  Discover venues <span aria-hidden="true">↗</span>
                 </span>
               </div>
               <span className="absolute right-5 top-5 text-xs tracking-[0.18em] text-beige/70">
