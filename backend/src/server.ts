@@ -59,7 +59,7 @@ const startServer = async () => {
   await connectDB()
 
   server.listen(PORT, () => {
-    console.log(`Server & WebSockets listening on port ${PORT}`)
+    console.log(`Server & WebSockets are listening on port ${PORT}`)
   })
 }
 

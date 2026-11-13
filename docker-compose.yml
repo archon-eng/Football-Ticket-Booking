@@ -1,11 +1,11 @@
 x-build-args: &build-args
-  NODE_VERSION: "26.12.1"
-  PNPM_VERSION: "12.11.2"
+  NODE_VERSION: "26.13.1"
+  PNPM_VERSION: "12.18.0"
 
 services:
   mongo:
     container_name: football-ticket-booking-mongo
-    image: mongo:8.3.13
+    image: mongo:9.0.8
     ports:
       - "127.0.0.1:27017:27017"
     volumes:

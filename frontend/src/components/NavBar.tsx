@@ -12,10 +12,10 @@ export default function NavBar() {
     }`
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border-subtle bg-background/85 px-4 shadow-[0_8px_32px_rgb(0_0_0_/_16%)] backdrop-blur-xl sm:px-6 lg:px-10">
+    <header className="sticky top-0 z-30 border-b border-border-subtle bg-background/85 px-4 shadow-[0_8px_32px_rgb(0_0_0_/16%)] backdrop-blur-xl sm:px-6 lg:px-10">
       <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 py-2 sm:min-h-20 sm:grid-cols-[1fr_auto_1fr] sm:py-0">
         <NavLink to="/dashboard" className="flex w-fit items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-md border border-champagne/40 bg-surface shadow-[inset_0_1px_0_rgb(242_235_221_/_5%)]">
+          <span className="flex h-10 w-10 items-center justify-center rounded-md border border-champagne/40 bg-surface shadow-[inset_0_1px_0_rgb(242_235_221_/5%)]">
             <img src={logo} alt="" className="h-6 w-auto" />
           </span>
           <span className="hidden sm:block">
@@ -63,7 +63,7 @@ export default function NavBar() {
                 <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
                 <span>
                   {user.username.length > 7
-                    ? `${user.username.slice(0, 7)}...`
+                    ? `${user.username.slice(0, 5)}...`
                     : user.username}
                 </span>
               </button>
@@ -79,7 +79,11 @@ export default function NavBar() {
               to="/login"
               className="luxury-button luxury-button-primary gap-2 px-3 py-2 text-xs sm:px-4"
             >
-              <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
+              <img
+                src={account_logo}
+                alt=""
+                className="h-4 w-4 brightness-0 opacity-70"
+              />
               <span>Sign in</span>
             </NavLink>
           )}

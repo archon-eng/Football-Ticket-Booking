@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
-ARG NODE_VERSION=26.12.1
+ARG NODE_VERSION=26.13.1
 FROM node:${NODE_VERSION}-alpine
 
-ARG PNPM_VERSION=12.11.2
+ARG PNPM_VERSION=12.18.0
 RUN npm install -g pnpm@${PNPM_VERSION}
 
 # frontend setup
