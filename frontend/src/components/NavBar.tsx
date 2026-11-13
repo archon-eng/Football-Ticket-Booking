@@ -58,7 +58,7 @@ export default function NavBar() {
               onClick={logout}
               className="flex items-center gap-2 border border-border px-3 py-2 text-xs font-medium text-text-secondary transition-colors hover:border-champagne/50 hover:text-beige sm:px-4"
             >
-              <span className="hidden sm:inline">Sign out</span>
+              <span className="hidden sm:inline">{user.username}</span>
               <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
             </button>
           ) : (
