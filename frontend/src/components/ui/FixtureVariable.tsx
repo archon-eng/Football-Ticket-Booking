@@ -19,14 +19,14 @@ const formatFixtureDate = (date: Fixture["date"]) => {
 
 export default function FixtureVariable({ fixtures }: FixtureVariableProps) {
   return (
-    <div className="divide-y divide-border-subtle">
+    <div className="space-y-4">
       {fixtures.map((fixture, index) => (
         <article
           key={
             fixture._id ??
             `${fixture.home}-${fixture.away}-${fixture.date}-${index}`
           }
-          className="grid gap-6 py-7 transition-colors sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:py-9"
+          className="luxury-card luxury-card-interactive grid gap-6 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-6"
         >
           <div className="grid gap-5 sm:grid-cols-[7rem_minmax(0,1fr)_minmax(10rem,auto)] sm:items-center sm:gap-8">
             <div className="border-l border-champagne/60 pl-4">
@@ -63,7 +63,7 @@ export default function FixtureVariable({ fixtures }: FixtureVariableProps) {
 
           <Link
             to="/booking/form"
-            className="inline-flex min-h-11 items-center justify-center gap-3 border border-champagne/50 px-5 text-sm font-semibold text-beige transition-colors hover:bg-champagne hover:text-background"
+            className="luxury-button luxury-button-primary"
           >
             Reserve seats <span aria-hidden="true">↗</span>
           </Link>

@@ -38,11 +38,11 @@ export default function Guidline() {
       </header>
 
       <section className="grid gap-10 py-10 lg:grid-cols-[1fr_0.85fr] lg:items-center lg:gap-16">
-        <div className="divide-y divide-border-subtle border-y border-border-subtle">
+        <div className="space-y-3">
           {steps.map(([number, title, description]) => (
             <article
               key={number}
-              className="grid grid-cols-[2.5rem_1fr] gap-4 py-5"
+              className="luxury-card grid grid-cols-[2.5rem_1fr] gap-4 p-5"
             >
               <span className="pt-1 text-xs tracking-[0.16em] text-champagne">
                 {number}
@@ -58,7 +58,7 @@ export default function Guidline() {
             </article>
           ))}
         </div>
-        <figure className="relative aspect-4/3 overflow-hidden border border-border-subtle">
+        <figure className="luxury-card relative aspect-4/3 overflow-hidden">
           <img
             src={matchdayImage}
             alt="The football pitch prepared for matchday"
@@ -74,13 +74,13 @@ export default function Guidline() {
       <div className="flex flex-wrap gap-4 border-t border-border pt-7">
         <Link
           to="/fixtures"
-          className="inline-flex min-h-11 items-center justify-center bg-champagne px-5 text-sm font-semibold text-background transition-colors hover:bg-beige"
+          className="luxury-button luxury-button-primary"
         >
           Explore fixtures
         </Link>
         <Link
           to="/faq"
-          className="inline-flex min-h-11 items-center justify-center border border-border px-5 text-sm font-semibold text-beige transition-colors hover:border-champagne/60"
+          className="luxury-button luxury-button-secondary"
         >
           Guest services
         </Link>

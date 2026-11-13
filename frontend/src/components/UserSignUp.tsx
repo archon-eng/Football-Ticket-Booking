@@ -52,17 +52,18 @@ export default function UserSignUp() {
   }
 
   return (
-    <div className="lux-auth mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center px-4 py-8 sm:px-6 lg:px-8">
-      <section className="w-full overflow-hidden border border-border bg-surface shadow-none">
+    <div className="lux-auth mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center px-4 py-12 sm:px-6 lg:px-8">
+      <section className="w-full overflow-hidden rounded-3xl border border-border-strong bg-surface shadow-2xl">
         <div className="grid gap-0 lg:grid-cols-[1fr_0.95fr]">
-          <div className="relative overflow-hidden bg-surface-elevated p-8 text-text-primary lg:p-12">
+          <div className="relative isolate overflow-hidden bg-linear-to-br from-surface-elevated via-surface to-background p-8 text-text-primary lg:p-12">
             <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full border border-champagne/20" />
             <div className="absolute -bottom-24 -left-20 h-64 w-64 rounded-full border border-champagne/15" />
+            <div className="absolute -right-10 top-1/3 h-40 w-40 rounded-full bg-champagne/10 blur-3xl" />
             <div className="relative">
-              <span className="inline-flex rounded-full border border-champagne/30 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] backdrop-blur-md">
+              <span className="inline-flex rounded-full border border-champagne/30 bg-background/40 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-champagne backdrop-blur-md">
                 User account
               </span>
-              <h1 className="mt-6 max-w-md text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+              <h1 className="mt-6 max-w-md font-display text-4xl font-semibold leading-tight tracking-normal text-beige sm:text-5xl">
                 Make match day yours.
               </h1>
               <p className="mt-5 max-w-sm text-base leading-relaxed text-muted">
@@ -72,13 +73,13 @@ export default function UserSignUp() {
             </div>
           </div>
 
-          <div className="flex flex-col justify-center border-t border-border p-6 sm:p-8 lg:border-l lg:border-t-0 lg:p-12">
+          <div className="flex flex-col justify-center border-t border-border bg-background/55 p-6 sm:p-8 lg:border-l lg:border-t-0 lg:p-12">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-champagne">
                   Supporter sign up
                 </p>
-                <h2 className="mt-2 text-2xl font-bold text-beige">
+                <h2 className="mt-2 font-display text-2xl font-semibold tracking-normal text-beige">
                   Create your account
                 </h2>
               </div>
@@ -155,7 +156,7 @@ export default function UserSignUp() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded-xl bg-champagne px-5 py-3.5 text-sm font-semibold text-background shadow-none transition hover:-translate-y-0.5 hover:bg-beige focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-beige active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
+                className="luxury-button luxury-button-primary w-full rounded-xl px-5 py-3.5 transition hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-beige active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {submitting ? "Signing Up..." : "Sign Up"}
               </button>

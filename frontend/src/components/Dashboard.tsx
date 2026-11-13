@@ -60,13 +60,13 @@ export default function Dashboard() {
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <Link
               to="/fixtures"
-              className="inline-flex min-h-12 items-center justify-center bg-champagne px-6 text-sm font-semibold text-background transition-colors hover:bg-beige"
+              className="luxury-button luxury-button-primary"
             >
               Explore fixtures
             </Link>
             <Link
               to="/venues"
-              className="inline-flex min-h-12 items-center justify-center border border-beige/50 px-6 text-sm font-semibold text-beige transition-colors hover:border-beige hover:bg-beige/10"
+              className="luxury-button luxury-button-secondary"
             >
               Discover venues
             </Link>
@@ -103,7 +103,7 @@ export default function Dashboard() {
             <Link
               to="/venues"
               key={venue.title}
-              className="group relative isolate flex aspect-4/5 min-h-80 items-end overflow-hidden border border-border-subtle"
+              className="luxury-card-interactive group relative isolate flex aspect-4/5 min-h-80 items-end overflow-hidden rounded-2xl border border-border-subtle shadow-xl shadow-background/30"
             >
               <img
                 src={venue.src}

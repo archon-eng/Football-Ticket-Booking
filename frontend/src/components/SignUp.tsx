@@ -8,7 +8,7 @@ export default function SignUp() {
   }
 
   return (
-    <div className="lux-auth lux-auth-luxe mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center px-5 py-12 lg:px-8">
+    <div className="lux-auth mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center px-5 py-12 lg:px-8">
       <section className="grid w-full overflow-hidden rounded-3xl border border-border-strong bg-surface shadow-2xl md:grid-cols-[1.1fr_0.9fr]">
         <div className="relative isolate order-1 overflow-hidden bg-linear-to-br from-surface-elevated via-surface to-background p-8 text-text-primary md:order-1 lg:p-14">
           <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-champagne/10 blur-3xl" />
@@ -54,7 +54,7 @@ export default function SignUp() {
           <div className="mt-8 grid gap-3.5">
             <NavLink
               to="user_signup"
-              className="group flex items-center justify-between gap-4 rounded-2xl border border-border-subtle bg-surface/80 p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-champagne/40 hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne sm:p-5"
+              className="luxury-card-interactive group flex items-center justify-between gap-4 rounded-2xl border border-border-subtle bg-surface/80 p-4 text-left sm:p-5"
             >
               <span className="flex min-w-0 items-center gap-4">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-champagne/25 bg-background text-xs font-semibold tracking-widest text-champagne transition-colors group-hover:bg-champagne group-hover:text-background">
@@ -76,7 +76,7 @@ export default function SignUp() {
 
             <NavLink
               to="admin_signup"
-              className="group flex items-center justify-between gap-4 rounded-2xl border border-border-subtle bg-surface/80 p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-champagne/40 hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne sm:p-5"
+              className="luxury-card-interactive group flex items-center justify-between gap-4 rounded-2xl border border-border-subtle bg-surface/80 p-4 text-left sm:p-5"
             >
               <span className="flex min-w-0 items-center gap-4">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-champagne/25 bg-background text-xs font-semibold tracking-widest text-champagne transition-colors group-hover:bg-champagne group-hover:text-background">

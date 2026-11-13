@@ -17,7 +17,7 @@ export default function SeatingPlan({
   return (
     <section
       aria-labelledby="seat-map-heading"
-      className="border-y border-border py-6"
+      className="luxury-card p-5 sm:p-6"
     >
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
@@ -60,10 +60,10 @@ export default function SeatingPlan({
               onClick={() => onSeatToggle(id)}
               className={`aspect-square border transition-colors disabled:cursor-not-allowed ${
                 occupied
-                  ? "border-border-subtle bg-surface-hover opacity-45"
+                  ? "rounded-sm border-border-subtle bg-surface-hover opacity-45"
                   : isSelected
-                    ? "border-champagne bg-champagne text-background"
-                    : "border-border bg-surface text-text-secondary hover:border-champagne/70 hover:text-beige"
+                    ? "rounded-sm border-champagne bg-champagne text-background shadow-[0_0_16px_rgb(214_193_155_/_24%)]"
+                    : "rounded-sm border-border bg-surface text-text-secondary hover:border-champagne/70 hover:bg-surface-hover hover:text-beige"
               }`}
             >
               <span

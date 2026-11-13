@@ -12,10 +12,10 @@ export default function NavBar() {
     }`
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border-subtle bg-background/90 px-4 backdrop-blur-xl sm:px-6 lg:px-10">
+    <header className="sticky top-0 z-30 border-b border-border-subtle bg-background/85 px-4 shadow-[0_8px_32px_rgb(0_0_0_/_16%)] backdrop-blur-xl sm:px-6 lg:px-10">
       <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 py-2 sm:min-h-20 sm:grid-cols-[1fr_auto_1fr] sm:py-0">
         <NavLink to="/dashboard" className="flex w-fit items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center border border-champagne/40 bg-surface">
+          <span className="flex h-10 w-10 items-center justify-center rounded-md border border-champagne/40 bg-surface shadow-[inset_0_1px_0_rgb(242_235_221_/_5%)]">
             <img src={logo} alt="" className="h-6 w-auto" />
           </span>
           <span className="hidden sm:block">
@@ -58,7 +58,7 @@ export default function NavBar() {
                 type="button"
                 onClick={logout}
                 aria-label={`Sign out ${user.username}`}
-                className="flex items-center gap-2 border border-border px-3 py-2 text-xs font-medium text-text-secondary transition-colors hover:border-champagne/50 hover:text-beige focus-visible:border-champagne/50 focus-visible:text-beige sm:px-4"
+                className="luxury-button luxury-button-secondary gap-2 px-3 py-2 text-xs sm:px-4"
               >
                 <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
                 <span>
@@ -69,7 +69,7 @@ export default function NavBar() {
               </button>
               <span
                 role="tooltip"
-                className="pointer-events-none absolute right-0 top-full z-50 mt-2 whitespace-nowrap border border-border-subtle bg-surface px-3 py-2 text-xs text-beige opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+                className="pointer-events-none absolute right-0 top-full z-50 mt-2 whitespace-nowrap rounded-lg border border-border-subtle bg-surface px-3 py-2 text-xs text-beige opacity-0 shadow-xl transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
               >
                 Sign out
               </span>
@@ -77,7 +77,7 @@ export default function NavBar() {
           ) : (
             <NavLink
               to="/login"
-              className="flex items-center gap-2 border border-champagne/50 px-3 py-2 text-xs font-semibold text-beige transition-colors hover:bg-champagne hover:text-background sm:px-4"
+              className="luxury-button luxury-button-primary gap-2 px-3 py-2 text-xs sm:px-4"
             >
               <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
               <span>Sign In</span>

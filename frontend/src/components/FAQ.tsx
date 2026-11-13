@@ -39,11 +39,14 @@ export default function FAQ() {
       </header>
 
       <section
-        className="mt-5 divide-y divide-border-subtle"
+        className="mt-6 grid gap-3"
         aria-label="Frequently asked questions"
       >
         {questions.map(({ question, answer }) => (
-          <details key={question} className="group py-5">
+          <details
+            key={question}
+            className="luxury-card luxury-card-interactive group px-5 py-2"
+          >
             <summary className="flex cursor-pointer list-none items-center justify-between gap-5 py-2 font-display text-lg font-semibold tracking-normal text-beige marker:hidden">
               {question}
               <span
@@ -64,7 +67,7 @@ export default function FAQ() {
         <p className="text-sm text-text-muted">Ready to find your fixture?</p>
         <Link
           to="/fixtures"
-          className="inline-flex min-h-11 w-fit items-center gap-3 border border-champagne/50 px-5 text-sm font-semibold text-beige transition-colors hover:bg-champagne hover:text-background"
+          className="luxury-button luxury-button-primary"
         >
           Browse fixtures <span aria-hidden="true">↗</span>
         </Link>

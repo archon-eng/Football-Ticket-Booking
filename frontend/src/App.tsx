@@ -20,7 +20,7 @@ function Layout() {
       <main className="flex-1">
         <Outlet />
       </main>
-      <footer className="border-t border-border-subtle px-5 py-6 sm:px-8 lg:px-12">
+      <footer className="border-t border-border-subtle bg-surface/25 px-5 py-6 sm:px-8 lg:px-12">
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 text-xs text-text-muted sm:flex-row sm:items-center">
           <p className="font-display text-sm font-semibold tracking-[0.08em] text-beige">
             THE MATCHDAY{" "}
@@ -31,17 +31,20 @@ function Layout() {
           <nav aria-label="Footer navigation" className="flex gap-5">
             <NavLink
               to="/fixtures"
-              className="transition-colors hover:text-beige"
+              className="transition-colors hover:text-champagne"
             >
               Fixtures
             </NavLink>
             <NavLink
               to="/venues"
-              className="transition-colors hover:text-beige"
+              className="transition-colors hover:text-champagne"
             >
               Venues
             </NavLink>
-            <NavLink to="/faq" className="transition-colors hover:text-beige">
+            <NavLink
+              to="/faq"
+              className="transition-colors hover:text-champagne"
+            >
               Guest services
             </NavLink>
           </nav>

@@ -46,16 +46,19 @@ export default function VenueVariable({ fixtures }: VenueVariableProps) {
 
   if (venues.length === 0) {
     return (
-      <p className="py-10 text-sm text-text-muted">
+      <p className="luxury-card my-8 px-6 py-10 text-sm text-text-muted">
         No venues are linked to the available fixtures.
       </p>
     )
   }
 
   return (
-    <section className="mt-8 divide-y divide-border-subtle" aria-label="Venues">
+    <section className="mt-8 space-y-4" aria-label="Venues">
       {venues.map((venue) => (
-        <article key={venue.name.toLowerCase()} className="py-7 sm:py-9">
+        <article
+          key={venue.name.toLowerCase()}
+          className="luxury-card overflow-hidden p-5 sm:p-7"
+        >
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <p className="text-xs uppercase tracking-[0.16em] text-champagne">
@@ -68,7 +71,7 @@ export default function VenueVariable({ fixtures }: VenueVariableProps) {
             </div>
             <Link
               to="/fixtures"
-              className="inline-flex min-h-11 w-fit items-center gap-3 border-b border-champagne/50 pb-1 text-sm font-semibold text-beige transition-colors hover:border-champagne"
+              className="luxury-button luxury-button-secondary min-h-10 w-fit px-4"
             >
               View fixtures <span aria-hidden="true">↗</span>
             </Link>
@@ -81,7 +84,7 @@ export default function VenueVariable({ fixtures }: VenueVariableProps) {
                   fixture._id ??
                   `${fixture.home}-${fixture.away}-${fixture.date}-${index}`
                 }
-                className="grid gap-2 py-4 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-6"
+                className="grid gap-2 rounded-lg px-3 py-4 transition-colors hover:bg-surface-hover sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-6"
               >
                 <p className="text-xs text-text-muted">
                   {formatFixtureDate(fixture.date)} · {fixture.time}

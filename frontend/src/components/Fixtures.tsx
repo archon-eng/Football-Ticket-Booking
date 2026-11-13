@@ -26,15 +26,21 @@ export default function Fixtures() {
         </p>
 
         {loadingFixtures ? (
-          <p className="py-10 text-sm text-text-muted" role="status">
+          <p
+            className="luxury-card my-8 px-6 py-10 text-sm text-text-muted"
+            role="status"
+          >
             Loading fixtures...
           </p>
         ) : fixtures === null ? (
-          <p className="py-10 text-sm text-text-muted" role="status">
+          <p
+            className="luxury-card my-8 px-6 py-10 text-sm text-text-muted"
+            role="status"
+          >
             Fixtures are unavailable right now. Please try again later.
           </p>
         ) : fixtures.length === 0 ? (
-          <p className="py-10 text-sm text-text-muted">
+          <p className="luxury-card my-8 px-6 py-10 text-sm text-text-muted">
             No fixtures are available at the moment.
           </p>
         ) : (

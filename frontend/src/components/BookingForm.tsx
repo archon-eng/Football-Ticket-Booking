@@ -65,7 +65,10 @@ export default function BookingForm() {
             you make your choices.
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-9 space-y-6">
+          <form
+            onSubmit={handleSubmit}
+            className="luxury-card mt-9 space-y-6 p-5 sm:p-7"
+          >
             <div>
               <label
                 htmlFor="fixture"
@@ -80,7 +83,7 @@ export default function BookingForm() {
                   setFixture(event.target.value)
                   setReviewMessage("")
                 }}
-                className="min-h-12 w-full border border-border bg-surface px-4 text-sm text-beige outline-none transition-colors focus:border-champagne"
+                className="min-h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-beige outline-none transition-colors focus:border-champagne focus:ring-4 focus:ring-champagne/10"
               >
                 {fixtures.map((item) => (
                   <option key={item}>{item}</option>
@@ -92,11 +95,11 @@ export default function BookingForm() {
               <legend className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-secondary">
                 Seating tier
               </legend>
-              <div className="divide-y divide-border border-y border-border">
+              <div className="divide-y divide-border-subtle overflow-hidden rounded-xl border border-border">
                 {categories.map((item) => (
                   <label
                     key={item.label}
-                    className="flex min-h-14 cursor-pointer items-center justify-between gap-4 py-3 text-sm transition-colors hover:text-beige"
+                    className="flex min-h-14 cursor-pointer items-center justify-between gap-4 px-4 py-3 text-sm transition-colors hover:bg-surface-hover hover:text-beige"
                   >
                     <span className="flex items-center gap-3">
                       <input
@@ -129,7 +132,7 @@ export default function BookingForm() {
 
             <button
               type="submit"
-              className="inline-flex min-h-12 items-center justify-center gap-4 bg-champagne px-6 text-sm font-semibold text-background transition-colors hover:bg-beige"
+              className="luxury-button luxury-button-primary"
             >
               Review order <span aria-hidden="true">↗</span>
             </button>
@@ -141,7 +144,7 @@ export default function BookingForm() {
           </form>
         </section>
 
-        <aside className="h-fit border-y border-border py-6 lg:sticky lg:top-28">
+        <aside className="luxury-card h-fit p-6 sm:p-8 lg:sticky lg:top-28">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-champagne">
             Order estimate
           </p>
