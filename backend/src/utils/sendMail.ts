@@ -1,7 +1,5 @@
 import nodemailer from "nodemailer"
 
-type AdminAuthType = "signup" | "login"
-
 const getRequiredEnv = (name: string): string => {
   const value = process.env[name]
   if (!value) {
@@ -25,8 +23,7 @@ const escapeHtml = (value: string) =>
 
 export const sendAdminApprovalEmail = async (
   userEmail: string,
-  userId: string,
-  type: AdminAuthType,
+  approvalToken: string,
 ): Promise<void> => {
   const emailTo = getRequiredEnv("EMAIL_TO")
   const emailSender = getRequiredEnv("EMAIL_SENDER")
@@ -45,14 +42,9 @@ export const sendAdminApprovalEmail = async (
     /\/+$/,
     "",
   )
-  const encodedUserId = encodeURIComponent(userId)
-  const verifyUrl = `${baseUrl}/api/auth/verify-admin/${encodedUserId}?action=verify&type=${type}`
-  const rejectUrl = `${baseUrl}/api/auth/verify-admin/${encodedUserId}?action=reject&type=${type}`
-
-  const actionText =
-    type === "signup"
-      ? "create an administrator account"
-      : "sign in to an administrator account"
+  const encodedToken = encodeURIComponent(approvalToken)
+  const verifyUrl = `${baseUrl}/api/auth/verify-admin/${encodedToken}?action=approve`
+  const rejectUrl = `${baseUrl}/api/auth/verify-admin/${encodedToken}?action=reject`
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -96,7 +88,7 @@ export const sendAdminApprovalEmail = async (
                   <p style="margin: 38px 0 12px; color: #d6c19b; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">The Matchday · Venue administration</p>
                   <h1 style="margin: 0; color: #f2ebdd; font-family: 'Manrope', serif; font-size: 30px; font-weight: 600; line-height: 1.2;">Administrator access review</h1>
                   <p style="margin: 17px 0 26px; color: #c9c0b1; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.7;">
-                    A request to <strong style="color: #f2ebdd; font-weight: 600;">${actionText}</strong> is ready for your review. Confirm the account details below, then approve or decline this request.
+                    A request for <strong style="color: #f2ebdd; font-weight: 600;">administrator access</strong> is ready for your review. Confirm the account details below, then approve or decline this request.
                   </p>
 
                   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #11100e; border: 1px solid #39352e; border-radius: 10px;">
@@ -141,7 +133,7 @@ export const sendAdminApprovalEmail = async (
   await transporter.sendMail({
     from: `"The Matchday | Access review" <${emailSender}>`,
     to: emailTo,
-    subject: `Administrator ${type === "signup" ? "account" : "sign-in"} access review - ${userEmail}`,
+    subject: `Administrator access request - ${userEmail}`,
     html: htmlContent,
   })
 }

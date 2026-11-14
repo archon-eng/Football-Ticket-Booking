@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { NavLink } from "react-router-dom"
 import account_logo from "../assets/account_symbol.svg"
 import logo from "../assets/football_logo.svg"
@@ -5,6 +6,17 @@ import { useAuth } from "../context/AuthContext"
 
 export default function NavBar() {
   const { user, loading, logout } = useAuth()
+  const [logoutError, setLogoutError] = useState("")
+
+  const handleLogout = async () => {
+    setLogoutError("")
+    try {
+      await logout()
+    } catch (error) {
+      console.error("Sign-out failed:", error)
+      setLogoutError("We couldn't sign you out. Please try again.")
+    }
+  }
 
   const navClass = ({ isActive }: { isActive: boolean }) =>
     `relative px-2.5 py-1.5 text-sm font-medium transition-colors after:absolute after:bottom-0 after:left-2.5 after:h-px after:w-[calc(100%-1.25rem)] after:origin-center after:scale-x-0 after:bg-champagne after:transition-transform after:duration-300 hover:text-beige hover:after:scale-x-100 ${
@@ -84,11 +96,16 @@ export default function NavBar() {
                   )}
                   <button
                     type="button"
-                    onClick={() => void logout()}
+                    onClick={() => void handleLogout()}
                     className="block w-full rounded-lg px-3 py-2 text-left text-sm text-beige transition-colors hover:bg-surface-elevated focus-visible:bg-surface-elevated"
                   >
                     Sign out
                   </button>
+                  {logoutError && (
+                    <p role="alert" className="px-3 py-2 text-xs text-champagne">
+                      {logoutError}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

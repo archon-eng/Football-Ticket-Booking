@@ -1,16 +1,26 @@
 import bcrypt from "bcryptjs"
-import { Request, Response } from "express"
-import jwt from "jsonwebtoken"
-import { Types } from "mongoose"
-import { type HydratedDocument } from "mongoose"
+import type { Request, Response } from "express"
 import { z } from "zod"
-import { Fixture, type IFixture } from "../models/Fixtures.js"
 import { User, type IUser } from "../models/User.js"
+import {
+  ADMIN_APPROVAL_TTL_MS,
+  clearAuthCookie,
+  createAdminApprovalToken,
+  createAuthToken,
+  hashAdminApprovalToken,
+  setAuthCookie,
+} from "../utils/auth.js"
 import { sendAdminApprovalEmail } from "../utils/sendMail.js"
 
+const emailSchema = z
+  .string()
+  .trim()
+  .pipe(z.email({ message: "Enter a valid email address." }))
+  .transform((email) => email.toLowerCase())
+
 const signUpSchema = z.object({
-  username: z.string().trim(),
-  email: z.email({ message: "Enter a valid email address." }),
+  username: z.string().trim().max(64),
+  email: emailSchema,
   password: z
     .string()
     .min(8, { message: "Password must be at least 8 characters." }),
@@ -18,31 +28,45 @@ const signUpSchema = z.object({
 })
 
 const logInSchema = z.object({
-  email: z.email({ message: "Enter a valid email address." }),
+  email: emailSchema,
   password: z.string().min(1, { message: "Enter your password." }),
   role: z.enum(["user", "admin"]),
 })
 
-const fixtureSchema = z.object({
-  competition: z
-    .string()
-    .trim()
-    .min(1, { message: "Enter the competition name." }),
-  home: z.string().trim().min(1, { message: "Enter the home team." }),
-  away: z.string().trim().min(1, { message: "Enter the away team." }),
-  date: z.string().refine((date) => isNaN(Date.parse(date)) === false, {
-    message: "Enter a valid date.",
-  }),
-  time: z.string().trim().min(1, { message: "Enter a match time." }),
-  venue: z.string().trim().min(1, { message: "Enter a venue." }),
-})
-
 const profileUpdateSchema = z.strictObject({
   username: z.string().trim().min(1, { message: "Enter your name." }).max(64),
-  email: z.email({ message: "Enter a valid email address." }).transform((email) =>
-    email.toLowerCase(),
-  ),
+  email: emailSchema,
 })
+
+const isDuplicateKeyError = (error: unknown) =>
+  typeof error === "object" &&
+  error !== null &&
+  "code" in error &&
+  error.code === 11000
+
+const publicUser = (user: Pick<IUser, "_id" | "username" | "email" | "role">) => ({
+  username: user.username,
+  email: user.email,
+  _id: user._id.toString(),
+  role: user.role,
+})
+
+const isApprovalToken = (value: unknown): value is string =>
+  typeof value === "string" && /^[a-f\d]{64}$/i.test(value)
+
+const approvalPage = (
+  title: string,
+  message: string,
+  token?: string,
+  action?: "approve" | "reject",
+) => {
+  const form =
+    token && action
+      ? `<form method="post" action="/api/auth/verify-admin/${token}"><input type="hidden" name="action" value="${action}"><button type="submit">Confirm ${action}</button></form>`
+      : ""
+
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${title}</title></head><body><main><h1>${title}</h1><p>${message}</p>${form}</main></body></html>`
+}
 
 export const signUp = async (req: Request, res: Response) => {
   try {
@@ -50,14 +74,11 @@ export const signUp = async (req: Request, res: Response) => {
     if (!result.success) {
       return res
         .status(400)
-        .json({ errors: z.flattenError(result.error).fieldErrors }) // a method to display error in simple language
+        .json({ errors: z.flattenError(result.error).fieldErrors })
     }
 
-    const { username, email, password, role } = result.data // making a new object for validation
-
-    const passwordHash = await bcrypt.hash(password, 10)
-
-    const name = username === "" ? email.split("@")[0] : username
+    const { username, email, password, role } = result.data
+    const name = (username || email.split("@")[0]).slice(0, 64)
 
     const existingUser = await User.findOne({ email })
     if (existingUser) {
@@ -66,66 +87,42 @@ export const signUp = async (req: Request, res: Response) => {
         .json({ message: "An account with this email address already exists." })
     }
 
-    let user: HydratedDocument<IUser> | null = null
-    if (role === "user") {
-      user = await User.create({
+    const passwordHash = await bcrypt.hash(password, 10)
+
+    if (role === "admin") {
+      const { token, tokenHash } = createAdminApprovalToken()
+      const user = await User.create({
         username: name,
         email,
         passwordHash,
         role,
-      })
-    } else if (role === "admin") {
-      user = await User.create({
-        username: name,
-        email,
-        passwordHash,
-        role,
+        adminApproved: false,
+        adminApprovalTokenHash: tokenHash,
+        adminApprovalExpiresAt: new Date(Date.now() + ADMIN_APPROVAL_TTL_MS),
       })
 
-      if (email !== process.env.EMAIL_TO) {
-        await sendAdminApprovalEmail(email, user._id.toString(), "signup")
-        return res.status(202).json({
-          message:
-            "Your administrator account request has been submitted for review.",
-        })
+      try {
+        await sendAdminApprovalEmail(email, token)
+      } catch (error) {
+        await User.findByIdAndDelete(user._id)
+        throw error
       }
+
+      return res.status(202).json({
+        message:
+          "Your administrator account request has been submitted for review.",
+      })
     }
 
-    if (!user || user === null) {
-      return res.status(400).json({ message: "Account details are required." })
-    }
-
-    const stringifyJWTSecret = (): string => {
-      const jwtSecret = process.env.JWT_SECRET
-      if (!jwtSecret) {
-        throw new Error("JWT_SECRET is not defined in environment variables")
-      }
-      return jwtSecret
-    }
-
-    // It converts the JWT_SECRET from type "string | undefined" to type "string" to elimnate typescript error of being undefined
-    const jwtSecret = stringifyJWTSecret()
-
-    const token = jwt.sign({ userId: user._id, role: user.role }, jwtSecret, {
-      expiresIn: "14d",
-    }) // jwt.sign(payload, signature, options), here, the options are also included in the paylod; the header isn't defined, alg is declared HS256 and the type is declared jwt by default
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 14 * 24 * 60 * 60 * 1000,
-    })
-
-    return res.status(201).json({
-      user: {
-        username: user.username,
-        email: user.email,
-        _id: user._id.toString(),
-        role: user.role,
-      },
-    })
+    const user = await User.create({ username: name, email, passwordHash, role })
+    setAuthCookie(res, createAuthToken(user._id.toString(), user.role))
+    return res.status(201).json({ user: publicUser(user) })
   } catch (error) {
+    if (isDuplicateKeyError(error)) {
+      return res
+        .status(409)
+        .json({ message: "An account with this email address already exists." })
+    }
     console.error("SignUp Error:", error)
     return res
       .status(500)
@@ -134,7 +131,6 @@ export const signUp = async (req: Request, res: Response) => {
       })
   }
 }
-
 export const logIn = async (req: Request, res: Response) => {
   try {
     const result = logInSchema.safeParse(req.body)
@@ -146,7 +142,9 @@ export const logIn = async (req: Request, res: Response) => {
 
     const { email, password, role } = result.data
 
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ email }).select(
+      "+adminApproved +adminApprovalTokenHash +adminApprovalExpiresAt",
+    )
     if (!user) {
       return res.status(401).json({
         message:
@@ -162,55 +160,44 @@ export const logIn = async (req: Request, res: Response) => {
       })
     }
 
-    if (user.role === "admin") {
-      if (email !== process.env.EMAIL_TO) {
-        await sendAdminApprovalEmail(email, user._id.toString(), "login")
+    if (user.role === "admin" && user.adminApproved !== true) {
+      const approvalIsPending =
+        user.adminApprovalTokenHash &&
+        user.adminApprovalExpiresAt &&
+        user.adminApprovalExpiresAt.getTime() > Date.now()
+
+      if (!approvalIsPending) {
+        const { token, tokenHash } = createAdminApprovalToken()
+        user.adminApproved = false
+        user.adminApprovalTokenHash = tokenHash
+        user.adminApprovalExpiresAt = new Date(
+          Date.now() + ADMIN_APPROVAL_TTL_MS,
+        )
+        await user.save()
+
+        try {
+          await sendAdminApprovalEmail(email, token)
+        } catch (error) {
+          user.adminApprovalTokenHash = undefined
+          user.adminApprovalExpiresAt = undefined
+          await user.save()
+          throw error
+        }
+
         return res.status(202).json({
           message:
-            "Your administrator sign-in request has been submitted for approval.",
+            "A new administrator access review request has been sent for approval.",
         })
       }
-    }
 
-    const stringifyJWTSecret = (): string => {
-      const jwtSecret = process.env.JWT_SECRET
-      if (!jwtSecret) {
-        throw new Error("JWT_SECRET is not defined in environment variables")
-      }
-      return jwtSecret
-    }
-
-    // It converts the JWT_SECRET from type "string | undefined" to type "string" to elimnate typescript error of being undefined
-    const jwtSecret = stringifyJWTSecret()
-
-    let token: string = jwt.sign(
-      { userId: user._id, role: user.role },
-      jwtSecret,
-      { expiresIn: "14d" },
-    )
-
-    if (!token) {
-      return res.status(403).json({
+      return res.status(202).json({
         message:
-          "We couldn't verify those credentials. Check your email and password, then try again.",
+          "Your administrator account request is still awaiting approval.",
       })
     }
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    })
-
-    return res.status(200).json({
-      user: {
-        username: user.username,
-        email: user.email,
-        _id: user._id.toString(),
-        role: user.role,
-      },
-    })
+    setAuthCookie(res, createAuthToken(user._id.toString(), user.role))
+    return res.status(200).json({ user: publicUser(user) })
   } catch (error) {
     console.error("LogIn Error:", error)
     return res
@@ -223,43 +210,140 @@ export const logIn = async (req: Request, res: Response) => {
 }
 
 export const logOut = (_req: Request, res: Response) => {
-  res.clearCookie("token")
+  clearAuthCookie(res)
   return res.status(200).json({ message: "You have been signed out." })
 }
 
-export const getMe = async (req: Request, res: Response) => {
+export const getMe = (req: Request, res: Response) => {
+  if (!req.auth) {
+    return res.status(401).json({ message: "Please sign in to continue." })
+  }
+
+  return res.status(200).json({
+    user: {
+      _id: req.auth.userId,
+      username: req.auth.username,
+      email: req.auth.email,
+      role: req.auth.role,
+    },
+  })
+}
+
+const pendingAdminApprovalQuery = (token: string) => ({
+  role: "admin" as const,
+  adminApproved: false,
+  adminApprovalTokenHash: hashAdminApprovalToken(token),
+  adminApprovalExpiresAt: { $gt: new Date() },
+})
+
+export const reviewAdminApproval = async (req: Request, res: Response) => {
+  const token = req.params.token
+  const action = req.query.action
+  if (
+    !isApprovalToken(token) ||
+    (action !== "approve" && action !== "reject")
+  ) {
+    return res.status(400).type("html").send(
+      approvalPage(
+        "Invalid approval request",
+        "This administrator approval link is invalid.",
+      ),
+    )
+  }
+
   try {
-    const token = req.cookies?.token
-    if (!token) {
-      return res.status(401).json({ message: "Please sign in to continue." })
+    const request = await User.exists(pendingAdminApprovalQuery(token))
+    if (!request) {
+      return res.status(410).type("html").send(
+        approvalPage(
+          "Approval request expired",
+          "This administrator approval request has expired or was already handled.",
+        ),
+      )
     }
 
-    const stringifyJWTSecret = (): string => {
-      const jwtSecret = process.env.JWT_SECRET
-      if (!jwtSecret) {
-        throw new Error("JWT_SECRET is not defined in environment variables")
-      }
-      return jwtSecret
-    }
+    return res
+      .status(200)
+      .type("html")
+      .send(
+        approvalPage(
+          action === "approve" ? "Approve administrator" : "Decline administrator",
+          `Confirm that you want to ${action} this administrator account request.`,
+          token,
+          action,
+        ),
+      )
+  } catch (error) {
+    console.error("Admin approval review failed:", error)
+    return res.status(500).type("html").send(
+      approvalPage(
+        "Approval unavailable",
+        "We couldn't load this approval request. Please try again later.",
+      ),
+    )
+  }
+}
 
-    // It converts the JWT_SECRET from type "string | undefined" to type "string" to elimnate typescript error of being undefined
-    const jwtSecret = stringifyJWTSecret()
-    const payload = jwt.verify(token, jwtSecret) as { userId: string }
+export const completeAdminApproval = async (req: Request, res: Response) => {
+  const token = req.params.token
+  const action =
+    typeof req.body === "object" && req.body !== null
+      ? req.body.action
+      : undefined
+  if (
+    !isApprovalToken(token) ||
+    (action !== "approve" && action !== "reject")
+  ) {
+    return res.status(400).type("html").send(
+      approvalPage(
+        "Invalid approval request",
+        "This administrator approval request is invalid.",
+      ),
+    )
+  }
 
-    // A place to resolve errors
-    const user = await User.findById(payload.userId).select("-passwordHash") // Exclude the passwordHash field from the response
+  try {
+    const requestQuery = pendingAdminApprovalQuery(token)
+    const user =
+      action === "approve"
+        ? await User.findOneAndUpdate(
+            requestQuery,
+            {
+              $set: { adminApproved: true },
+              $unset: {
+                adminApprovalTokenHash: 1,
+                adminApprovalExpiresAt: 1,
+              },
+            },
+            { new: true },
+          )
+        : await User.findOneAndDelete(requestQuery)
 
     if (!user) {
-      return res.status(404).json({ message: "We couldn't find this account." })
+      return res.status(410).type("html").send(
+        approvalPage(
+          "Approval request expired",
+          "This administrator approval request has expired or was already handled.",
+        ),
+      )
     }
 
-    return res.status(200).json({ user })
+    return res.status(200).type("html").send(
+      approvalPage(
+        action === "approve" ? "Administrator approved" : "Request declined",
+        action === "approve"
+          ? "The administrator account is now active."
+          : "The administrator account request has been declined.",
+      ),
+    )
   } catch (error) {
-    return res
-      .status(401)
-      .json({
-        message: "Your session is no longer valid. Please sign in again.",
-      })
+    console.error("Admin approval completion failed:", error)
+    return res.status(500).type("html").send(
+      approvalPage(
+        "Approval unavailable",
+        "We couldn't process this approval request. Please try again later.",
+      ),
+    )
   }
 }
 
@@ -286,14 +370,9 @@ export const updateProfile = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "We couldn't find this account." })
     }
 
-    return res.status(200).json({ user })
+    return res.status(200).json({ user: publicUser(user) })
   } catch (error) {
-    if (
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      error.code === 11000
-    ) {
+    if (isDuplicateKeyError(error)) {
       return res
         .status(409)
         .json({ message: "An account with this email address already exists." })
@@ -303,139 +382,5 @@ export const updateProfile = async (req: Request, res: Response) => {
     return res.status(500).json({
       message: "We couldn't update your profile. Please try again shortly.",
     })
-  }
-}
-
-export const newFixture = async (req: Request, res: Response) => {
-  try {
-    const result = fixtureSchema.safeParse(req.body)
-    if (!result.success) {
-      return res
-        .status(400)
-        .json({ errors: z.flattenError(result.error).fieldErrors })
-    }
-
-    const { competition, home, away, date, time, venue } = result.data
-
-    const existingFixture = await Fixture.findOne({
-      competition,
-      home,
-      away,
-      date,
-      time,
-      venue,
-    })
-    if (existingFixture) {
-      return res
-        .status(409)
-        .json({ message: "A fixture with these details already exists." })
-    }
-
-    let fixture: HydratedDocument<IFixture> | null = null
-    fixture = await Fixture.create({
-      competition,
-      home,
-      away,
-      date,
-      time,
-      venue,
-    })
-
-    if (!fixture || fixture === null) {
-      return res.status(400).json({ message: "Fixture details are required." })
-    }
-
-    return res.status(201).json({
-      fixture: {
-        competition: fixture.competition,
-        home: fixture.home,
-        away: fixture.away,
-        date: fixture.date,
-        time: fixture.time,
-        venue: fixture.venue,
-        _id: fixture._id.toString(),
-      },
-    })
-  } catch (error) {
-    return res
-      .status(500)
-      .json({
-        message: "We couldn't save the fixture. Please try again shortly.",
-      })
-  }
-}
-
-export const updateFixture = async (req: Request, res: Response) => {
-  const fixtureId = req.params.id
-  if (typeof fixtureId !== "string" || !Types.ObjectId.isValid(fixtureId)) {
-    return res.status(400).json({ message: "The fixture ID is invalid." })
-  }
-
-  const result = fixtureSchema.safeParse(req.body)
-  if (!result.success) {
-    return res
-      .status(400)
-      .json({ errors: z.flattenError(result.error).fieldErrors })
-  }
-
-  try {
-    const duplicate = await Fixture.findOne({
-      ...result.data,
-      _id: { $ne: fixtureId },
-    })
-    if (duplicate) {
-      return res
-        .status(409)
-        .json({ message: "A fixture with these details already exists." })
-    }
-
-    const fixture = await Fixture.findByIdAndUpdate(fixtureId, result.data, {
-      new: true,
-      runValidators: true,
-    })
-    if (!fixture) {
-      return res.status(404).json({ message: "We couldn't find this fixture." })
-    }
-
-    return res.status(200).json({ fixture })
-  } catch (error) {
-    console.error("Fixture update error:", error)
-    return res.status(500).json({
-      message: "We couldn't update the fixture. Please try again shortly.",
-    })
-  }
-}
-
-export const deleteFixture = async (req: Request, res: Response) => {
-  const fixtureId = req.params.id
-  if (typeof fixtureId !== "string" || !Types.ObjectId.isValid(fixtureId)) {
-    return res.status(400).json({ message: "The fixture ID is invalid." })
-  }
-
-  try {
-    const fixture = await Fixture.findByIdAndDelete(fixtureId)
-    if (!fixture) {
-      return res.status(404).json({ message: "We couldn't find this fixture." })
-    }
-
-    return res.status(200).json({ message: "Fixture deleted successfully." })
-  } catch (error) {
-    console.error("Fixture deletion error:", error)
-    return res.status(500).json({
-      message: "We couldn't delete the fixture. Please try again shortly.",
-    })
-  }
-}
-
-export const getFixtures = async (_req: Request, res: Response) => {
-  try {
-    const fixtures = await Fixture.find().sort({ date: 1, time: 1 })
-    return res.status(200).json({ fixtures })
-  } catch (error) {
-    return res
-      .status(500)
-      .json({
-        message: "We couldn't load fixtures. Please try again shortly.",
-      })
   }
 }

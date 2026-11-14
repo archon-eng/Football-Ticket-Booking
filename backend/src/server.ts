@@ -6,6 +6,7 @@ import express from "express"
 import http from "http"
 import { Server } from "socket.io"
 import { connectDB } from "./config/db.js"
+import { errorHandler } from "./middleware/errorHandler.js"
 import authRoutes from "./routes/authRoutes.js"
 
 dotenv.config()
@@ -24,6 +25,7 @@ export const io = new Server(server, {
 })
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(
   cors({
@@ -33,6 +35,7 @@ app.use(
 )
 
 app.use("/api/auth", authRoutes)
+app.use(errorHandler)
 
 // Real-time seat reservation socket listeners
 io.on("connection", (socket) => {

@@ -1,14 +1,13 @@
 import validateUserCredentials from "./validateUserCredentials"
 import {
   createContext,
-  useContext,
   useCallback,
+  useContext,
   useEffect,
   useState,
   type ReactNode,
 } from "react"
 
-// User type definition
 export interface User {
   username: string
   email: string
@@ -44,6 +43,7 @@ const parseFixture = (value: unknown): Fixture | null => {
       : date
 
   if (
+    (_id !== undefined && !isNonEmptyString(_id)) ||
     !isNonEmptyString(competition) ||
     !isNonEmptyString(home) ||
     !isNonEmptyString(away) ||
@@ -76,13 +76,16 @@ const parseFixturesResponse = (value: unknown): Fixture[] | null => {
     return null
   }
 
-  return (value as { fixtures: unknown[] }).fixtures.flatMap((fixture) => {
-    const parsedFixture = parseFixture(fixture)
-    return parsedFixture ? [parsedFixture] : []
-  })
+  const parsedFixtures = (value as { fixtures: unknown[] }).fixtures.map(
+    parseFixture,
+  )
+  if (parsedFixtures.some((fixture) => fixture === null)) {
+    return null
+  }
+
+  return parsedFixtures.filter((fixture): fixture is Fixture => fixture !== null)
 }
 
-// Interface defining all values and functions provided by this context
 interface AuthContextUserType {
   user: User | null
   setUser: (user: User | null) => void
@@ -92,17 +95,14 @@ interface AuthContextUserType {
 
 interface AuthContextFixturesType {
   fixtures: Fixture[] | null
-  setFixtures: (fixtures: Fixture[] | null) => void
   loadingFixtures: boolean
   refreshFixtures: (signal?: AbortSignal) => Promise<void>
 }
 
-// 1. Create Context with an undefined default value for safety
 const AuthContext = createContext<
   (AuthContextUserType & AuthContextFixturesType) | undefined
 >(undefined)
 
-// 2. AuthProvider Component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
@@ -133,8 +133,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const fetchMe = async () => {
       try {
-        setUser(null)
-
         const res = await fetch("/api/auth/me", {
           method: "GET",
           credentials: "include", // Sends the httpOnly JWT cookie automatically
@@ -144,8 +142,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (res.ok) {
           const data = await res.json()
           setUser(validateUserCredentials(data.user))
-        } else {
+        } else if (res.status === 401 || res.status === 403) {
           setUser(null)
+        } else {
+          throw new Error(`Session request failed with status ${res.status}`)
         }
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -178,16 +178,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Centralized logout handler
   const logout = async () => {
-    try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      })
-    } catch (error) {
-      console.error("Logout request failed:", error)
-    } finally {
-      setUser(null)
+    const res = await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    })
+    if (!res.ok) {
+      throw new Error(`Logout request failed with status ${res.status}`)
     }
+
+    setUser(null)
   }
 
   return (
@@ -198,7 +197,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         loading,
         logout,
         fixtures,
-        setFixtures,
         loadingFixtures,
         refreshFixtures,
       }}
@@ -208,8 +206,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   )
 }
 
-// 3. Custom Hook to easily consume AuthContext anywhere in the app
-// This hook is intentionally exported with the provider from this context module.
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = (): AuthContextUserType & AuthContextFixturesType => {
   const context = useContext(AuthContext)
@@ -218,5 +214,3 @@ export const useAuth = (): AuthContextUserType & AuthContextFixturesType => {
   }
   return context
 }
-
-// isNotEmptyString function and the controller/aboart logics are written by AI.

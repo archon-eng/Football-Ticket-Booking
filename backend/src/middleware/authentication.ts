@@ -1,37 +1,44 @@
 import type { RequestHandler } from "express"
 import jwt, { type JwtPayload } from "jsonwebtoken"
-import { User } from "../models/User.js"
+import { User, type UserRole } from "../models/User.js"
+import { AUTH_COOKIE_NAME, getJwtSecret } from "../utils/auth.js"
 
 declare global {
   namespace Express {
     interface Request {
       auth?: {
         userId: string
-        role: "user" | "admin"
+        username: string
+        email: string
+        role: UserRole
       }
     }
   }
 }
 
 export const authenticate: RequestHandler = async (req, res, next) => {
-  const token = req.cookies?.token
-  if (!token) {
+  const token: unknown = req.cookies?.[AUTH_COOKIE_NAME]
+  if (typeof token !== "string" || token.length === 0) {
     res.status(401).json({ message: "Please sign in to continue." })
     return
   }
 
-  const jwtSecret = process.env.JWT_SECRET
-  if (!jwtSecret) {
-    res
-      .status(500)
-      .json({ message: "Authentication is temporarily unavailable." })
+  let jwtSecret: string
+  try {
+    jwtSecret = getJwtSecret()
+  } catch (error) {
+    next(error)
     return
   }
 
   let payload: JwtPayload
   try {
-    const verified = jwt.verify(token, jwtSecret)
-    if (typeof verified === "string" || typeof verified.userId !== "string") {
+    const verified = jwt.verify(token, jwtSecret, { algorithms: ["HS256"] })
+    if (
+      typeof verified === "string" ||
+      typeof verified.userId !== "string" ||
+      !/^[a-f\d]{24}$/i.test(verified.userId)
+    ) {
       res.status(401).json({ message: "Your session is no longer valid." })
       return
     }
@@ -42,13 +49,26 @@ export const authenticate: RequestHandler = async (req, res, next) => {
   }
 
   try {
-    const user = await User.findById(payload.userId).select("role")
+    const user = await User.findById(payload.userId).select(
+      "username email role +adminApproved",
+    )
     if (!user) {
       res.status(401).json({ message: "Please sign in to continue." })
       return
     }
+    if (user.role === "admin" && user.adminApproved !== true) {
+      res.status(403).json({
+        message: "Administrator access is awaiting approval.",
+      })
+      return
+    }
 
-    req.auth = { userId: user._id.toString(), role: user.role }
+    req.auth = {
+      userId: user._id.toString(),
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    }
     next()
   } catch (error) {
     next(error)
