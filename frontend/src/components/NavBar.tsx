@@ -53,7 +53,7 @@ export default function NavBar() {
           {loading ? (
             <span className="h-9 w-24 animate-pulse border border-border-subtle bg-surface" />
           ) : user ? (
-            <span className="group relative">
+            <div className="group relative">
               <button
                 type="button"
                 aria-label={`Account options for ${user.username}`}
@@ -91,7 +91,7 @@ export default function NavBar() {
                   </button>
                 </div>
               </div>
-            </span>
+            </div>
           ) : (
             <NavLink
               to="/login"

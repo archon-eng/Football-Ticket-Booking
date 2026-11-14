@@ -135,28 +135,49 @@ export default function ManageFixtures() {
     setServerError("")
     setSuccess("")
     setDeletingId(fixture._id)
+    let response: Response
     try {
-      const response = await fetch(
+      response = await fetch(
         `/api/auth/fixture/${encodeURIComponent(fixture._id)}`,
         { method: "DELETE", credentials: "include" },
       )
-      const data: unknown = await response.json()
-      if (!response.ok) {
-        setServerError(
-          getApiMessage(data, "We couldn't delete the fixture. Please try again."),
-        )
-        return
-      }
-
-      await refreshFixtures()
-      setSuccess("Fixture deleted.")
-      if (editingId === fixture._id) resetForm()
     } catch (error) {
-      console.error("Fixture deletion failed:", error)
+      console.error("Fixture deletion request failed:", error)
       setServerError("We couldn't delete the fixture. Please try again shortly.")
-    } finally {
       setDeletingId(null)
+      return
     }
+
+    let data: unknown
+    try {
+      data = await response.json()
+    } catch (error) {
+      console.error("Fixture deletion response was invalid:", error)
+      setServerError("The server returned an invalid response. Please try again.")
+      setDeletingId(null)
+      return
+    }
+
+    if (!response.ok) {
+      setServerError(
+        getApiMessage(data, "We couldn't delete the fixture. Please try again."),
+      )
+      setDeletingId(null)
+      return
+    }
+
+    try {
+      await refreshFixtures()
+    } catch (error) {
+      console.error("Fixture list refresh failed after deletion:", error)
+      setServerError("The fixture was deleted, but the list couldn't be refreshed.")
+      setDeletingId(null)
+      return
+    }
+
+    setSuccess("Fixture deleted.")
+    if (editingId === fixture._id) resetForm()
+    setDeletingId(null)
   }
 
   const beginEditing = (fixture: Fixture) => {
@@ -230,6 +251,7 @@ export default function ManageFixtures() {
                   field === "date" ? "date" : field === "time" ? "time" : "text"
                 }
                 required
+                disabled={submitting}
                 value={draft[field]}
                 onChange={(event) => updateDraft(field, event.target.value)}
                 className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-beige outline-none transition placeholder:text-muted focus:border-champagne focus:ring-4 focus:ring-champagne/15"
@@ -264,6 +286,7 @@ export default function ManageFixtures() {
               <button
                 type="button"
                 onClick={resetForm}
+                disabled={submitting}
                 className="luxury-button luxury-button-secondary px-5"
               >
                 Cancel
@@ -315,7 +338,11 @@ export default function ManageFixtures() {
                     <button
                       type="button"
                       onClick={() => beginEditing(fixture)}
-                      disabled={!fixture._id || deletingId === fixture._id}
+                      disabled={
+                        !fixture._id ||
+                        submitting ||
+                        deletingId === fixture._id
+                      }
                       className="rounded-lg border border-border px-3 py-2 text-sm text-beige transition-colors hover:border-champagne disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       Edit
@@ -323,7 +350,11 @@ export default function ManageFixtures() {
                     <button
                       type="button"
                       onClick={() => void handleDelete(fixture)}
-                      disabled={!fixture._id || deletingId === fixture._id}
+                      disabled={
+                        !fixture._id ||
+                        submitting ||
+                        deletingId === fixture._id
+                      }
                       className="rounded-lg border border-border px-3 py-2 text-sm text-beige transition-colors hover:border-champagne disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {deletingId === fixture._id ? "Deleting..." : "Delete"}
