@@ -361,13 +361,12 @@ a:hover {
 .luxury-card {
   border: 1px solid var(--color-border-subtle);
   border-radius: 1.25rem;
-  background:
-    linear-gradient(
-      145deg,
-      color-mix(in srgb, var(--color-surface) 92%, var(--color-beige)),
-      var(--color-surface) 58%,
-      var(--color-background)
-    );
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--color-surface) 92%, var(--color-beige)),
+    var(--color-surface) 58%,
+    var(--color-background)
+  );
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, var(--color-beige) 4%, transparent),
     0 18px 48px rgb(0 0 0 / 18%);
@@ -407,17 +406,26 @@ a:hover {
     box-shadow 180ms ease;
 }
 
+.luxury-button-compact {
+  min-height: 2.5rem;
+  gap: 0.5rem;
+  padding: 0.125rem 0.875rem;
+  font-size: 0.75rem;
+}
+
 .luxury-button-primary {
   border: 1px solid transparent;
   background-color: var(--color-champagne);
   color: var(--color-background);
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-champagne) 16%, transparent);
+  box-shadow: 0 8px 24px
+    color-mix(in srgb, var(--color-champagne) 16%, transparent);
 }
 
 .luxury-button-primary:hover {
   transform: translateY(-1px);
   background-color: var(--color-beige);
-  box-shadow: 0 10px 28px color-mix(in srgb, var(--color-champagne) 20%, transparent);
+  box-shadow: 0 10px 28px
+    color-mix(in srgb, var(--color-champagne) 20%, transparent);
 }
 
 .luxury-button:disabled {
@@ -435,7 +443,11 @@ a:hover {
 
 .luxury-button-secondary:hover {
   border-color: var(--color-champagne);
-  background-color: color-mix(in srgb, var(--color-champagne) 10%, var(--color-surface));
+  background-color: color-mix(
+    in srgb,
+    var(--color-champagne) 10%,
+    var(--color-surface)
+  );
 }
 
 /* Account surfaces use the same warm, elevated treatment as the rest of the site. */
@@ -469,12 +481,14 @@ a:hover {
   border-radius: 9999px;
   background-color: var(--color-champagne);
   color: var(--color-background);
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-champagne) 16%, transparent);
+  box-shadow: 0 8px 24px
+    color-mix(in srgb, var(--color-champagne) 16%, transparent);
 }
 
 .lux-auth section button[type="submit"]:hover {
   background-color: var(--color-beige);
-  box-shadow: 0 10px 28px color-mix(in srgb, var(--color-champagne) 20%, transparent);
+  box-shadow: 0 10px 28px
+    color-mix(in srgb, var(--color-champagne) 20%, transparent);
 }
 
 .lux-auth section [role="alert"] {

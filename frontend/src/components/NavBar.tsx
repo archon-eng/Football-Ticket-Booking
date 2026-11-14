@@ -7,13 +7,13 @@ export default function NavBar() {
   const { user, loading, logout } = useAuth()
 
   const navClass = ({ isActive }: { isActive: boolean }) =>
-    `relative px-3 py-2 text-sm font-medium transition-colors after:absolute after:bottom-0 after:left-3 after:h-px after:w-[calc(100%-1.5rem)] after:origin-center after:scale-x-0 after:bg-champagne after:transition-transform after:duration-300 hover:text-beige hover:after:scale-x-100 ${
+    `relative px-2.5 py-1.5 text-sm font-medium transition-colors after:absolute after:bottom-0 after:left-2.5 after:h-px after:w-[calc(100%-1.25rem)] after:origin-center after:scale-x-0 after:bg-champagne after:transition-transform after:duration-300 hover:text-beige hover:after:scale-x-100 ${
       isActive ? "text-beige after:scale-x-100" : "text-muted"
     }`
 
   return (
     <header className="sticky top-0 z-30 border-b border-border-subtle bg-background/85 px-3 shadow-[0_8px_32px_rgb(0_0_0_/16%)] backdrop-blur-xl sm:px-5 lg:px-8">
-      <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 py-2 sm:min-h-20 sm:grid-cols-[1fr_auto_1fr] sm:py-0">
+      <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 py-1.5 sm:min-h-18 sm:grid-cols-[1fr_auto_1fr] sm:py-0">
         <NavLink to="/dashboard" className="flex w-fit items-center gap-3">
           <span className="flex h-10 w-10 items-center justify-center rounded-md border border-champagne/40 bg-surface shadow-[inset_0_1px_0_rgb(242_235_221_/5%)]">
             <img src={logo} alt="" className="h-6 w-auto" />
@@ -77,7 +77,7 @@ export default function NavBar() {
           ) : (
             <NavLink
               to="/login"
-              className="luxury-button luxury-button-primary gap-2 px-1 py-1 text-xs sm:px-2"
+              className="luxury-button luxury-button-primary luxury-button-compact"
             >
               <img
                 src={account_logo}
