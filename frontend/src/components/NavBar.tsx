@@ -56,8 +56,7 @@ export default function NavBar() {
             <span className="group relative">
               <button
                 type="button"
-                onClick={logout}
-                aria-label={`Sign out ${user.username}`}
+                aria-label={`Account options for ${user.username}`}
                 className="luxury-button luxury-button-secondary gap-2 px-2 py-1 text-xs sm:px-3"
               >
                 <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
@@ -67,12 +66,31 @@ export default function NavBar() {
                     : user.username}
                 </span>
               </button>
-              <span
-                role="tooltip"
-                className="pointer-events-none absolute right-0 top-full z-50 mt-2 whitespace-nowrap rounded-lg border border-border-subtle bg-surface px-2 py-1 text-xs text-beige opacity-0 shadow-xl transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
-              >
-                Sign out
-              </span>
+              <div className="invisible absolute right-0 top-full z-50 w-48 pt-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                <div className="overflow-hidden rounded-xl border border-border-subtle bg-surface p-1 shadow-xl">
+                  <NavLink
+                    to="/profile"
+                    className="block rounded-lg px-3 py-2 text-sm text-beige transition-colors hover:bg-surface-elevated focus-visible:bg-surface-elevated"
+                  >
+                    Profile
+                  </NavLink>
+                  {user.role === "admin" && (
+                    <NavLink
+                      to="/admin/fixtures"
+                      className="block rounded-lg px-3 py-2 text-sm text-beige transition-colors hover:bg-surface-elevated focus-visible:bg-surface-elevated"
+                    >
+                      Update Fixtures
+                    </NavLink>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => void logout()}
+                    className="block w-full rounded-lg px-3 py-2 text-left text-sm text-beige transition-colors hover:bg-surface-elevated focus-visible:bg-surface-elevated"
+                  >
+                    Sign out
+                  </button>
+                </div>
+              </div>
             </span>
           ) : (
             <NavLink

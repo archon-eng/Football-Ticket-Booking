@@ -2,6 +2,7 @@ import validateUserCredentials from "./validateUserCredentials"
 import {
   createContext,
   useContext,
+  useCallback,
   useEffect,
   useState,
   type ReactNode,
@@ -93,6 +94,7 @@ interface AuthContextFixturesType {
   fixtures: Fixture[] | null
   setFixtures: (fixtures: Fixture[] | null) => void
   loadingFixtures: boolean
+  refreshFixtures: (signal?: AbortSignal) => Promise<void>
 }
 
 // 1. Create Context with an undefined default value for safety
@@ -106,6 +108,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [fixtures, setFixtures] = useState<Fixture[] | null>(null)
   const [loadingFixtures, setLoadingFixtures] = useState<boolean>(true)
+
+  const refreshFixtures = useCallback(async (signal?: AbortSignal) => {
+    const res = await fetch("/api/auth/get_fixtures", {
+      method: "GET",
+      credentials: "include",
+      signal,
+    })
+    if (!res.ok) {
+      throw new Error(`Fixture request failed with status ${res.status}`)
+    }
+
+    const data: unknown = await res.json()
+    const parsedFixtures = parseFixturesResponse(data)
+    if (parsedFixtures === null) {
+      throw new Error("Fixture response has an invalid shape")
+    }
+    setFixtures(parsedFixtures)
+  }, [])
 
   // Fetch current user session on app start / page refresh
   useEffect(() => {
@@ -139,21 +159,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const fetchFixtures = async () => {
       try {
-        const res = await fetch("/api/auth/get_fixtures", {
-          method: "GET",
-          credentials: "include",
-          signal: controller.signal,
-        })
-        if (!res.ok) {
-          throw new Error(`Fixture request failed with status ${res.status}`)
-        }
-
-        const data: unknown = await res.json()
-        const parsedFixtures = parseFixturesResponse(data)
-        if (parsedFixtures === null) {
-          throw new Error("Fixture response has an invalid shape")
-        }
-        setFixtures(parsedFixtures)
+        await refreshFixtures(controller.signal)
       } catch (error) {
         if (!controller.signal.aborted) {
           console.error("Failed to fetch fixtures:", error)
@@ -168,7 +174,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     fetchFixtures()
 
     return () => controller.abort()
-  }, [])
+  }, [refreshFixtures])
 
   // Centralized logout handler
   const logout = async () => {
@@ -194,6 +200,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         fixtures,
         setFixtures,
         loadingFixtures,
+        refreshFixtures,
       }}
     >
       {children}

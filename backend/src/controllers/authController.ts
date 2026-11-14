@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs"
 import { Request, Response } from "express"
 import jwt from "jsonwebtoken"
+import { Types } from "mongoose"
 import { type HydratedDocument } from "mongoose"
 import { z } from "zod"
 import { Fixture, type IFixture } from "../models/Fixtures.js"
@@ -34,6 +35,13 @@ const fixtureSchema = z.object({
   }),
   time: z.string().trim().min(1, { message: "Enter a match time." }),
   venue: z.string().trim().min(1, { message: "Enter a venue." }),
+})
+
+const profileUpdateSchema = z.strictObject({
+  username: z.string().trim().min(1, { message: "Enter your name." }).max(64),
+  email: z.email({ message: "Enter a valid email address." }).transform((email) =>
+    email.toLowerCase(),
+  ),
 })
 
 export const signUp = async (req: Request, res: Response) => {
@@ -255,6 +263,49 @@ export const getMe = async (req: Request, res: Response) => {
   }
 }
 
+export const updateProfile = async (req: Request, res: Response) => {
+  const userId = req.auth?.userId
+  if (!userId) {
+    return res.status(401).json({ message: "Please sign in to continue." })
+  }
+
+  const result = profileUpdateSchema.safeParse(req.body)
+  if (!result.success) {
+    return res
+      .status(400)
+      .json({ errors: z.flattenError(result.error).fieldErrors })
+  }
+
+  try {
+    const user = await User.findByIdAndUpdate(userId, result.data, {
+      new: true,
+      runValidators: true,
+    }).select("-passwordHash")
+
+    if (!user) {
+      return res.status(404).json({ message: "We couldn't find this account." })
+    }
+
+    return res.status(200).json({ user })
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === 11000
+    ) {
+      return res
+        .status(409)
+        .json({ message: "An account with this email address already exists." })
+    }
+
+    console.error("Profile update error:", error)
+    return res.status(500).json({
+      message: "We couldn't update your profile. Please try again shortly.",
+    })
+  }
+}
+
 export const newFixture = async (req: Request, res: Response) => {
   try {
     const result = fixtureSchema.safeParse(req.body)
@@ -311,6 +362,68 @@ export const newFixture = async (req: Request, res: Response) => {
       .json({
         message: "We couldn't save the fixture. Please try again shortly.",
       })
+  }
+}
+
+export const updateFixture = async (req: Request, res: Response) => {
+  const fixtureId = req.params.id
+  if (!Types.ObjectId.isValid(fixtureId)) {
+    return res.status(400).json({ message: "The fixture ID is invalid." })
+  }
+
+  const result = fixtureSchema.safeParse(req.body)
+  if (!result.success) {
+    return res
+      .status(400)
+      .json({ errors: z.flattenError(result.error).fieldErrors })
+  }
+
+  try {
+    const duplicate = await Fixture.findOne({
+      ...result.data,
+      _id: { $ne: fixtureId },
+    })
+    if (duplicate) {
+      return res
+        .status(409)
+        .json({ message: "A fixture with these details already exists." })
+    }
+
+    const fixture = await Fixture.findByIdAndUpdate(fixtureId, result.data, {
+      new: true,
+      runValidators: true,
+    })
+    if (!fixture) {
+      return res.status(404).json({ message: "We couldn't find this fixture." })
+    }
+
+    return res.status(200).json({ fixture })
+  } catch (error) {
+    console.error("Fixture update error:", error)
+    return res.status(500).json({
+      message: "We couldn't update the fixture. Please try again shortly.",
+    })
+  }
+}
+
+export const deleteFixture = async (req: Request, res: Response) => {
+  const fixtureId = req.params.id
+  if (!Types.ObjectId.isValid(fixtureId)) {
+    return res.status(400).json({ message: "The fixture ID is invalid." })
+  }
+
+  try {
+    const fixture = await Fixture.findByIdAndDelete(fixtureId)
+    if (!fixture) {
+      return res.status(404).json({ message: "We couldn't find this fixture." })
+    }
+
+    return res.status(200).json({ message: "Fixture deleted successfully." })
+  } catch (error) {
+    console.error("Fixture deletion error:", error)
+    return res.status(500).json({
+      message: "We couldn't delete the fixture. Please try again shortly.",
+    })
   }
 }
 
