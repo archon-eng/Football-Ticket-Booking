@@ -367,7 +367,7 @@ export const newFixture = async (req: Request, res: Response) => {
 
 export const updateFixture = async (req: Request, res: Response) => {
   const fixtureId = req.params.id
-  if (!Types.ObjectId.isValid(fixtureId)) {
+  if (typeof fixtureId !== "string" || !Types.ObjectId.isValid(fixtureId)) {
     return res.status(400).json({ message: "The fixture ID is invalid." })
   }
 
@@ -408,7 +408,7 @@ export const updateFixture = async (req: Request, res: Response) => {
 
 export const deleteFixture = async (req: Request, res: Response) => {
   const fixtureId = req.params.id
-  if (!Types.ObjectId.isValid(fixtureId)) {
+  if (typeof fixtureId !== "string" || !Types.ObjectId.isValid(fixtureId)) {
     return res.status(400).json({ message: "The fixture ID is invalid." })
   }
 
