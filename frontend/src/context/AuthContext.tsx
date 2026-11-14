@@ -83,7 +83,9 @@ const parseFixturesResponse = (value: unknown): Fixture[] | null => {
     return null
   }
 
-  return parsedFixtures.filter((fixture): fixture is Fixture => fixture !== null)
+  return parsedFixtures.filter(
+    (fixture): fixture is Fixture => fixture !== null,
+  )
 }
 
 interface AuthContextUserType {
