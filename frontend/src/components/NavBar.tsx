@@ -58,7 +58,7 @@ export default function NavBar() {
                 type="button"
                 onClick={logout}
                 aria-label={`Sign out ${user.username}`}
-                className="luxury-button luxury-button-secondary gap-2 px-3 py-2 text-xs sm:px-4"
+                className="luxury-button luxury-button-secondary gap-2 px-2 py-1 text-xs sm:px-3"
               >
                 <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
                 <span>
@@ -69,7 +69,7 @@ export default function NavBar() {
               </button>
               <span
                 role="tooltip"
-                className="pointer-events-none absolute right-0 top-full z-50 mt-2 whitespace-nowrap rounded-lg border border-border-subtle bg-surface px-3 py-2 text-xs text-beige opacity-0 shadow-xl transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+                className="pointer-events-none absolute right-0 top-full z-50 mt-2 whitespace-nowrap rounded-lg border border-border-subtle bg-surface px-2 py-1 text-xs text-beige opacity-0 shadow-xl transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
               >
                 Sign out
               </span>
@@ -77,7 +77,7 @@ export default function NavBar() {
           ) : (
             <NavLink
               to="/login"
-              className="luxury-button luxury-button-primary gap-2 px-3 py-2 text-xs sm:px-4"
+              className="luxury-button luxury-button-primary gap-2 px-2 py-1 text-xs sm:px-3"
             >
               <img
                 src={account_logo}
