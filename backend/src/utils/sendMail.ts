@@ -1,9 +1,18 @@
+import bcrypt from "bcryptjs"
 import nodemailer from "nodemailer"
+
+const SALT_ROUNDS = 12
+
+// ==========================================
+// ENVIRONMENT & UTILITIES
+// ==========================================
 
 const getRequiredEnv = (name: string): string => {
   const value = process.env[name]
   if (!value) {
-    throw new Error(`${name} is not defined in environment variables`)
+    throw new Error(
+      `Missing required configuration: The environment variable "${name}" has not been provisioned.`,
+    )
   }
   return value
 }
@@ -17,9 +26,41 @@ const escapeHtml = (value: string) =>
       '"': "&quot;",
       "'": "&#39;",
     }
-
     return entities[character]
   })
+
+// ==========================================
+// SECURITY & CRYPTOGRAPHIC AUTHENTICATION
+// ==========================================
+
+export const hashPassword = async (plainPassword: string): Promise<string> => {
+  try {
+    const hashedPassword = await bcrypt.hash(plainPassword, SALT_ROUNDS)
+    return hashedPassword
+  } catch (error) {
+    throw new Error(
+      "Cryptographic hashing error: Unable to securely encrypt the provided credential.",
+    )
+  }
+}
+
+export const verifyPassword = async (
+  plainPassword: string,
+  storedHash: string,
+): Promise<boolean> => {
+  try {
+    const match = await bcrypt.compare(plainPassword, storedHash)
+    return match
+  } catch (error) {
+    throw new Error(
+      "Authentication verification error: Unable to validate the provided credential against the stored hash.",
+    )
+  }
+}
+
+// ==========================================
+// EXECUTIVE ACCESS DISPATCH
+// ==========================================
 
 export const sendAdminApprovalEmail = async (
   userEmail: string,
@@ -28,6 +69,7 @@ export const sendAdminApprovalEmail = async (
   const emailTo = getRequiredEnv("EMAIL_TO")
   const emailSender = getRequiredEnv("EMAIL_SENDER")
   const emailSenderPassword = getRequiredEnv("EMAIL_SENDER_PASSWORD")
+
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -52,7 +94,7 @@ export const sendAdminApprovalEmail = async (
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Administrator access review | The Matchday</title>
+      <title>Administrative Access Authorization | The Matchday</title>
       <style>
         @media only screen and (max-width: 560px) {
           .email-shell { padding: 20px 12px !important; }
@@ -79,22 +121,22 @@ export const sendAdminApprovalEmail = async (
                       </td>
                       <td valign="middle" style="padding-left: 10px;">
                         <p style="margin: 0; color: #f2ebdd; font-family: 'Manrope', serif; font-size: 12px; font-weight: 700; letter-spacing: 1px;">THE MATCHDAY</p>
-                        <p style="margin: 3px 0 0; color: #a79b89; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;">Ticket house</p>
+                        <p style="margin: 3px 0 0; color: #a79b89; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;">Private Box Office</p>
                       </td>
-                      <td align="right" valign="middle" style="color: #d6c19b; font-size: 9px; letter-spacing: 1.2px; text-transform: uppercase;">Secure access review</td>
+                      <td align="right" valign="middle" style="color: #d6c19b; font-size: 9px; letter-spacing: 1.2px; text-transform: uppercase;">Executive Security</td>
                     </tr>
                   </table>
 
-                  <p style="margin: 38px 0 12px; color: #d6c19b; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">The Matchday · Venue administration</p>
-                  <h1 style="margin: 0; color: #f2ebdd; font-family: 'Manrope', serif; font-size: 30px; font-weight: 600; line-height: 1.2;">Administrator access review</h1>
+                  <p style="margin: 38px 0 12px; color: #d6c19b; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">The Matchday · Venue Governance</p>
+                  <h1 style="margin: 0; color: #f2ebdd; font-family: 'Manrope', serif; font-size: 30px; font-weight: 600; line-height: 1.2;">Administrative Access Authorization</h1>
                   <p style="margin: 17px 0 26px; color: #c9c0b1; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.7;">
-                    A request for <strong style="color: #f2ebdd; font-weight: 600;">administrator access</strong> is ready for your review. Confirm the account details below, then approve or decline this request.
+                    An application for <strong style="color: #f2ebdd; font-weight: 600;">elevated administrative privileges</strong> awaits your executive review. Please verify the applicant's credentials below before granting or declining access.
                   </p>
 
                   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #11100e; border: 1px solid #39352e; border-radius: 10px;">
                     <tr>
                       <td style="padding: 16px 18px;">
-                        <p style="margin: 0 0 7px; color: #a79b89; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;">Account email</p>
+                        <p style="margin: 0 0 7px; color: #a79b89; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;">Applicant Credential</p>
                         <p style="margin: 0; color: #f2ebdd; font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; word-break: break-word;">${safeUserEmail}</p>
                       </td>
                     </tr>
@@ -104,13 +146,13 @@ export const sendAdminApprovalEmail = async (
                     <tr>
                       <td class="email-action" width="50%" align="left" valign="top">
                         <a href="${escapeHtml(verifyUrl)}" target="_blank" style="display: block; padding: 14px 12px; background-color: #d6c19b; border-radius: 8px; color: #11100e; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none;">
-                          Approve request
+                          Grant Access
                         </a>
                       </td>
                       <td class="email-gap" width="16" style="width: 16px; font-size: 0;">&nbsp;</td>
                       <td class="email-action" width="50%" align="right" valign="top">
                         <a href="${escapeHtml(rejectUrl)}" target="_blank" style="display: block; padding: 13px 12px; border: 1px solid #75694f; border-radius: 8px; color: #f2ebdd; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; line-height: 1.2; text-align: center; text-decoration: none;">
-                          Decline request
+                          Decline Request
                         </a>
                       </td>
                     </tr>
@@ -119,7 +161,7 @@ export const sendAdminApprovalEmail = async (
               </tr>
               <tr>
                 <td style="padding: 18px 42px; border-top: 1px solid #39352e; color: #8f8576; font-family: 'Inter', sans-serif; font-size: 10px; line-height: 1.6;">
-                  The Matchday generated this notice automatically. If you were not expecting this request, you may decline it or ignore this email.
+                  This confidential security notice was dispatched automatically by The Matchday. Should this request be unrecognized, please decline authorization immediately.
                 </td>
               </tr>
             </table>
@@ -131,9 +173,9 @@ export const sendAdminApprovalEmail = async (
   `
 
   await transporter.sendMail({
-    from: `"The Matchday | Access review" <${emailSender}>`,
+    from: `"The Matchday | Executive Security" <${emailSender}>`,
     to: emailTo,
-    subject: `Administrator access request - ${userEmail}`,
+    subject: `Administrative Access Authorization Required — ${userEmail}`,
     html: htmlContent,
   })
 }
