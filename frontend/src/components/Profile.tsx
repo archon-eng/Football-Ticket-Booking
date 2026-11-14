@@ -1,4 +1,4 @@
-import { useEffect, useState, type SubmitEvent } from "react"
+import { useState, type SubmitEvent } from "react"
 import { useAuth } from "../context/AuthContext"
 import validateUserCredentials from "../context/validateUserCredentials"
 
@@ -13,11 +13,6 @@ export default function Profile() {
   const [serverError, setServerError] = useState("")
   const [success, setSuccess] = useState("")
   const [submitting, setSubmitting] = useState(false)
-
-  useEffect(() => {
-    setUsername(user?.username ?? "")
-    setEmail(user?.email ?? "")
-  }, [user])
 
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -61,6 +56,8 @@ export default function Profile() {
 
       const updatedUser = validateUserCredentials(data.user)
       setUser(updatedUser)
+      setUsername(updatedUser.username)
+      setEmail(updatedUser.email)
       setSuccess("Your profile has been updated.")
     } catch (error) {
       console.error("Profile update failed:", error)
