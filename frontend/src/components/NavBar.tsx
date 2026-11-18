@@ -27,7 +27,7 @@ export default function NavBar() {
     <header className="sticky top-0 z-30 border-b border-border-subtle bg-background/85 px-3 shadow-[0_8px_32px_rgb(0_0_0_/16%)] backdrop-blur-xl sm:px-5 lg:px-8">
       <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 py-1.5 sm:min-h-18 sm:grid-cols-[1fr_auto_1fr] sm:py-0">
         <NavLink to="/dashboard" className="flex w-fit items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-md border border-champagne/40 bg-surface shadow-[inset_0_1px_0_rgb(242_235_221_/5%)]">
+          <span className="luxury-brand-mark flex h-10 w-10 items-center justify-center rounded-md border border-champagne/40 bg-surface shadow-[inset_0_1px_0_rgb(242_235_221_/5%)]">
             <img src={logo} alt="" className="h-6 w-auto" />
           </span>
           <span className="hidden sm:block">

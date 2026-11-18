@@ -58,7 +58,7 @@ export default function SeatingPlan({
               aria-label={`Seat ${id}, ${occupied ? "occupied" : isSelected ? "selected" : "available"}`}
               aria-pressed={isSelected}
               onClick={() => onSeatToggle(id)}
-              className={`aspect-square border transition-colors disabled:cursor-not-allowed ${
+              className={`seat-control aspect-square border disabled:cursor-not-allowed ${
                 occupied
                   ? "rounded-sm border-border-subtle bg-surface-hover opacity-45"
                   : isSelected
