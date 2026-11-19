@@ -8,10 +8,16 @@ const fixtures = [
 ]
 
 const categories = [
-  { label: "Pitch-side", price: 250 },
-  { label: "Lower tier", price: 150 },
-  { label: "Upper tier", price: 85 },
+  { label: "Pitch-side", priceCents: 25 },
+  { label: "Lower tier", priceCents: 20 },
+  { label: "Upper tier", priceCents: 15 },
 ]
+
+const formatPrice = (cents: number) =>
+  (cents / 100).toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+  })
 
 export default function BookingForm() {
   const [fixture, setFixture] = useState(fixtures[0])
@@ -19,10 +25,9 @@ export default function BookingForm() {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([])
   const [reviewMessage, setReviewMessage] = useState("")
   const quantity = selectedSeats.length
-  const ticketPrice =
-    categories.find((item) => item.label === category)?.price ?? 0
-  const serviceFee = quantity > 0 ? 15 : 0
-  const total = ticketPrice * quantity + serviceFee
+  const ticketPriceCents =
+    categories.find((item) => item.label === category)?.priceCents ?? 0
+  const totalCents = ticketPriceCents * quantity
 
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -116,7 +121,7 @@ export default function BookingForm() {
                       <span className="text-beige">{item.label}</span>
                     </span>
                     <span className="tabular-nums text-text-secondary">
-                      ${item.price.toFixed(2)}{" "}
+                      {formatPrice(item.priceCents)}{" "}
                       <span className="text-text-muted">/ ticket</span>
                     </span>
                   </label>
@@ -164,25 +169,19 @@ export default function BookingForm() {
             <div className="flex justify-between gap-4">
               <dt className="text-text-muted">Tickets</dt>
               <dd className="tabular-nums text-beige">
-                ${(ticketPrice * quantity).toFixed(2)}
-              </dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-text-muted">Service fee</dt>
-              <dd className="tabular-nums text-beige">
-                ${serviceFee.toFixed(2)}
+                {formatPrice(totalCents)}
               </dd>
             </div>
             <div className="flex justify-between gap-4 border-t border-border pt-4 text-base font-semibold">
               <dt className="text-beige">Estimated total</dt>
               <dd className="tabular-nums text-champagne">
-                ${total.toFixed(2)}
+                {formatPrice(totalCents)}
               </dd>
             </div>
           </dl>
           <p className="mt-5 text-xs leading-5 text-text-muted">
-            This is an estimate only. Seats are not reserved, and checkout is
-            not currently available.
+            Ticket costs only; no additional fees are added. Seats are not
+            reserved, and checkout is not currently available.
           </p>
         </aside>
       </div>
