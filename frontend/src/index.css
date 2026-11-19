@@ -267,7 +267,7 @@ body {
 }
 
 main > * {
-  animation: page-enter 720ms var(--motion-smooth) 140ms both;
+  animation: page-enter 520ms var(--motion-smooth) both;
 }
 
 /* ==========================================================================
