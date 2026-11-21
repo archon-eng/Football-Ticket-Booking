@@ -2,7 +2,7 @@
 ARG NODE_VERSION=26.13.1
 FROM node:${NODE_VERSION}-alpine
 
-ARG PNPM_VERSION=12.18.0
+ARG PNPM_VERSION=12.21.0
 RUN npm install -g pnpm@${PNPM_VERSION}
 
 # backend setup
