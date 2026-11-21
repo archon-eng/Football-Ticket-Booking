@@ -424,7 +424,6 @@ button:not(:disabled):active,
     border-color var(--motion-standard) var(--motion-smooth),
     background-color var(--motion-standard) var(--motion-smooth),
     box-shadow var(--motion-standard) var(--motion-smooth);
-  will-change: transform;
 }
 
 .luxury-card-interactive:hover {

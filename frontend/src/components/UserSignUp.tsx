@@ -1,6 +1,7 @@
 import { useState, type SubmitEvent } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
+import validateUserCredentials from "../context/validateUserCredentials"
 
 export default function UserSignUp() {
   const [name, setName] = useState("")
@@ -42,7 +43,7 @@ export default function UserSignUp() {
       }
 
       if (data.user) {
-        setUser(data.user)
+        setUser(validateUserCredentials(data.user))
       }
 
       navigate("/dashboard")
