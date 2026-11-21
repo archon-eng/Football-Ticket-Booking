@@ -160,7 +160,7 @@ export const logIn = async (req: Request, res: Response) => {
     if (!result.success) {
       return res
         .status(400)
-        .json({ errors: result.error.flatten().fieldErrors })
+        .json({ errors: z.flattenError(result.error).fieldErrors })
     }
 
     const { email, password, role } = result.data
