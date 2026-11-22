@@ -154,14 +154,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           signal: controller.signal,
         })
 
+        if (res.status === 401) {
+          setUser(null)
+        } else if (res.status === 403) {
+          setUser(null)
+          console.log(
+            "Error 403. Access forbidden: You do not have permission to access this resource.",
+          )
+        }
+
         if (res.ok) {
           const data = await res.json()
           setUser(validateUserCredentials(data.user))
         } else {
           throw new Error(`Session request failed with status ${res.status}`)
-        }
-        if (res.status === 401 || res.status === 403) {
-          setUser(null)
         }
       } catch (error) {
         if (!controller.signal.aborted) {
