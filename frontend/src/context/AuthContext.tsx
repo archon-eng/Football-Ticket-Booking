@@ -157,14 +157,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (res.ok) {
           const data = await res.json()
           setUser(validateUserCredentials(data.user))
-        } else if (res.status === 401) {
-          setUser(null)
-          throw new Error(
-            `Session request unauthorized with status ${res.status}`,
-          )
-        } else if (res.status === 403) {
-          setUser(null)
-          throw new Error(`Session request forbidden with status ${res.status}`)
         } else {
           throw new Error(`Session request failed with status ${res.status}`)
         }
