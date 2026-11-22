@@ -1,9 +1,9 @@
 import { Router } from "express"
 import {
+  completeAdminApproval,
   getMe,
   logIn,
   logOut,
-  completeAdminApproval,
   reviewAdminApproval,
   signUp,
   updateProfile,
