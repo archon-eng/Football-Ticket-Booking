@@ -154,7 +154,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           signal: controller.signal,
         })
 
-        if (res.status === 401) {
+        if (res.ok) {
+          const data = await res.json()
+          setUser(validateUserCredentials(data.user))
+        } else if (res.status === 401) {
           setUser(null)
           throw new Error(
             `Session request unauthorized with status ${res.status}`,
@@ -162,11 +165,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else if (res.status === 403) {
           setUser(null)
           throw new Error(`Session request forbidden with status ${res.status}`)
-        }
-
-        if (res.ok) {
-          const data = await res.json()
-          setUser(validateUserCredentials(data.user))
         } else {
           throw new Error(`Session request failed with status ${res.status}`)
         }
