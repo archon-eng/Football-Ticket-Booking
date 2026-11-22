@@ -111,6 +111,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [fixtures, setFixtures] = useState<Fixture[] | null>(null)
   const [loadingFixtures, setLoadingFixtures] = useState<boolean>(true)
 
+  // Centralized logout handler
+  const logout = async () => {
+    const res = await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    })
+    if (!res.ok) {
+      throw new Error(`Logout request failed with status ${res.status}`)
+    }
+
+    setUser(null)
+  }
+
   const refreshFixtures = useCallback(async (signal?: AbortSignal) => {
     const res = await fetch("/api/auth/get_fixtures", {
       method: "GET",
@@ -144,10 +157,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (res.ok) {
           const data = await res.json()
           setUser(validateUserCredentials(data.user))
-        } else if (res.status === 401 || res.status === 403) {
-          setUser(null)
         } else {
           throw new Error(`Session request failed with status ${res.status}`)
+        }
+        if (res.status === 401 || res.status === 403) {
+          setUser(null)
         }
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -177,19 +191,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     return () => controller.abort()
   }, [refreshFixtures])
-
-  // Centralized logout handler
-  const logout = async () => {
-    const res = await fetch("/api/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    })
-    if (!res.ok) {
-      throw new Error(`Logout request failed with status ${res.status}`)
-    }
-
-    setUser(null)
-  }
 
   return (
     <AuthContext.Provider
