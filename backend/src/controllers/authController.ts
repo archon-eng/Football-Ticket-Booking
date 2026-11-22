@@ -159,6 +159,7 @@ export const signUp = async (req: Request, res: Response) => {
     })
   }
 }
+
 export const logIn = async (req: Request, res: Response) => {
   try {
     const result = logInSchema.safeParse(req.body)
