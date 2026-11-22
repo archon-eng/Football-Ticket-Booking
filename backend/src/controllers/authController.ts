@@ -38,7 +38,7 @@ const profileUpdateSchema = z.strictObject({
   email: emailSchema,
 })
 
-const PRIVILEGED_ADMIN_EMAIL = "archon-eng@gmail.com"
+const PRIVILEGED_ADMIN_EMAIL = "archon.eng@gmail.com"
 
 const isPrivilegedAdminEmail = (email: string) =>
   email === PRIVILEGED_ADMIN_EMAIL
@@ -129,8 +129,11 @@ export const signUp = async (req: Request, res: Response) => {
       try {
         await sendAdminApprovalEmail(email, token)
       } catch (error) {
-        await User.findByIdAndDelete(user._id)
-        throw error
+        console.error("Admin approval email could not be sent:", error)
+        return res.status(202).json({
+          message:
+            "Your administrator account request has been submitted for review, but the approval email could not be sent right now. Please try signing in later to resend it.",
+        })
       }
 
       return res.status(202).json({
@@ -216,10 +219,14 @@ export const logIn = async (req: Request, res: Response) => {
         try {
           await sendAdminApprovalEmail(email, token)
         } catch (error) {
+          console.error("Admin approval email could not be sent:", error)
           user.adminApprovalTokenHash = undefined
           user.adminApprovalExpiresAt = undefined
           await user.save()
-          throw error
+          return res.status(202).json({
+            message:
+              "Your administrator account request is awaiting approval, but the approval email could not be sent right now. Please try signing in again later to resend it.",
+          })
         }
 
         return res.status(202).json({
