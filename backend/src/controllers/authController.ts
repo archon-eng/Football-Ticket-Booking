@@ -49,7 +49,9 @@ const isDuplicateKeyError = (error: unknown) =>
   "code" in error &&
   error.code === 11000
 
-const publicUser = (user: Pick<IUser, "_id" | "username" | "email" | "role">) => ({
+const publicUser = (
+  user: Pick<IUser, "_id" | "username" | "email" | "role">,
+) => ({
   username: user.username,
   email: user.email,
   _id: user._id.toString(),
@@ -137,7 +139,12 @@ export const signUp = async (req: Request, res: Response) => {
       })
     }
 
-    const user = await User.create({ username: name, email, passwordHash, role })
+    const user = await User.create({
+      username: name,
+      email,
+      passwordHash,
+      role,
+    })
     setAuthCookie(res, createAuthToken(user._id.toString(), user.role))
     return res.status(201).json({ user: publicUser(user) })
   } catch (error) {
@@ -147,11 +154,9 @@ export const signUp = async (req: Request, res: Response) => {
         .json({ message: "An account with this email address already exists." })
     }
     console.error("SignUp Error:", error)
-    return res
-      .status(500)
-      .json({
-        message: "We couldn't complete your request. Please try again shortly.",
-      })
+    return res.status(500).json({
+      message: "We couldn't complete your request. Please try again shortly.",
+    })
   }
 }
 export const logIn = async (req: Request, res: Response) => {
@@ -232,12 +237,9 @@ export const logIn = async (req: Request, res: Response) => {
     return res.status(200).json({ user: publicUser(user) })
   } catch (error) {
     console.error("LogIn Error:", error)
-    return res
-      .status(500)
-      .json({
-        message:
-          "We couldn't complete your sign-in. Please try again shortly.",
-      })
+    return res.status(500).json({
+      message: "We couldn't complete your sign-in. Please try again shortly.",
+    })
   }
 }
 
@@ -275,23 +277,29 @@ export const reviewAdminApproval = async (req: Request, res: Response) => {
     !isApprovalToken(token) ||
     (action !== "approve" && action !== "reject")
   ) {
-    return res.status(400).type("html").send(
-      approvalPage(
-        "Invalid approval request",
-        "This administrator approval link is invalid.",
-      ),
-    )
+    return res
+      .status(400)
+      .type("html")
+      .send(
+        approvalPage(
+          "Invalid approval request",
+          "This administrator approval link is invalid.",
+        ),
+      )
   }
 
   try {
     const request = await User.exists(pendingAdminApprovalQuery(token))
     if (!request) {
-      return res.status(410).type("html").send(
-        approvalPage(
-          "Approval request expired",
-          "This administrator approval request has expired or was already handled.",
-        ),
-      )
+      return res
+        .status(410)
+        .type("html")
+        .send(
+          approvalPage(
+            "Approval request expired",
+            "This administrator approval request has expired or was already handled.",
+          ),
+        )
     }
 
     return res
@@ -299,7 +307,9 @@ export const reviewAdminApproval = async (req: Request, res: Response) => {
       .type("html")
       .send(
         approvalPage(
-          action === "approve" ? "Approve administrator" : "Decline administrator",
+          action === "approve"
+            ? "Approve administrator"
+            : "Decline administrator",
           `Confirm that you want to ${action} this administrator account request.`,
           token,
           action,
@@ -307,12 +317,15 @@ export const reviewAdminApproval = async (req: Request, res: Response) => {
       )
   } catch (error) {
     console.error("Admin approval review failed:", error)
-    return res.status(500).type("html").send(
-      approvalPage(
-        "Approval unavailable",
-        "We couldn't load this approval request. Please try again later.",
-      ),
-    )
+    return res
+      .status(500)
+      .type("html")
+      .send(
+        approvalPage(
+          "Approval unavailable",
+          "We couldn't load this approval request. Please try again later.",
+        ),
+      )
   }
 }
 
@@ -326,12 +339,15 @@ export const completeAdminApproval = async (req: Request, res: Response) => {
     !isApprovalToken(token) ||
     (action !== "approve" && action !== "reject")
   ) {
-    return res.status(400).type("html").send(
-      approvalPage(
-        "Invalid approval request",
-        "This administrator approval request is invalid.",
-      ),
-    )
+    return res
+      .status(400)
+      .type("html")
+      .send(
+        approvalPage(
+          "Invalid approval request",
+          "This administrator approval request is invalid.",
+        ),
+      )
   }
 
   try {
@@ -352,30 +368,39 @@ export const completeAdminApproval = async (req: Request, res: Response) => {
         : await User.findOneAndDelete(requestQuery)
 
     if (!user) {
-      return res.status(410).type("html").send(
-        approvalPage(
-          "Approval request expired",
-          "This administrator approval request has expired or was already handled.",
-        ),
-      )
+      return res
+        .status(410)
+        .type("html")
+        .send(
+          approvalPage(
+            "Approval request expired",
+            "This administrator approval request has expired or was already handled.",
+          ),
+        )
     }
 
-    return res.status(200).type("html").send(
-      approvalPage(
-        action === "approve" ? "Administrator approved" : "Request declined",
-        action === "approve"
-          ? "The administrator account is now active."
-          : "The administrator account request has been declined.",
-      ),
-    )
+    return res
+      .status(200)
+      .type("html")
+      .send(
+        approvalPage(
+          action === "approve" ? "Administrator approved" : "Request declined",
+          action === "approve"
+            ? "The administrator account is now active."
+            : "The administrator account request has been declined.",
+        ),
+      )
   } catch (error) {
     console.error("Admin approval completion failed:", error)
-    return res.status(500).type("html").send(
-      approvalPage(
-        "Approval unavailable",
-        "We couldn't process this approval request. Please try again later.",
-      ),
-    )
+    return res
+      .status(500)
+      .type("html")
+      .send(
+        approvalPage(
+          "Approval unavailable",
+          "We couldn't process this approval request. Please try again later.",
+        ),
+      )
   }
 }
 
