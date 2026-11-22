@@ -156,11 +156,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (res.status === 401) {
           setUser(null)
+          throw new Error(
+            `Session request unauthorized with status ${res.status}`,
+          )
         } else if (res.status === 403) {
           setUser(null)
-          console.log(
-            "Error 403. Access forbidden: You do not have permission to access this resource.",
-          )
+          throw new Error(`Session request forbidden with status ${res.status}`)
         }
 
         if (res.ok) {
