@@ -1,4 +1,5 @@
-import type { ReactNode } from "react"
+import { useEffect, type ReactNode } from "react"
+import { createPortal } from "react-dom"
 
 interface ConfirmDialogProps {
   isOpen: boolean
@@ -21,11 +22,20 @@ export default function ConfirmDialog({
   confirming = false,
   confirmDisabled = false,
 }: ConfirmDialogProps) {
+  useEffect(() => {
+    if (!isOpen) return
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => {
+      document.body.style.overflow = originalOverflow
+    }
+  }, [isOpen])
+
   if (!isOpen) {
     return null
   }
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
         aria-hidden="true"
@@ -58,6 +68,7 @@ export default function ConfirmDialog({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
