@@ -11,7 +11,7 @@ const getRequiredEnv = (name: string): string => {
   const value = process.env[name]
   if (!value) {
     throw new Error(
-      `Missing required configuration: The environment variable "${name}" has not been provisioned.`,
+      `A required configuration value is unavailable: ${name}. Please contact support to complete the service configuration.`,
     )
   }
   return value
@@ -35,11 +35,10 @@ const escapeHtml = (value: string) =>
 
 export const hashPassword = async (plainPassword: string): Promise<string> => {
   try {
-    const hashedPassword = await bcrypt.hash(plainPassword, SALT_ROUNDS)
-    return hashedPassword
-  } catch (error) {
+    return await bcrypt.hash(plainPassword, SALT_ROUNDS)
+  } catch {
     throw new Error(
-      "Cryptographic hashing error: Unable to securely encrypt the provided credential.",
+      "We were unable to securely process the provided credentials. Please try again shortly.",
     )
   }
 }
@@ -49,11 +48,10 @@ export const verifyPassword = async (
   storedHash: string,
 ): Promise<boolean> => {
   try {
-    const match = await bcrypt.compare(plainPassword, storedHash)
-    return match
-  } catch (error) {
+    return await bcrypt.compare(plainPassword, storedHash)
+  } catch {
     throw new Error(
-      "Authentication verification error: Unable to validate the provided credential against the stored hash.",
+      "We were unable to verify the provided credentials at this time. Please try again shortly.",
     )
   }
 }
@@ -130,13 +128,13 @@ export const sendAdminApprovalEmail = async (
                   <p style="margin: 38px 0 12px; color: #d6c19b; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">The Matchday · Venue Governance</p>
                   <h1 style="margin: 0; color: #f2ebdd; font-family: 'Manrope', serif; font-size: 30px; font-weight: 600; line-height: 1.2;">Administrative Access Authorization</h1>
                   <p style="margin: 17px 0 26px; color: #c9c0b1; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.7;">
-                    An application for <strong style="color: #f2ebdd; font-weight: 600;">elevated administrative privileges</strong> awaits your executive review. Please verify the applicant's credentials below before granting or declining access.
+                    A request for <strong style="color: #f2ebdd; font-weight: 600;">elevated administrative access</strong> is awaiting your review. Kindly confirm the applicant details below before granting or declining access.
                   </p>
 
                   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #11100e; border: 1px solid #39352e; border-radius: 10px;">
                     <tr>
                       <td style="padding: 16px 18px;">
-                        <p style="margin: 0 0 7px; color: #a79b89; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;">Applicant Credential</p>
+                        <p style="margin: 0 0 7px; color: #a79b89; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;">Applicant Email</p>
                         <p style="margin: 0; color: #f2ebdd; font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; word-break: break-word;">${safeUserEmail}</p>
                       </td>
                     </tr>
@@ -146,7 +144,7 @@ export const sendAdminApprovalEmail = async (
                     <tr>
                       <td class="email-action" width="50%" align="left" valign="top">
                         <a href="${escapeHtml(verifyUrl)}" target="_blank" style="display: block; padding: 14px 12px; background-color: #d6c19b; border-radius: 8px; color: #11100e; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none;">
-                          Grant Access
+                          Approve Access
                         </a>
                       </td>
                       <td class="email-gap" width="16" style="width: 16px; font-size: 0;">&nbsp;</td>
@@ -161,7 +159,7 @@ export const sendAdminApprovalEmail = async (
               </tr>
               <tr>
                 <td style="padding: 18px 42px; border-top: 1px solid #39352e; color: #8f8576; font-family: 'Inter', sans-serif; font-size: 10px; line-height: 1.6;">
-                  This confidential security notice was dispatched automatically by The Matchday. Should this request be unrecognized, please decline authorization immediately.
+                  This confidential notice was sent automatically by The Matchday. If you do not recognize this request, please decline the authorization promptly.
                 </td>
               </tr>
             </table>

@@ -7,14 +7,20 @@ const fixtureSchema = z.object({
   competition: z
     .string()
     .trim()
-    .min(1, { message: "Enter the competition name." }),
-  home: z.string().trim().min(1, { message: "Enter the home team." }),
-  away: z.string().trim().min(1, { message: "Enter the away team." }),
-  date: z.string().refine((date) => isNaN(Date.parse(date)) === false, {
-    message: "Enter a valid date.",
+    .min(1, { message: "Please provide the competition name." }),
+  home: z
+    .string()
+    .trim()
+    .min(1, { message: "Please provide the home team." }),
+  away: z
+    .string()
+    .trim()
+    .min(1, { message: "Please provide the away team." }),
+  date: z.string().refine((date) => !Number.isNaN(Date.parse(date)), {
+    message: "Please provide a valid match date.",
   }),
-  time: z.string().trim().min(1, { message: "Enter a match time." }),
-  venue: z.string().trim().min(1, { message: "Enter a venue." }),
+  time: z.string().trim().min(1, { message: "Please provide the match time." }),
+  venue: z.string().trim().min(1, { message: "Please provide the venue." }),
 })
 
 export const newFixture = async (req: Request, res: Response) => {
@@ -28,9 +34,10 @@ export const newFixture = async (req: Request, res: Response) => {
 
     const existingFixture = await Fixture.findOne(result.data)
     if (existingFixture) {
-      return res
-        .status(409)
-        .json({ message: "A fixture with these details already exists." })
+      return res.status(409).json({
+        message:
+          "A fixture with these details already exists in the collection.",
+      })
     }
 
     const fixture = await Fixture.create(result.data)
@@ -49,7 +56,8 @@ export const newFixture = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Fixture creation error:", error)
     return res.status(500).json({
-      message: "We couldn't save the fixture. Please try again shortly.",
+      message:
+        "We were unable to save this fixture at this time. Please try again shortly.",
     })
   }
 }
@@ -57,7 +65,9 @@ export const newFixture = async (req: Request, res: Response) => {
 export const updateFixture = async (req: Request, res: Response) => {
   const fixtureId = req.params.id
   if (typeof fixtureId !== "string" || !Types.ObjectId.isValid(fixtureId)) {
-    return res.status(400).json({ message: "The fixture ID is invalid." })
+    return res
+      .status(400)
+      .json({ message: "The selected fixture reference is invalid." })
   }
 
   const result = fixtureSchema.safeParse(req.body)
@@ -73,9 +83,10 @@ export const updateFixture = async (req: Request, res: Response) => {
       _id: { $ne: fixtureId },
     })
     if (duplicate) {
-      return res
-        .status(409)
-        .json({ message: "A fixture with these details already exists." })
+      return res.status(409).json({
+        message:
+          "A fixture with these details already exists in the collection.",
+      })
     }
 
     const fixture = await Fixture.findByIdAndUpdate(fixtureId, result.data, {
@@ -83,14 +94,17 @@ export const updateFixture = async (req: Request, res: Response) => {
       runValidators: true,
     })
     if (!fixture) {
-      return res.status(404).json({ message: "We couldn't find this fixture." })
+      return res
+        .status(404)
+        .json({ message: "We could not locate the requested fixture." })
     }
 
     return res.status(200).json({ fixture })
   } catch (error) {
     console.error("Fixture update error:", error)
     return res.status(500).json({
-      message: "We couldn't update the fixture. Please try again shortly.",
+      message:
+        "We were unable to update this fixture at this time. Please try again shortly.",
     })
   }
 }
@@ -98,20 +112,27 @@ export const updateFixture = async (req: Request, res: Response) => {
 export const deleteFixture = async (req: Request, res: Response) => {
   const fixtureId = req.params.id
   if (typeof fixtureId !== "string" || !Types.ObjectId.isValid(fixtureId)) {
-    return res.status(400).json({ message: "The fixture ID is invalid." })
+    return res
+      .status(400)
+      .json({ message: "The selected fixture reference is invalid." })
   }
 
   try {
     const fixture = await Fixture.findByIdAndDelete(fixtureId)
     if (!fixture) {
-      return res.status(404).json({ message: "We couldn't find this fixture." })
+      return res
+        .status(404)
+        .json({ message: "We could not locate the requested fixture." })
     }
 
-    return res.status(200).json({ message: "Fixture deleted successfully." })
+    return res
+      .status(200)
+      .json({ message: "The fixture has been removed successfully." })
   } catch (error) {
     console.error("Fixture deletion error:", error)
     return res.status(500).json({
-      message: "We couldn't delete the fixture. Please try again shortly.",
+      message:
+        "We were unable to remove this fixture at this time. Please try again shortly.",
     })
   }
 }
@@ -123,7 +144,8 @@ export const getFixtures = async (_req: Request, res: Response) => {
   } catch (error) {
     console.error("Fixture retrieval error:", error)
     return res.status(500).json({
-      message: "We couldn't load fixtures. Please try again shortly.",
+      message:
+        "We were unable to load fixtures at this time. Please try again shortly.",
     })
   }
 }

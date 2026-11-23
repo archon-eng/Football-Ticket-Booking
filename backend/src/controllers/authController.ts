@@ -8,6 +8,7 @@ import {
   createAdminApprovalToken,
   createAuthToken,
   hashAdminApprovalToken,
+  isPrivilegedAdminEmail,
   setAuthCookie,
 } from "../utils/auth.js"
 import { sendAdminApprovalEmail } from "../utils/sendMail.js"
@@ -15,39 +16,37 @@ import { sendAdminApprovalEmail } from "../utils/sendMail.js"
 const emailSchema = z
   .string()
   .trim()
-  .pipe(z.email({ message: "Enter a valid email address." }))
+  .pipe(z.email({ message: "Please provide a valid email address." }))
   .transform((email) => email.toLowerCase())
 
 const signUpSchema = z.object({
   username: z.string().trim().max(64),
   email: emailSchema,
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters." }),
+  password: z.string().min(8, {
+    message: "Your password must contain at least eight characters.",
+  }),
   role: z.enum(["user", "admin"]),
 })
 
 const logInSchema = z.object({
   email: emailSchema,
-  password: z.string().min(1, { message: "Enter your password." }),
+  password: z.string().min(1, { message: "Please enter your password." }),
   role: z.enum(["user", "admin"]),
 })
 
 const profileUpdateSchema = z.strictObject({
-  username: z.string().trim().min(1, { message: "Enter your name." }).max(64),
+  username: z
+    .string()
+    .trim()
+    .min(1, { message: "Please provide your name." })
+    .max(64),
   email: emailSchema,
 })
 
 const getAuthValidationErrors = (error: z.ZodError) =>
   z.flattenError(error).fieldErrors
 
-const PRIVILEGED_ADMIN_EMAILS = new Set([
-  "archon-eng@gmail.com",
-  "archon.eng@gmail.com",
-])
-
-const isPrivilegedAdminEmail = (email: string) =>
-  PRIVILEGED_ADMIN_EMAILS.has(email)
+// Privileged administrator identities are managed in utils/auth.ts.
 
 const isDuplicateKeyError = (error: unknown) =>
   typeof error === "object" &&
@@ -73,12 +72,13 @@ const approvalPage = (
   token?: string,
   action?: "approve" | "reject",
 ) => {
+  const actionLabel = action === "approve" ? "Approve Access" : "Decline Request"
   const form =
     token && action
-      ? `<form method="post" action="/api/auth/verify-admin/${token}"><input type="hidden" name="action" value="${action}"><button type="submit">Confirm ${action}</button></form>`
+      ? `<form method="post" action="/api/auth/verify-admin/${token}" style="margin-top:28px;"><input type="hidden" name="action" value="${action}"><button type="submit" style="display:inline-block;padding:14px 22px;border:0;border-radius:999px;background:#d6c19b;color:#11100e;font:600 14px/1.2 Inter, sans-serif;letter-spacing:0.01em;cursor:pointer;">${actionLabel}</button></form>`
       : ""
 
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${title}</title></head><body><main><h1>${title}</h1><p>${message}</p>${form}</main></body></html>`
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${title} | The Matchday</title></head><body style="margin:0;padding:40px 20px;background:#11100e;color:#f2ebdd;font-family:Inter, sans-serif;"><main style="max-width:640px;margin:0 auto;padding:36px 32px;background:#1b1915;border:1px solid #39352e;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,0.35);"><p style="margin:0 0 14px;color:#d6c19b;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;">The Matchday · Executive Access</p><h1 style="margin:0;color:#f2ebdd;font-family:Manrope, serif;font-size:30px;line-height:1.2;">${title}</h1><p style="margin:18px 0 0;color:#c9c0b1;font-size:15px;line-height:1.7;">${message}</p>${form}</main></body></html>`
 }
 
 export const signUp = async (req: Request, res: Response) => {
@@ -91,7 +91,8 @@ export const signUp = async (req: Request, res: Response) => {
     const { username, email, password, role } = result.data
     if (isPrivilegedAdminEmail(email) && role !== "admin") {
       return res.status(403).json({
-        message: "This email address is reserved for administrator access.",
+        message:
+          "This email address is reserved exclusively for administrator access. Please use the administrator sign-in option.",
       })
     }
 
@@ -99,9 +100,10 @@ export const signUp = async (req: Request, res: Response) => {
 
     const existingUser = await User.findOne({ email })
     if (existingUser) {
-      return res
-        .status(409)
-        .json({ message: "An account with this email address already exists." })
+      return res.status(409).json({
+        message:
+          "An account with this email address already exists. Please sign in to continue.",
+      })
     }
 
     const passwordHash = await bcrypt.hash(password, 10)
@@ -136,13 +138,13 @@ export const signUp = async (req: Request, res: Response) => {
         console.error("Admin approval email could not be sent:", error)
         return res.status(202).json({
           message:
-            "Your administrator account request has been submitted for review, but the approval email could not be sent right now. Please try signing in later to resend it.",
+            "Your administrator access request has been received and is awaiting review. At this time, the authorization email could not be delivered. Please try signing in later, and we will gladly assist in resending it.",
         })
       }
 
       return res.status(202).json({
         message:
-          "Your administrator account request has been submitted for review.",
+          "Your administrator access request has been received and is now awaiting review.",
       })
     }
 
@@ -156,13 +158,15 @@ export const signUp = async (req: Request, res: Response) => {
     return res.status(201).json({ user: publicUser(user) })
   } catch (error) {
     if (isDuplicateKeyError(error)) {
-      return res
-        .status(409)
-        .json({ message: "An account with this email address already exists." })
+      return res.status(409).json({
+        message:
+          "An account with this email address already exists. Please sign in to continue.",
+      })
     }
     console.error("SignUp Error:", error)
     return res.status(500).json({
-      message: "We couldn't complete your request. Please try again shortly.",
+      message:
+        "We were unable to complete your account request at this time. Please try again shortly.",
     })
   }
 }
@@ -177,7 +181,8 @@ export const logIn = async (req: Request, res: Response) => {
     const { email, password, role } = result.data
     if (isPrivilegedAdminEmail(email) && role !== "admin") {
       return res.status(403).json({
-        message: "This email address is reserved for administrator access.",
+        message:
+          "This email address is reserved exclusively for administrator access. Please use the administrator sign-in option.",
       })
     }
 
@@ -187,7 +192,7 @@ export const logIn = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(401).json({
         message:
-          "We couldn't verify those credentials. Check your email and password, then try again.",
+          "We could not verify the credentials provided. Please review your details and try again.",
       })
     }
 
@@ -195,7 +200,7 @@ export const logIn = async (req: Request, res: Response) => {
     if (!isMatch || user.role !== role) {
       return res.status(401).json({
         message:
-          "We couldn't verify those credentials. Check your email and password, then try again.",
+          "We could not verify the credentials provided. Please review your details and try again.",
       })
     }
 
@@ -227,19 +232,19 @@ export const logIn = async (req: Request, res: Response) => {
           await user.save()
           return res.status(202).json({
             message:
-              "Your administrator account request is awaiting approval, but the approval email could not be sent right now. Please try signing in again later to resend it.",
+              "Your administrator access request remains under review. At this time, the authorization email could not be delivered. Please try signing in again later, and we will be pleased to resend it.",
           })
         }
 
         return res.status(202).json({
           message:
-            "A new administrator access review request has been sent for approval.",
+            "A new administrator access authorization request has been sent for your review.",
         })
       }
 
       return res.status(202).json({
         message:
-          "Your administrator account request is still awaiting approval.",
+          "Your administrator access request is currently under review. We appreciate your patience.",
       })
     }
 
@@ -248,19 +253,24 @@ export const logIn = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("LogIn Error:", error)
     return res.status(500).json({
-      message: "We couldn't complete your sign-in. Please try again shortly.",
+      message:
+        "We were unable to complete your sign-in at this time. Please try again shortly.",
     })
   }
 }
 
 export const logOut = (_req: Request, res: Response) => {
   clearAuthCookie(res)
-  return res.status(200).json({ message: "You have been signed out." })
+  return res
+    .status(200)
+    .json({ message: "You have been signed out successfully." })
 }
 
 export const getMe = (req: Request, res: Response) => {
   if (!req.auth) {
-    return res.status(401).json({ message: "Please sign in to continue." })
+    return res
+      .status(401)
+      .json({ message: "Please sign in to continue your experience." })
   }
 
   return res.status(200).json({
@@ -292,8 +302,8 @@ export const reviewAdminApproval = async (req: Request, res: Response) => {
       .type("html")
       .send(
         approvalPage(
-          "Invalid approval request",
-          "This administrator approval link is invalid.",
+          "Invalid Authorization Request",
+          "The administrator authorization link you followed is invalid or incomplete. Please request a new review invitation and try again.",
         ),
       )
   }
@@ -306,8 +316,8 @@ export const reviewAdminApproval = async (req: Request, res: Response) => {
         .type("html")
         .send(
           approvalPage(
-            "Approval request expired",
-            "This administrator approval request has expired or was already handled.",
+            "Authorization Request Unavailable",
+            "This administrator authorization request has expired or has already been completed. If access is still required, a new request may be submitted from the sign-in page.",
           ),
         )
     }
@@ -318,9 +328,11 @@ export const reviewAdminApproval = async (req: Request, res: Response) => {
       .send(
         approvalPage(
           action === "approve"
-            ? "Approve administrator"
-            : "Decline administrator",
-          `Confirm that you want to ${action} this administrator account request.`,
+            ? "Approve Administrator Access"
+            : "Decline Administrator Access",
+          action === "approve"
+            ? "Please confirm that you wish to grant administrator access for this account."
+            : "Please confirm that you wish to decline this administrator access request.",
           token,
           action,
         ),
@@ -332,8 +344,8 @@ export const reviewAdminApproval = async (req: Request, res: Response) => {
       .type("html")
       .send(
         approvalPage(
-          "Approval unavailable",
-          "We couldn't load this approval request. Please try again later.",
+          "Authorization Temporarily Unavailable",
+          "We were unable to present this authorization request at this time. Please try again shortly.",
         ),
       )
   }
@@ -354,8 +366,8 @@ export const completeAdminApproval = async (req: Request, res: Response) => {
       .type("html")
       .send(
         approvalPage(
-          "Invalid approval request",
-          "This administrator approval request is invalid.",
+          "Invalid Authorization Request",
+          "This administrator authorization request could not be validated. Please return to the review invitation and try again.",
         ),
       )
   }
@@ -383,8 +395,8 @@ export const completeAdminApproval = async (req: Request, res: Response) => {
         .type("html")
         .send(
           approvalPage(
-            "Approval request expired",
-            "This administrator approval request has expired or was already handled.",
+            "Authorization Request Unavailable",
+            "This administrator authorization request has expired or has already been completed.",
           ),
         )
     }
@@ -394,10 +406,12 @@ export const completeAdminApproval = async (req: Request, res: Response) => {
       .type("html")
       .send(
         approvalPage(
-          action === "approve" ? "Administrator approved" : "Request declined",
           action === "approve"
-            ? "The administrator account is now active."
-            : "The administrator account request has been declined.",
+            ? "Administrator Access Approved"
+            : "Administrator Access Declined",
+          action === "approve"
+            ? "Administrator access has been approved. The account is now active and may sign in."
+            : "This administrator access request has been declined.",
         ),
       )
   } catch (error) {
@@ -407,8 +421,8 @@ export const completeAdminApproval = async (req: Request, res: Response) => {
       .type("html")
       .send(
         approvalPage(
-          "Approval unavailable",
-          "We couldn't process this approval request. Please try again later.",
+          "Authorization Temporarily Unavailable",
+          "We were unable to complete this authorization request at this time. Please try again shortly.",
         ),
       )
   }
@@ -417,7 +431,9 @@ export const completeAdminApproval = async (req: Request, res: Response) => {
 export const updateProfile = async (req: Request, res: Response) => {
   const auth = req.auth
   if (!auth?.userId) {
-    return res.status(401).json({ message: "Please sign in to continue." })
+    return res
+      .status(401)
+      .json({ message: "Please sign in to continue your experience." })
   }
 
   const result = profileUpdateSchema.safeParse(req.body)
@@ -429,7 +445,8 @@ export const updateProfile = async (req: Request, res: Response) => {
   const nextEmail = result.data.email
   if (isPrivilegedAdminEmail(currentEmail) && nextEmail !== currentEmail) {
     return res.status(403).json({
-      message: "This administrator account's email address cannot be changed.",
+      message:
+        "The email address associated with this privileged administrator account cannot be changed.",
     })
   }
   if (
@@ -437,7 +454,8 @@ export const updateProfile = async (req: Request, res: Response) => {
     (!isPrivilegedAdminEmail(currentEmail) || auth.role !== "admin")
   ) {
     return res.status(403).json({
-      message: "This email address is reserved for administrator access.",
+      message:
+        "This email address is reserved exclusively for administrator access.",
     })
   }
 
@@ -448,20 +466,24 @@ export const updateProfile = async (req: Request, res: Response) => {
     }).select("-passwordHash")
 
     if (!user) {
-      return res.status(404).json({ message: "We couldn't find this account." })
+      return res
+        .status(404)
+        .json({ message: "We could not locate the requested account." })
     }
 
     return res.status(200).json({ user: publicUser(user) })
   } catch (error) {
     if (isDuplicateKeyError(error)) {
-      return res
-        .status(409)
-        .json({ message: "An account with this email address already exists." })
+      return res.status(409).json({
+        message:
+          "An account with this email address already exists. Please choose a different email address.",
+      })
     }
 
     console.error("Profile update error:", error)
     return res.status(500).json({
-      message: "We couldn't update your profile. Please try again shortly.",
+      message:
+        "We were unable to update your profile at this time. Please try again shortly.",
     })
   }
 }

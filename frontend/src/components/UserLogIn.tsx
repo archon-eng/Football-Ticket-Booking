@@ -44,13 +44,27 @@ export default function UserLogIn() {
 
       if (res.status === 202) {
         setServerError(
-          data.message || "We couldn't complete your sign-in. Please try again.",
+          data.message ||
+            "Your request has been received and is being processed. Please review the message provided for next steps.",
         )
         return
       }
 
-      if (data.user) {
+      if (!data.user) {
+        setServerError(
+          data.message ||
+            "We were unable to confirm your sign-in details. Please try again.",
+        )
+        return
+      }
+
+      try {
         setUser(validateUserCredentials(data.user))
+      } catch {
+        setServerError(
+          "We were unable to confirm your account details. Please try again.",
+        )
+        return
       }
 
       navigate("/dashboard")

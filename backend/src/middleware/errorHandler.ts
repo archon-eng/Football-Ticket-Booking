@@ -1,11 +1,6 @@
 import type { ErrorRequestHandler } from "express"
 
-export const errorHandler: ErrorRequestHandler = (
-  error,
-  _req,
-  res,
-  next,
-) => {
+export const errorHandler: ErrorRequestHandler = (error, _req, res, next) => {
   if (res.headersSent) {
     next(error)
     return
@@ -20,15 +15,14 @@ export const errorHandler: ErrorRequestHandler = (
           ? error.statusCode
           : 500
       : 500
-  const status =
-    errorStatus >= 400 && errorStatus < 500 ? errorStatus : 500
+  const status = errorStatus >= 400 && errorStatus < 500 ? errorStatus : 500
 
   res.status(status).json({
     message:
       status === 413
-        ? "The request is too large."
+        ? "The submitted request exceeds the permitted size. Please refine your submission and try again."
         : status === 400
-          ? "The request is invalid."
-          : "We couldn't complete your request. Please try again shortly.",
+          ? "We could not process your request because the submitted information is invalid. Please review your details and try again."
+          : "We were unable to complete your request at this time. Please try again shortly.",
   })
 }

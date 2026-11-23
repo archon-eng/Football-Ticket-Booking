@@ -45,13 +45,26 @@ export default function AdminLogIn() {
       if (res.status === 202) {
         setServerError(
           data.message ||
-            "Your administrator account request is awaiting approval.",
+            "Your administrator access request is currently under review.",
         )
         return
       }
 
-      if (data.user) {
+      if (!data.user) {
+        setServerError(
+          data.message ||
+            "We were unable to confirm your sign-in details. Please try again.",
+        )
+        return
+      }
+
+      try {
         setUser(validateUserCredentials(data.user))
+      } catch {
+        setServerError(
+          "We were unable to confirm your account details. Please try again.",
+        )
+        return
       }
 
       navigate("/dashboard")

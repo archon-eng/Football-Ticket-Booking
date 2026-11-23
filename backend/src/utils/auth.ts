@@ -15,10 +15,20 @@ const authCookieOptions = () => ({
   path: "/",
 })
 
+const PRIVILEGED_ADMIN_EMAILS = new Set([
+  "archon-eng@gmail.com",
+  "archon.eng@gmail.com",
+])
+
+export const isPrivilegedAdminEmail = (email: string) =>
+  PRIVILEGED_ADMIN_EMAILS.has(email)
+
 export const getJwtSecret = () => {
   const secret = process.env.JWT_SECRET
   if (!secret) {
-    throw new Error("JWT_SECRET is not defined in environment variables")
+    throw new Error(
+      "The authentication service is not properly configured. Please contact support.",
+    )
   }
   return secret
 }

@@ -44,13 +44,27 @@ export default function UserSignUp() {
 
       if (res.status === 202) {
         setServerErrors(
-          data.message || "We couldn't create your account. Please try again.",
+          data.message ||
+            "Your request has been received and is being processed. Please review the message provided for next steps.",
         )
         return
       }
 
-      if (data.user) {
+      if (!data.user) {
+        setServerErrors(
+          data.message ||
+            "We were unable to complete your account setup. Please try again.",
+        )
+        return
+      }
+
+      try {
         setUser(validateUserCredentials(data.user))
+      } catch {
+        setServerErrors(
+          "We were unable to confirm your account details. Please try again.",
+        )
+        return
       }
 
       navigate("/dashboard")
