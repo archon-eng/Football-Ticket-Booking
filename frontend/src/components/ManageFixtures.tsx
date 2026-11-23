@@ -20,6 +20,14 @@ const emptyDraft: FixtureDraft = {
   venue: "",
 }
 
+const VENUE_OPTIONS = [
+  "Camp Nou Stadium",
+  "Education City Stadium",
+  "San Siro Stadium",
+  "Santiago Bernabéu Stadium",
+  "Wembley Stadium",
+] as const
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value)
 
@@ -29,9 +37,10 @@ const getApiMessage = (value: unknown, fallback: string) => {
   }
   if (isRecord(value) && isRecord(value.errors)) {
     const messages = Object.values(value.errors)
-      .filter((errors): errors is string[] =>
-        Array.isArray(errors) &&
-        errors.every((message) => typeof message === "string"),
+      .filter(
+        (errors): errors is string[] =>
+          Array.isArray(errors) &&
+          errors.every((message) => typeof message === "string"),
       )
       .flat()
     if (messages.length) return messages.join(" ")
@@ -102,7 +111,9 @@ export default function ManageFixtures() {
       data = await response.json()
     } catch (error) {
       console.error("Fixture save response was invalid:", error)
-      setServerError("The server returned an invalid response. Please try again.")
+      setServerError(
+        "The server returned an invalid response. Please try again.",
+      )
       setSubmitting(false)
       setShowSaveConfirm(false)
       return
@@ -165,7 +176,9 @@ export default function ManageFixtures() {
       )
     } catch (error) {
       console.error("Fixture deletion request failed:", error)
-      setServerError("We couldn't delete the fixture. Please try again shortly.")
+      setServerError(
+        "We couldn't delete the fixture. Please try again shortly.",
+      )
       setDeletingId(null)
       setFixtureToDelete(null)
       return
@@ -176,7 +189,9 @@ export default function ManageFixtures() {
       data = await response.json()
     } catch (error) {
       console.error("Fixture deletion response was invalid:", error)
-      setServerError("The server returned an invalid response. Please try again.")
+      setServerError(
+        "The server returned an invalid response. Please try again.",
+      )
       setDeletingId(null)
       setFixtureToDelete(null)
       return
@@ -184,7 +199,10 @@ export default function ManageFixtures() {
 
     if (!response.ok) {
       setServerError(
-        getApiMessage(data, "We couldn't delete the fixture. Please try again."),
+        getApiMessage(
+          data,
+          "We couldn't delete the fixture. Please try again.",
+        ),
       )
       setDeletingId(null)
       setFixtureToDelete(null)
@@ -279,17 +297,45 @@ export default function ManageFixtures() {
               >
                 {label}
               </label>
-              <input
-                id={`fixture-${field}`}
-                type={
-                  field === "date" ? "date" : field === "time" ? "time" : "text"
-                }
-                required
-                disabled={submitting}
-                value={draft[field]}
-                onChange={(event) => updateDraft(field, event.target.value)}
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-beige outline-none transition placeholder:text-muted focus:border-champagne focus:ring-4 focus:ring-champagne/15"
-              />
+              {field === "venue" ? (
+                <select
+                  id={`fixture-${field}`}
+                  required
+                  disabled={submitting}
+                  value={draft[field]}
+                  onChange={(event) => updateDraft(field, event.target.value)}
+                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-beige outline-none transition focus:border-champagne focus:ring-4 focus:ring-champagne/15"
+                >
+                  <option value="" disabled>
+                    Select a venue
+                  </option>
+                  {draft.venue &&
+                    !VENUE_OPTIONS.includes(
+                      draft.venue as (typeof VENUE_OPTIONS)[number],
+                    ) && <option value={draft.venue}>{draft.venue}</option>}
+                  {VENUE_OPTIONS.map((venue) => (
+                    <option key={venue} value={venue}>
+                      {venue}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  id={`fixture-${field}`}
+                  type={
+                    field === "date"
+                      ? "date"
+                      : field === "time"
+                        ? "time"
+                        : "text"
+                  }
+                  required
+                  disabled={submitting}
+                  value={draft[field]}
+                  onChange={(event) => updateDraft(field, event.target.value)}
+                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-beige outline-none transition placeholder:text-muted focus:border-champagne focus:ring-4 focus:ring-champagne/15"
+                />
+              )}
             </div>
           ))}
 
@@ -373,9 +419,7 @@ export default function ManageFixtures() {
                       type="button"
                       onClick={() => beginEditing(fixture)}
                       disabled={
-                        !fixture._id ||
-                        submitting ||
-                        deletingId === fixture._id
+                        !fixture._id || submitting || deletingId === fixture._id
                       }
                       className="rounded-lg border border-border px-3 py-2 text-sm text-beige transition-colors hover:border-champagne disabled:cursor-not-allowed disabled:opacity-50"
                     >
@@ -385,9 +429,7 @@ export default function ManageFixtures() {
                       type="button"
                       onClick={() => requestDelete(fixture)}
                       disabled={
-                        !fixture._id ||
-                        submitting ||
-                        deletingId === fixture._id
+                        !fixture._id || submitting || deletingId === fixture._id
                       }
                       className="rounded-lg border border-border px-3 py-2 text-sm text-beige transition-colors hover:border-champagne disabled:cursor-not-allowed disabled:opacity-50"
                     >
