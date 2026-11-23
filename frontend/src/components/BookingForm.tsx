@@ -1,11 +1,6 @@
-import { useState, type SubmitEvent } from "react"
+import { useEffect, useMemo, useState, type SubmitEvent } from "react"
+import { useAuth, type Fixture } from "../context/AuthContext"
 import SeatingPlan from "./ui/SeatingPlan"
-
-const fixtures = [
-  "Real Madrid vs Manchester City",
-  "FC Barcelona vs Paris Saint-Germain",
-  "Bayern Munich vs Inter Milan",
-]
 
 const categories = [
   { label: "Pitch-side", priceCents: 25 },
@@ -19,8 +14,25 @@ const formatPrice = (cents: number) =>
     currency: "USD",
   })
 
+const formatFixtureDate = (date: string) => {
+  const parsedDate = new Date(date)
+  if (Number.isNaN(parsedDate.getTime())) return date
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeZone: "UTC",
+  }).format(parsedDate)
+}
+
+const getFixtureKey = (fixture: Fixture, index: number) =>
+  fixture._id ?? `${fixture.home}-${fixture.away}-${fixture.date}-${index}`
+
+const getFixtureLabel = (fixture: Fixture) =>
+  `${fixture.home} vs ${fixture.away} · ${fixture.competition}`
+
 export default function BookingForm() {
-  const [fixture, setFixture] = useState(fixtures[0])
+  const { fixtures, loadingFixtures } = useAuth()
+  const [selectedFixtureKey, setSelectedFixtureKey] = useState("")
   const [category, setCategory] = useState(categories[0].label)
   const [selectedSeats, setSelectedSeats] = useState<string[]>([])
   const [reviewMessage, setReviewMessage] = useState("")
@@ -29,8 +41,40 @@ export default function BookingForm() {
     categories.find((item) => item.label === category)?.priceCents ?? 0
   const totalCents = ticketPriceCents * quantity
 
+  const fixtureOptions = useMemo(
+    () =>
+      (fixtures ?? []).map((fixture, index) => ({
+        key: getFixtureKey(fixture, index),
+        label: getFixtureLabel(fixture),
+        fixture,
+      })),
+    [fixtures],
+  )
+
+  useEffect(() => {
+    if (fixtureOptions.length === 0) {
+      if (selectedFixtureKey !== "") setSelectedFixtureKey("")
+      return
+    }
+
+    if (
+      !fixtureOptions.some((option) => option.key === selectedFixtureKey)
+    ) {
+      setSelectedFixtureKey(fixtureOptions[0].key)
+    }
+  }, [fixtureOptions, selectedFixtureKey])
+
+  const selectedFixtureOption = fixtureOptions.find(
+    (option) => option.key === selectedFixtureKey,
+  )
+
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    if (!selectedFixtureOption) {
+      setReviewMessage("Please select a fixture to review your estimate.")
+      return
+    }
 
     if (quantity === 0) {
       setReviewMessage(
@@ -40,7 +84,7 @@ export default function BookingForm() {
     }
 
     setReviewMessage(
-      `Your estimate for ${quantity} ${quantity === 1 ? "ticket" : "tickets"} to ${fixture} is ready. Checkout is not currently available.`,
+      `Your estimate for ${quantity} ${quantity === 1 ? "ticket" : "tickets"} to ${selectedFixtureOption.label} is ready. Checkout is not currently available.`,
     )
   }
 
@@ -83,17 +127,38 @@ export default function BookingForm() {
               </label>
               <select
                 id="fixture"
-                value={fixture}
+                value={selectedFixtureKey}
                 onChange={(event) => {
-                  setFixture(event.target.value)
+                  setSelectedFixtureKey(event.target.value)
                   setReviewMessage("")
                 }}
-                className="min-h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-beige outline-none transition-colors focus:border-champagne focus:ring-4 focus:ring-champagne/10"
+                disabled={loadingFixtures || fixtureOptions.length === 0}
+                className="min-h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-beige outline-none transition-colors focus:border-champagne focus:ring-4 focus:ring-champagne/10 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {fixtures.map((item) => (
-                  <option key={item}>{item}</option>
-                ))}
+                {loadingFixtures ? (
+                  <option value="">Loading fixtures...</option>
+                ) : fixtures === null ? (
+                  <option value="">Fixtures unavailable</option>
+                ) : fixtureOptions.length === 0 ? (
+                  <option value="">No fixtures available</option>
+                ) : (
+                  fixtureOptions.map((option) => (
+                    <option key={option.key} value={option.key}>
+                      {option.label}
+                    </option>
+                  ))
+                )}
               </select>
+              {!loadingFixtures && fixtures === null && (
+                <p className="mt-2 text-sm text-text-muted" role="status">
+                  Fixtures are temporarily unavailable. Please try again shortly.
+                </p>
+              )}
+              {!loadingFixtures && fixtures?.length === 0 && (
+                <p className="mt-2 text-sm text-text-muted">
+                  No fixtures are currently listed.
+                </p>
+              )}
             </div>
 
             <fieldset>
@@ -137,7 +202,8 @@ export default function BookingForm() {
 
             <button
               type="submit"
-              className="luxury-button luxury-button-primary"
+              disabled={!selectedFixtureOption}
+              className="luxury-button luxury-button-primary disabled:cursor-not-allowed disabled:opacity-50"
             >
               Review estimate <span aria-hidden="true">↗</span>
             </button>
@@ -154,10 +220,19 @@ export default function BookingForm() {
             Your estimate
           </p>
           <h2 className="mt-4 font-display text-2xl font-semibold tracking-normal text-beige">
-            {fixture}
+            {selectedFixtureOption
+              ? `${selectedFixtureOption.fixture.home} vs ${selectedFixtureOption.fixture.away}`
+              : "Select a fixture"}
           </h2>
           <p className="mt-2 text-sm text-text-muted">
             {category} · {quantity} {quantity === 1 ? "ticket" : "tickets"}
+          </p>
+          <p className="mt-3 text-xs leading-5 text-text-muted">
+            {selectedFixtureOption
+              ? `${selectedFixtureOption.fixture.competition} · ${formatFixtureDate(selectedFixtureOption.fixture.date)} · ${selectedFixtureOption.fixture.time} · ${selectedFixtureOption.fixture.venue}`
+              : loadingFixtures
+                ? "Loading fixture details..."
+                : "Fixture details will appear here once a match is selected."}
           </p>
           <p className="mt-3 text-xs leading-5 text-text-muted">
             {quantity > 0
