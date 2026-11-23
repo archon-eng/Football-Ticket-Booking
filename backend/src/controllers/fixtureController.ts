@@ -99,7 +99,17 @@ export const updateFixture = async (req: Request, res: Response) => {
         .json({ message: "We could not locate the requested fixture." })
     }
 
-    return res.status(200).json({ fixture })
+    return res.status(200).json({
+      fixture: {
+        competition: fixture.competition,
+        home: fixture.home,
+        away: fixture.away,
+        date: fixture.date,
+        time: fixture.time,
+        venue: fixture.venue,
+        _id: fixture._id.toString(),
+      },
+    })
   } catch (error) {
     console.error("Fixture update error:", error)
     return res.status(500).json({

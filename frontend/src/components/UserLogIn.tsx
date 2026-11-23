@@ -8,6 +8,7 @@ export default function UserLogIn() {
   const [password, setPassword] = useState("")
   const [errors, setErrors] = useState<Record<string, string[]>>({})
   const [serverError, setServerError] = useState("")
+  const [serverNotice, setServerNotice] = useState("")
   const [submitting, setSubmitting] = useState(false)
 
   const { setUser } = useAuth()
@@ -17,6 +18,7 @@ export default function UserLogIn() {
     event.preventDefault()
     setErrors({})
     setServerError("")
+    setServerNotice("")
     setSubmitting(true)
     const role = "user"
 
@@ -36,16 +38,16 @@ export default function UserLogIn() {
         } else {
           setServerError(
             data.message ||
-              "We couldn't verify your credentials. Please try again.",
+              "We were unable to verify your credentials. Please review your details and try again.",
           )
         }
         return
       }
 
       if (res.status === 202) {
-        setServerError(
+        setServerNotice(
           data.message ||
-            "Your request has been received and is being processed. Please review the message provided for next steps.",
+            "Your request has been received and is currently being processed.",
         )
         return
       }
@@ -69,7 +71,9 @@ export default function UserLogIn() {
 
       navigate("/dashboard")
     } catch {
-      setServerError("We couldn't complete your sign-in. Please try again shortly.")
+      setServerError(
+        "We were unable to complete your sign-in at this time. Please try again shortly.",
+      )
     } finally {
       setSubmitting(false)
     }
@@ -176,6 +180,15 @@ export default function UserLogIn() {
                 {error}
               </div>
             ))}
+
+          {serverNotice && (
+            <div
+              role="status"
+              className="mt-5 rounded-xl border border-champagne/35 bg-background/60 px-4 py-3 text-sm leading-relaxed text-beige"
+            >
+              {serverNotice}
+            </div>
+          )}
 
           {serverError && (
             <div

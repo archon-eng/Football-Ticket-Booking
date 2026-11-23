@@ -66,19 +66,74 @@ const publicUser = (
 const isApprovalToken = (value: unknown): value is string =>
   typeof value === "string" && /^[a-f\d]{64}$/i.test(value)
 
+const escapeApprovalHtml = (value: string) =>
+  value.replace(/[&<>"']/g, (character) => {
+    const entities: Record<string, string> = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    }
+    return entities[character]
+  })
+
 const approvalPage = (
   title: string,
   message: string,
   token?: string,
   action?: "approve" | "reject",
 ) => {
-  const actionLabel = action === "approve" ? "Approve Access" : "Decline Request"
+  const safeTitle = escapeApprovalHtml(title)
+  const safeMessage = escapeApprovalHtml(message)
+  const actionLabel =
+    action === "approve" ? "Approve Administrator Access" : "Decline Access Request"
+  const actionBackground = action === "approve" ? "#d6c19b" : "transparent"
+  const actionColor = action === "approve" ? "#11100e" : "#f2ebdd"
+  const actionBorder =
+    action === "approve" ? "1px solid #d6c19b" : "1px solid rgba(242,235,221,0.22)"
   const form =
     token && action
-      ? `<form method="post" action="/api/auth/verify-admin/${token}" style="margin-top:28px;"><input type="hidden" name="action" value="${action}"><button type="submit" style="display:inline-block;padding:14px 22px;border:0;border-radius:999px;background:#d6c19b;color:#11100e;font:600 14px/1.2 Inter, sans-serif;letter-spacing:0.01em;cursor:pointer;">${actionLabel}</button></form>`
+      ? `<form method="post" action="/api/auth/verify-admin/${token}" style="margin-top:32px;"><input type="hidden" name="action" value="${action}"><button type="submit" style="display:inline-flex;align-items:center;justify-content:center;min-width:220px;padding:14px 24px;border:${actionBorder};border-radius:999px;background:${actionBackground};color:${actionColor};font:600 14px/1.2 Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;letter-spacing:0.01em;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,0.22);">${actionLabel}</button></form>`
       : ""
 
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${title} | The Matchday</title></head><body style="margin:0;padding:40px 20px;background:#11100e;color:#f2ebdd;font-family:Inter, sans-serif;"><main style="max-width:640px;margin:0 auto;padding:36px 32px;background:#1b1915;border:1px solid #39352e;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,0.35);"><p style="margin:0 0 14px;color:#d6c19b;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;">The Matchday · Executive Access</p><h1 style="margin:0;color:#f2ebdd;font-family:Manrope, serif;font-size:30px;line-height:1.2;">${title}</h1><p style="margin:18px 0 0;color:#c9c0b1;font-size:15px;line-height:1.7;">${message}</p>${form}</main></body></html>`
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#11100e">
+    <title>${safeTitle} | The Matchday</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body style="margin:0;min-height:100vh;padding:40px 20px;background:radial-gradient(circle at top right, rgba(214,193,155,0.12), transparent 28%), linear-gradient(180deg, #141310 0%, #11100e 100%);color:#f2ebdd;font-family:Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;-webkit-font-smoothing:antialiased;">
+    <main style="max-width:680px;margin:0 auto;overflow:hidden;background:rgba(27,25,21,0.98);border:1px solid rgba(242,235,221,0.14);border-radius:24px;box-shadow:0 28px 80px rgba(0,0,0,0.42);">
+      <div style="height:3px;background:linear-gradient(90deg, #d6c19b 0%, rgba(214,193,155,0.35) 100%);"></div>
+      <section style="padding:40px 36px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:30px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border:1px solid rgba(214,193,155,0.45);border-radius:10px;color:#d6c19b;font:700 17px/36px Manrope, Inter, sans-serif;text-align:center;">M</div>
+            <div>
+              <p style="margin:0;color:#f2ebdd;font:700 12px/1.2 Manrope, Inter, sans-serif;letter-spacing:0.08em;">THE MATCHDAY</p>
+              <p style="margin:4px 0 0;color:#a79b89;font:600 9px/1.2 Inter, sans-serif;letter-spacing:0.16em;text-transform:uppercase;">Private Box Office</p>
+            </div>
+          </div>
+          <p style="margin:0;color:#d6c19b;font:600 10px/1.2 Inter, sans-serif;letter-spacing:0.14em;text-transform:uppercase;">Executive Access</p>
+        </div>
+
+        <p style="margin:0 0 14px;color:#d6c19b;font:700 10px/1.4 Inter, sans-serif;letter-spacing:0.2em;text-transform:uppercase;">Venue Governance</p>
+        <h1 style="margin:0;color:#f2ebdd;font:600 34px/1.15 Manrope, Inter, sans-serif;letter-spacing:-0.02em;">${safeTitle}</h1>
+        <p style="margin:18px 0 0;color:#c9c0b1;font:400 16px/1.75 Inter, sans-serif;max-width:56ch;">${safeMessage}</p>
+        ${form}
+      </section>
+      <footer style="padding:18px 36px;border-top:1px solid rgba(242,235,221,0.1);color:#8f8576;font:400 11px/1.7 Inter, sans-serif;">
+        The Matchday &middot; Secure administrative access review
+      </footer>
+    </main>
+  </body>
+</html>`
 }
 
 export const signUp = async (req: Request, res: Response) => {

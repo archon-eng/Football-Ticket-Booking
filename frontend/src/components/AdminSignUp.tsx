@@ -9,6 +9,7 @@ export default function AdminSignUp() {
   const [password, setPassword] = useState("")
   const [errors, setErrors] = useState<Record<string, string[]>>({})
   const [serverErrors, setServerErrors] = useState("")
+  const [serverNotice, setServerNotice] = useState("")
   const [submitting, setSubmitting] = useState<boolean>(false)
 
   const { setUser } = useAuth()
@@ -18,6 +19,7 @@ export default function AdminSignUp() {
     event.preventDefault()
     setErrors({})
     setServerErrors("")
+    setServerNotice("")
     setSubmitting(true)
     const role = "admin"
 
@@ -36,23 +38,25 @@ export default function AdminSignUp() {
           setErrors(data.errors)
         } else {
           setServerErrors(
-            data.message || "We couldn't create your account. Please try again.",
+            data.message ||
+              "We were unable to create your administrator account. Please review your details and try again.",
           )
         }
         return
       }
 
       if (res.status === 202) {
-        setServerErrors(
+        setServerNotice(
           data.message ||
-            "Your administrator account request has been submitted for review.",
+            "Your administrator access request has been received and is currently under review.",
         )
         return
       }
 
       if (!data.user) {
         setServerErrors(
-          data.message || "We couldn't create your account. Please try again.",
+          data.message ||
+            "We were unable to complete your administrator account setup. Please try again.",
         )
         return
       }
@@ -60,7 +64,9 @@ export default function AdminSignUp() {
       setUser(validateUserCredentials(data.user))
       navigate("/dashboard")
     } catch {
-      setServerErrors("We couldn't complete your request. Please try again shortly.")
+      setServerErrors(
+        "We were unable to complete your request at this time. Please try again shortly.",
+      )
     } finally {
       setSubmitting(false)
     }
@@ -187,6 +193,15 @@ export default function AdminSignUp() {
                   {error}
                 </div>
               ))}
+
+            {serverNotice && (
+              <div
+                role="status"
+                className="mt-4 rounded-xl border border-champagne/35 bg-background/60 px-4 py-3 text-sm leading-relaxed text-beige"
+              >
+                {serverNotice}
+              </div>
+            )}
 
             {serverErrors && (
               <div
