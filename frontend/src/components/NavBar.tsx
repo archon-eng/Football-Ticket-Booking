@@ -69,12 +69,12 @@ export default function NavBar() {
               <button
                 type="button"
                 aria-label={`Account options for ${user.username}`}
-                className="luxury-button luxury-button-secondary gap-2 px-2 py-1 text-xs sm:px-3"
+                className="luxury-button luxury-button-secondary gap-2 px-1 py-1 text-xs sm:px-1"
               >
                 <img src={account_logo} alt="" className="h-4 w-4 opacity-70" />
-                <span>
+                <span className="text-[0.6875rem]">
                   {user.username.length > 7
-                    ? `${user.username.slice(0, 5)}...`
+                    ? `${user.username.slice(0, 7)}...`
                     : user.username}
                 </span>
               </button>
@@ -102,7 +102,10 @@ export default function NavBar() {
                     Sign out
                   </button>
                   {logoutError && (
-                    <p role="alert" className="px-3 py-2 text-xs text-champagne">
+                    <p
+                      role="alert"
+                      className="px-3 py-2 text-xs text-champagne"
+                    >
                       {logoutError}
                     </p>
                   )}
