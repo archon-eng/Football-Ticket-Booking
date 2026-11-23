@@ -6,6 +6,7 @@ import validateUserCredentials from "../context/validateUserCredentials"
 export default function UserLogIn() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [errors, setErrors] = useState<Record<string, string[]>>({})
   const [serverError, setServerError] = useState("")
   const [submitting, setSubmitting] = useState(false)
 
@@ -14,6 +15,7 @@ export default function UserLogIn() {
 
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setErrors({})
     setServerError("")
     setSubmitting(true)
     const role = "user"
@@ -29,9 +31,20 @@ export default function UserLogIn() {
       const data = await res.json()
 
       if (!res.ok) {
+        if (data.errors) {
+          setErrors(data.errors)
+        } else {
+          setServerError(
+            data.message ||
+              "We couldn't verify your credentials. Please try again.",
+          )
+        }
+        return
+      }
+
+      if (res.status === 202) {
         setServerError(
-          data.message ||
-            "We couldn't verify your credentials. Please try again.",
+          data.message || "We couldn't complete your sign-in. Please try again.",
         )
         return
       }
@@ -137,6 +150,18 @@ export default function UserLogIn() {
               {submitting ? "Signing in..." : "Sign in"}
             </button>
           </form>
+
+          {Object.values(errors)
+            .flat()
+            .map((error) => (
+              <div
+                key={error}
+                role="alert"
+                className="mt-5 rounded-xl border border-border-strong bg-surface-elevated px-4 py-3 text-sm leading-relaxed text-beige"
+              >
+                {error}
+              </div>
+            ))}
 
           {serverError && (
             <div

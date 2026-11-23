@@ -43,14 +43,21 @@ export default function AdminSignUp() {
       }
 
       if (res.status === 202) {
-        setServerErrors(data.message)
+        setServerErrors(
+          data.message ||
+            "Your administrator account request has been submitted for review.",
+        )
         return
       }
 
-      if (data.user) {
-        setUser(validateUserCredentials(data.user))
+      if (!data.user) {
+        setServerErrors(
+          data.message || "We couldn't create your account. Please try again.",
+        )
+        return
       }
 
+      setUser(validateUserCredentials(data.user))
       navigate("/dashboard")
     } catch {
       setServerErrors("We couldn't complete your request. Please try again shortly.")

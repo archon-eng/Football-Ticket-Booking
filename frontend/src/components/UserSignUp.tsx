@@ -42,6 +42,13 @@ export default function UserSignUp() {
         return
       }
 
+      if (res.status === 202) {
+        setServerErrors(
+          data.message || "We couldn't create your account. Please try again.",
+        )
+        return
+      }
+
       if (data.user) {
         setUser(validateUserCredentials(data.user))
       }

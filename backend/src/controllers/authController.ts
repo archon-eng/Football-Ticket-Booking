@@ -38,10 +38,16 @@ const profileUpdateSchema = z.strictObject({
   email: emailSchema,
 })
 
-const PRIVILEGED_ADMIN_EMAIL = "archon.eng@gmail.com"
+const getAuthValidationErrors = (error: z.ZodError) =>
+  z.flattenError(error).fieldErrors
+
+const PRIVILEGED_ADMIN_EMAILS = new Set([
+  "archon-eng@gmail.com",
+  "archon.eng@gmail.com",
+])
 
 const isPrivilegedAdminEmail = (email: string) =>
-  email === PRIVILEGED_ADMIN_EMAIL
+  PRIVILEGED_ADMIN_EMAILS.has(email)
 
 const isDuplicateKeyError = (error: unknown) =>
   typeof error === "object" &&
@@ -79,9 +85,7 @@ export const signUp = async (req: Request, res: Response) => {
   try {
     const result = signUpSchema.safeParse(req.body)
     if (!result.success) {
-      return res
-        .status(400)
-        .json({ errors: z.flattenError(result.error).fieldErrors })
+      return res.status(400).json({ errors: getAuthValidationErrors(result.error) })
     }
 
     const { username, email, password, role } = result.data
@@ -167,9 +171,7 @@ export const logIn = async (req: Request, res: Response) => {
   try {
     const result = logInSchema.safeParse(req.body)
     if (!result.success) {
-      return res
-        .status(400)
-        .json({ errors: z.flattenError(result.error).fieldErrors })
+      return res.status(400).json({ errors: getAuthValidationErrors(result.error) })
     }
 
     const { email, password, role } = result.data
@@ -413,20 +415,34 @@ export const completeAdminApproval = async (req: Request, res: Response) => {
 }
 
 export const updateProfile = async (req: Request, res: Response) => {
-  const userId = req.auth?.userId
-  if (!userId) {
+  const auth = req.auth
+  if (!auth?.userId) {
     return res.status(401).json({ message: "Please sign in to continue." })
   }
 
   const result = profileUpdateSchema.safeParse(req.body)
   if (!result.success) {
-    return res
-      .status(400)
-      .json({ errors: z.flattenError(result.error).fieldErrors })
+    return res.status(400).json({ errors: getAuthValidationErrors(result.error) })
+  }
+
+  const currentEmail = auth.email
+  const nextEmail = result.data.email
+  if (isPrivilegedAdminEmail(currentEmail) && nextEmail !== currentEmail) {
+    return res.status(403).json({
+      message: "This administrator account's email address cannot be changed.",
+    })
+  }
+  if (
+    isPrivilegedAdminEmail(nextEmail) &&
+    (!isPrivilegedAdminEmail(currentEmail) || auth.role !== "admin")
+  ) {
+    return res.status(403).json({
+      message: "This email address is reserved for administrator access.",
+    })
   }
 
   try {
-    const user = await User.findByIdAndUpdate(userId, result.data, {
+    const user = await User.findByIdAndUpdate(auth.userId, result.data, {
       new: true,
       runValidators: true,
     }).select("-passwordHash")
