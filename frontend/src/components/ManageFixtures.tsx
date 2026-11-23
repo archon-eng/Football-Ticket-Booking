@@ -1,5 +1,6 @@
 import { useState, type SubmitEvent } from "react"
 import { useAuth, type Fixture } from "../context/AuthContext"
+import ConfirmDialog from "./ConfirmDialog"
 
 interface FixtureDraft {
   competition: string
@@ -55,14 +56,22 @@ export default function ManageFixtures() {
   const [success, setSuccess] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false)
+  const [fixtureToDelete, setFixtureToDelete] = useState<Fixture | null>(null)
 
   const resetForm = () => {
     setDraft(emptyDraft)
     setEditingId(null)
   }
 
-  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
+  const requestSave = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setServerError("")
+    setSuccess("")
+    setShowSaveConfirm(true)
+  }
+
+  const confirmSave = async () => {
     setServerError("")
     setSuccess("")
     setSubmitting(true)
@@ -84,6 +93,7 @@ export default function ManageFixtures() {
       console.error("Fixture save request failed:", error)
       setServerError("We couldn't save the fixture. Please try again shortly.")
       setSubmitting(false)
+      setShowSaveConfirm(false)
       return
     }
 
@@ -94,6 +104,7 @@ export default function ManageFixtures() {
       console.error("Fixture save response was invalid:", error)
       setServerError("The server returned an invalid response. Please try again.")
       setSubmitting(false)
+      setShowSaveConfirm(false)
       return
     }
 
@@ -102,6 +113,7 @@ export default function ManageFixtures() {
         getApiMessage(data, "We couldn't save the fixture. Please try again."),
       )
       setSubmitting(false)
+      setShowSaveConfirm(false)
       return
     }
 
@@ -109,42 +121,53 @@ export default function ManageFixtures() {
       await refreshFixtures()
     } catch (error) {
       console.error("Fixture list refresh failed after saving:", error)
-      setServerError("The fixture was saved, but the list couldn't be refreshed.")
+      setServerError(
+        "The fixture was saved, but the list couldn't be refreshed.",
+      )
       setSubmitting(false)
+      setShowSaveConfirm(false)
       return
     }
 
     setSuccess(editingId ? "Fixture updated." : "Fixture added.")
     resetForm()
     setSubmitting(false)
+    setShowSaveConfirm(false)
   }
 
-  const handleDelete = async (fixture: Fixture) => {
+  const requestDelete = (fixture: Fixture) => {
     if (!fixture._id) {
       setServerError("This fixture cannot be deleted because it has no ID.")
       return
     }
-    if (
-      !window.confirm(
-        `Delete ${fixture.home} vs ${fixture.away}? This cannot be undone.`,
-      )
-    ) {
+    setServerError("")
+    setSuccess("")
+    setFixtureToDelete(fixture)
+  }
+
+  const confirmDelete = async () => {
+    const fixtureId = fixtureToDelete?._id
+    if (!fixtureId) {
+      setServerError("This fixture cannot be deleted because it has no ID.")
+      setFixtureToDelete(null)
       return
     }
 
+    const fixture = fixtureToDelete
     setServerError("")
     setSuccess("")
-    setDeletingId(fixture._id)
+    setDeletingId(fixtureId)
     let response: Response
     try {
       response = await fetch(
-        `/api/auth/fixture/${encodeURIComponent(fixture._id)}`,
+        `/api/auth/fixture/${encodeURIComponent(fixtureId)}`,
         { method: "DELETE", credentials: "include" },
       )
     } catch (error) {
       console.error("Fixture deletion request failed:", error)
       setServerError("We couldn't delete the fixture. Please try again shortly.")
       setDeletingId(null)
+      setFixtureToDelete(null)
       return
     }
 
@@ -155,6 +178,7 @@ export default function ManageFixtures() {
       console.error("Fixture deletion response was invalid:", error)
       setServerError("The server returned an invalid response. Please try again.")
       setDeletingId(null)
+      setFixtureToDelete(null)
       return
     }
 
@@ -163,6 +187,7 @@ export default function ManageFixtures() {
         getApiMessage(data, "We couldn't delete the fixture. Please try again."),
       )
       setDeletingId(null)
+      setFixtureToDelete(null)
       return
     }
 
@@ -170,14 +195,18 @@ export default function ManageFixtures() {
       await refreshFixtures()
     } catch (error) {
       console.error("Fixture list refresh failed after deletion:", error)
-      setServerError("The fixture was deleted, but the list couldn't be refreshed.")
+      setServerError(
+        "The fixture was deleted, but the list couldn't be refreshed.",
+      )
       setDeletingId(null)
+      setFixtureToDelete(null)
       return
     }
 
     setSuccess("Fixture deleted.")
     if (editingId === fixture._id) resetForm()
     setDeletingId(null)
+    setFixtureToDelete(null)
   }
 
   const beginEditing = (fixture: Fixture) => {
@@ -199,6 +228,11 @@ export default function ManageFixtures() {
     setDraft((current) => ({ ...current, [field]: value }))
   }
 
+  const saveConfirmLabel = editingId ? "Update fixture" : "Add fixture"
+  const saveConfirmPrompt = editingId
+    ? "Are you sure you would like to save these changes to this fixture?"
+    : "Are you sure you would like to add this fixture?"
+
   return (
     <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 lg:px-12 lg:py-16">
       <section>
@@ -216,7 +250,7 @@ export default function ManageFixtures() {
 
       <section className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
         <form
-          onSubmit={handleSubmit}
+          onSubmit={requestSave}
           className="luxury-card h-fit space-y-5 p-6 sm:p-8"
         >
           <div>
@@ -349,7 +383,7 @@ export default function ManageFixtures() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => void handleDelete(fixture)}
+                      onClick={() => requestDelete(fixture)}
                       disabled={
                         !fixture._id ||
                         submitting ||
@@ -366,6 +400,31 @@ export default function ManageFixtures() {
           )}
         </div>
       </section>
+
+      <ConfirmDialog
+        isOpen={showSaveConfirm}
+        prompt={saveConfirmPrompt}
+        confirmLabel={saveConfirmLabel}
+        onCancel={() => {
+          if (!submitting) setShowSaveConfirm(false)
+        }}
+        onConfirm={confirmSave}
+        confirming={submitting}
+      />
+      <ConfirmDialog
+        isOpen={fixtureToDelete !== null}
+        prompt={
+          fixtureToDelete
+            ? `Are you sure you would like to delete ${fixtureToDelete.home} vs ${fixtureToDelete.away}? This action cannot be undone.`
+            : "Are you sure you would like to delete this fixture?"
+        }
+        confirmLabel="Delete fixture"
+        onCancel={() => {
+          if (!deletingId) setFixtureToDelete(null)
+        }}
+        onConfirm={confirmDelete}
+        confirming={deletingId !== null}
+      />
     </div>
   )
 }

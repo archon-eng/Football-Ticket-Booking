@@ -1,6 +1,7 @@
 import { useState, type SubmitEvent } from "react"
 import { useAuth } from "../context/AuthContext"
 import validateUserCredentials from "../context/validateUserCredentials"
+import ConfirmDialog from "./ConfirmDialog"
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value)
@@ -13,9 +14,17 @@ export default function Profile() {
   const [serverError, setServerError] = useState("")
   const [success, setSuccess] = useState("")
   const [submitting, setSubmitting] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
 
-  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
+  const requestProfileUpdate = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setErrors({})
+    setServerError("")
+    setSuccess("")
+    setShowConfirm(true)
+  }
+
+  const submitProfileUpdate = async () => {
     setErrors({})
     setServerError("")
     setSuccess("")
@@ -47,6 +56,7 @@ export default function Profile() {
             ? data.message
             : "We couldn't update your profile. Please try again.",
         )
+        setShowConfirm(false)
         return
       }
 
@@ -59,9 +69,11 @@ export default function Profile() {
       setUsername(updatedUser.username)
       setEmail(updatedUser.email)
       setSuccess("Your profile has been updated.")
+      setShowConfirm(false)
     } catch (error) {
       console.error("Profile update failed:", error)
       setServerError("We couldn't update your profile. Please try again shortly.")
+      setShowConfirm(false)
     } finally {
       setSubmitting(false)
     }
@@ -81,7 +93,7 @@ export default function Profile() {
         </p>
 
         <form
-          onSubmit={handleSubmit}
+          onSubmit={requestProfileUpdate}
           className="luxury-card mt-8 space-y-5 p-6 sm:p-8"
         >
           <div>
@@ -151,6 +163,16 @@ export default function Profile() {
           </button>
         </form>
       </section>
+      <ConfirmDialog
+        isOpen={showConfirm}
+        prompt="Are you sure you would like to update your profile with these details?"
+        confirmLabel="Update profile"
+        onCancel={() => {
+          if (!submitting) setShowConfirm(false)
+        }}
+        onConfirm={submitProfileUpdate}
+        confirming={submitting}
+      />
     </div>
   )
 }

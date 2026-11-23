@@ -3,18 +3,25 @@ import { NavLink } from "react-router-dom"
 import account_logo from "../assets/account_symbol.svg"
 import logo from "../assets/football_logo.svg"
 import { useAuth } from "../context/AuthContext"
+import ConfirmDialog from "./ConfirmDialog"
 
 export default function NavBar() {
   const { user, loading, logout } = useAuth()
   const [logoutError, setLogoutError] = useState("")
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false)
+  const [signingOut, setSigningOut] = useState(false)
 
   const handleLogout = async () => {
     setLogoutError("")
+    setSigningOut(true)
     try {
       await logout()
+      setShowSignOutConfirm(false)
     } catch (error) {
       console.error("Sign-out failed:", error)
       setLogoutError("We couldn't sign you out. Please try again.")
+    } finally {
+      setSigningOut(false)
     }
   }
 
@@ -96,7 +103,10 @@ export default function NavBar() {
                   )}
                   <button
                     type="button"
-                    onClick={() => void handleLogout()}
+                    onClick={() => {
+                      setLogoutError("")
+                      setShowSignOutConfirm(true)
+                    }}
                     className="block w-full rounded-lg px-3 py-2 text-left text-sm text-beige transition-colors hover:bg-surface-elevated focus-visible:bg-surface-elevated"
                   >
                     Sign out
@@ -127,6 +137,17 @@ export default function NavBar() {
           )}
         </div>
       </div>
+      <ConfirmDialog
+        isOpen={showSignOutConfirm}
+        prompt="Are you sure you would like to sign out of your account?"
+        confirmLabel="Sign out"
+        cancelLabel="Cancel"
+        onCancel={() => {
+          if (!signingOut) setShowSignOutConfirm(false)
+        }}
+        onConfirm={handleLogout}
+        confirming={signingOut}
+      />
     </header>
   )
 }
