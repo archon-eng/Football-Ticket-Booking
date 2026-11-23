@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type SubmitEvent } from "react"
+import { useMemo, useState, type SubmitEvent } from "react"
 import { useAuth, type Fixture } from "../context/AuthContext"
 import SeatingPlan from "./ui/SeatingPlan"
 
@@ -51,21 +51,16 @@ export default function BookingForm() {
     [fixtures],
   )
 
-  useEffect(() => {
-    if (fixtureOptions.length === 0) {
-      if (selectedFixtureKey !== "") setSelectedFixtureKey("")
-      return
+  const selectedFixtureKeyValue = useMemo(() => {
+    if (fixtureOptions.length === 0) return ""
+    if (fixtureOptions.some((option) => option.key === selectedFixtureKey)) {
+      return selectedFixtureKey
     }
-
-    if (
-      !fixtureOptions.some((option) => option.key === selectedFixtureKey)
-    ) {
-      setSelectedFixtureKey(fixtureOptions[0].key)
-    }
+    return fixtureOptions[0].key
   }, [fixtureOptions, selectedFixtureKey])
 
   const selectedFixtureOption = fixtureOptions.find(
-    (option) => option.key === selectedFixtureKey,
+    (option) => option.key === selectedFixtureKeyValue,
   )
 
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
@@ -127,7 +122,7 @@ export default function BookingForm() {
               </label>
               <select
                 id="fixture"
-                value={selectedFixtureKey}
+                value={selectedFixtureKeyValue}
                 onChange={(event) => {
                   setSelectedFixtureKey(event.target.value)
                   setReviewMessage("")
@@ -151,7 +146,8 @@ export default function BookingForm() {
               </select>
               {!loadingFixtures && fixtures === null && (
                 <p className="mt-2 text-sm text-text-muted" role="status">
-                  Fixtures are temporarily unavailable. Please try again shortly.
+                  Fixtures are temporarily unavailable. Please try again
+                  shortly.
                 </p>
               )}
               {!loadingFixtures && fixtures?.length === 0 && (

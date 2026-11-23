@@ -6,7 +6,7 @@ interface SeatingPlanProps {
 
 const seats = Array.from({ length: 40 }, (_, index) => ({
   id: `${String.fromCharCode(65 + Math.floor(index / 8))}${(index % 8) + 1}`,
-  occupied: index % 11 === 0 || index % 13 === 0,
+  occupied: false,
 }))
 
 export default function SeatingPlan({
