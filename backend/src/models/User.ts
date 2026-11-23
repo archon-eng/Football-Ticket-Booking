@@ -7,6 +7,7 @@ export interface IUser extends Document {
   email: string
   passwordHash: string
   role: UserRole
+  bookingHistory?: string[] | null
   adminApproved?: boolean
   adminApprovalTokenHash?: string
   adminApprovalExpiresAt?: Date
