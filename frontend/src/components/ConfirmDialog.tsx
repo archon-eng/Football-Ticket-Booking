@@ -26,10 +26,19 @@ export default function ConfirmDialog({
     if (!isOpen) return
     const originalOverflow = document.body.style.overflow
     document.body.style.overflow = "hidden"
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !confirming) {
+        onCancel()
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
     return () => {
       document.body.style.overflow = originalOverflow
+      document.removeEventListener("keydown", handleKeyDown)
     }
-  }, [isOpen])
+  }, [confirming, isOpen, onCancel])
 
   if (!isOpen) {
     return null
